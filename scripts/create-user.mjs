@@ -9,11 +9,10 @@ config({ path: ".env.local" });
 config({ path: ".env" });
 
 const scrypt = promisify(scryptCallback);
-const connectionString =
-  process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_ADMIN_URL;
 
 if (!connectionString) {
-  throw new Error("Set DATABASE_URL_UNPOOLED or DATABASE_URL first");
+  throw new Error("Set DATABASE_ADMIN_URL first");
 }
 
 async function hashPassword(password) {
@@ -92,26 +91,41 @@ if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
 const password =
   process.env.ACT_NEW_USER_PASSWORD ?? (await promptForPassword("Password: "));
 
-if (password.length < 8) {
-  throw new Error("Password must contain at least 8 characters");
+if (password.length < 15) {
+  throw new Error("Password must contain at least 15 characters");
 }
 
 const passwordHash = await hashPassword(password);
 const pool = new pg.Pool({ connectionString, max: 1 });
 
+const client = await pool.connect();
+
 try {
-  await pool.query(
+  await client.query("BEGIN");
+  const result = await client.query(
     `INSERT INTO users (email, password_hash)
      VALUES ($1, $2)
      ON CONFLICT (email) DO UPDATE
        SET password_hash = EXCLUDED.password_hash,
            is_active = true,
-           failed_login_count = 0,
-           locked_until = NULL,
-           updated_at = now()`,
+           updated_at = now()
+     RETURNING id`,
     [email, passwordHash],
   );
+  const userId = result.rows[0]?.id;
+
+  if (!userId) {
+    throw new Error("Failed to create or update account");
+  }
+
+  await client.query("DELETE FROM sessions WHERE user_id = $1", [userId]);
+  await client.query("COMMIT");
   console.log(`Account ready: ${email}`);
+  console.log("All existing sessions for this account were revoked.");
+} catch (error) {
+  await client.query("ROLLBACK");
+  throw error;
 } finally {
+  client.release();
   await pool.end();
 }

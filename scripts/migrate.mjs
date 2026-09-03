@@ -8,11 +8,10 @@ import pg from "pg";
 config({ path: ".env.local" });
 config({ path: ".env" });
 
-const connectionString =
-  process.env.DATABASE_URL_UNPOOLED ?? process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_ADMIN_URL;
 
 if (!connectionString) {
-  throw new Error("Set DATABASE_URL_UNPOOLED or DATABASE_URL before migrating");
+  throw new Error("Set DATABASE_ADMIN_URL before migrating");
 }
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));

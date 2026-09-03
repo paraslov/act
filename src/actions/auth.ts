@@ -1,7 +1,14 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import {
+  clearAccountLoginFailures,
+  getLoginSource,
+  isLoginBlocked,
+  recordLoginFailure,
+} from "@/auth/login-throttle";
 import { verifyPassword } from "@/auth/password";
 import { createSession, deleteCurrentSession } from "@/auth/session";
 import { query } from "@/lib/db/client";
@@ -20,7 +27,6 @@ type AccountRow = {
   id: string;
   password_hash: string;
   is_active: boolean;
-  locked_until: Date | null;
 };
 
 export type LoginState = {
@@ -40,14 +46,21 @@ export async function login(
     return { error: "Enter a valid email and password." };
   }
 
+  const email = parsed.data.email;
+  const source = getLoginSource(await headers());
   const result = await query<AccountRow>(
-    `SELECT id, password_hash, is_active, locked_until
+    `SELECT id, password_hash, is_active
        FROM users
       WHERE email = $1
       LIMIT 1`,
-    [parsed.data.email],
+    [email],
   );
   const account = result.rows[0];
+  const activeAccountExists = Boolean(account?.is_active);
+
+  if (await isLoginBlocked(email, source, activeAccountExists)) {
+    return { error: "Email or password is incorrect." };
+  }
 
   // Run the same expensive operation even when the account does not exist.
   const passwordMatches = account
@@ -57,38 +70,19 @@ export async function login(
         "scrypt$16384$8$1$N2M3SjR1NVVWckk2SW83cA$VoGYndiiLuN4CBT5Jbb8xqITCezfjSvaQjt28S2H_StdiHdjGEgrLEiuPps-aRVuXR_MNCF4rED2fjtTHtJVCg",
       );
 
-  const isLocked = account?.locked_until
-    ? account.locked_until.getTime() > Date.now()
-    : false;
-
-  if (!account || !account.is_active || !passwordMatches || isLocked) {
-    if (account && !passwordMatches && account.is_active && !isLocked) {
-      await query(
-        `UPDATE users
-            SET failed_login_count = failed_login_count + 1,
-                locked_until = CASE
-                  WHEN failed_login_count + 1 >= 5
-                    THEN now() + interval '15 minutes'
-                  ELSE locked_until
-                END,
-                updated_at = now()
-          WHERE id = $1`,
-        [account.id],
-      );
-    }
-
+  if (!account || !account.is_active || !passwordMatches) {
+    await recordLoginFailure(email, source, activeAccountExists);
     return { error: "Email or password is incorrect." };
   }
 
   await query(
     `UPDATE users
-        SET failed_login_count = 0,
-            locked_until = NULL,
-            last_login_at = now(),
+        SET last_login_at = now(),
             updated_at = now()
       WHERE id = $1`,
     [account.id],
   );
+  await clearAccountLoginFailures(email, source);
   await createSession(account.id);
   redirect("/");
 }

@@ -15,7 +15,18 @@ Minimal private ACT application starter.
 
 The checked-in `.env.example` and ignored `.env.local` use an ACT-only local
 PostgreSQL container on port `5434`. This lets it run alongside the Jira admin
-container, which uses port `5433`.
+container, which uses port `5433`. PostgreSQL is published only on
+`127.0.0.1`.
+
+Local PostgreSQL has two distinct roles:
+
+- `act_admin` owns the schema and is used only by CLI migrations and account
+  provisioning through `DATABASE_ADMIN_URL`;
+- `act_app` is a `NOSUPERUSER`/`NOBYPASSRLS` runtime role used by Next.js
+  through `DATABASE_URL`.
+
+The application also checks the connected role on first database use and fails
+closed if `DATABASE_URL` points to a superuser or `BYPASSRLS` role.
 
 1. Install dependencies with `pnpm install`.
 2. Start PostgreSQL with `pnpm db:up`.
@@ -26,8 +37,25 @@ container, which uses port `5433`.
 Use `pnpm db:logs` to follow PostgreSQL logs and `pnpm db:down` to stop the
 container. `db:down` preserves the `postgres_data` volume and its data.
 
-`db:create-user` also resets the password and unlocks an existing account with
-the same normalized email. There is intentionally no signup page or signup API.
+`db:create-user` also resets the password and reactivates an existing account
+with the same normalized email. Account creation and password reset happen in
+one transaction, and a reset revokes every existing session for that account.
+There is intentionally no signup page or signup API. Because the app does not
+yet use MFA, provisioned passwords must contain at least 15 characters.
+
+## Authentication abuse protection
+
+Failed sign-ins are tracked in PostgreSQL so throttling is shared by every
+Vercel instance. A noisy source is temporarily blocked across accounts, while
+an account/source pair gets progressive backoff. Account-wide counts are used
+only for security logs and never lock the user out from another source.
+
+`AUTH_THROTTLE_SECRET` HMACs emails and source addresses before they are stored.
+Use a unique random value of at least 32 characters in production. Vercel's
+trusted forwarded-IP header is used automatically. For another production
+reverse proxy, set `AUTH_TRUST_PROXY_HEADERS=true` only if that proxy overwrites
+untrusted forwarded headers. Configure a Vercel Firewall rate-limit rule for
+the login endpoint as an additional edge-level control.
 
 ## RLS contract
 
@@ -40,9 +68,27 @@ The `user_settings` table is the starter pattern for user-owned data:
   read from the verified session, remains transaction-local, and cannot leak
   through the connection pool.
 
-The `users` and `sessions` tables are authentication infrastructure. They are
-queried only from server-only modules and are not exposed through a browser DB
-client.
+The `users`, `sessions`, and `login_throttle` tables are authentication
+infrastructure. They are queried only from server-only modules and are not
+exposed through a browser DB client. The runtime role has narrowly scoped table
+and column grants and cannot create users, change passwords, reactivate users,
+or read migration metadata.
 
-For Vercel, add `DATABASE_URL` and, when available, `DATABASE_URL_UNPOOLED` to
-the project environment. Run migrations with the direct URL during deployment.
+## Production database roles
+
+Create a dedicated `act_app` login role in the production PostgreSQL database
+before running migrations:
+
+```sql
+CREATE ROLE act_app
+  LOGIN PASSWORD '<generated-runtime-password>'
+  NOSUPERUSER NOCREATEDB NOCREATEROLE NOINHERIT NOREPLICATION NOBYPASSRLS;
+GRANT CONNECT ON DATABASE <database_name> TO act_app;
+GRANT USAGE ON SCHEMA public TO act_app;
+```
+
+Run migrations with `DATABASE_ADMIN_URL` set only in the trusted operator or CI
+environment. Migration `0002_security_hardening.sql` grants `act_app` the exact
+runtime permissions. In Vercel, configure only the restricted role's pooled URL
+as `DATABASE_URL`, plus `AUTH_THROTTLE_SECRET`; do not expose
+`DATABASE_ADMIN_URL` to the application runtime.

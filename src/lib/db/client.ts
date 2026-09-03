@@ -3,6 +3,13 @@ import "server-only";
 import { Pool, type PoolClient, type QueryResultRow } from "pg";
 
 const globalForDatabase = globalThis as unknown as { actPool?: Pool };
+let runtimeRoleCheck: Promise<void> | undefined;
+
+type RuntimeRoleRow = {
+  rolname: string;
+  rolsuper: boolean;
+  rolbypassrls: boolean;
+};
 
 function createPool() {
   const connectionString = process.env.DATABASE_URL;
@@ -27,17 +34,46 @@ export function getPool() {
   return globalForDatabase.actPool;
 }
 
+async function assertSafeRuntimeRole(pool: Pool) {
+  if (!runtimeRoleCheck) {
+    runtimeRoleCheck = pool
+      .query<RuntimeRoleRow>(
+        `SELECT rolname, rolsuper, rolbypassrls
+           FROM pg_roles
+          WHERE rolname = current_user`,
+      )
+      .then((result) => {
+        const role = result.rows[0];
+        if (!role || role.rolsuper || role.rolbypassrls) {
+          throw new Error(
+            "DATABASE_URL must use a NOSUPERUSER/NOBYPASSRLS runtime role",
+          );
+        }
+      })
+      .catch((error) => {
+        runtimeRoleCheck = undefined;
+        throw error;
+      });
+  }
+
+  await runtimeRoleCheck;
+}
+
 export async function query<T extends QueryResultRow>(
   text: string,
   values: readonly unknown[] = [],
 ) {
-  return getPool().query<T>(text, [...values]);
+  const pool = getPool();
+  await assertSafeRuntimeRole(pool);
+  return pool.query<T>(text, [...values]);
 }
 
 export async function withTransaction<T>(
   callback: (client: PoolClient) => Promise<T>,
 ) {
-  const client = await getPool().connect();
+  const pool = getPool();
+  await assertSafeRuntimeRole(pool);
+  const client = await pool.connect();
 
   try {
     await client.query("BEGIN");

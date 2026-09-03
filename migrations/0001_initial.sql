@@ -3,8 +3,6 @@ CREATE TABLE users (
   email text NOT NULL UNIQUE,
   password_hash text NOT NULL,
   is_active boolean NOT NULL DEFAULT true,
-  failed_login_count integer NOT NULL DEFAULT 0 CHECK (failed_login_count >= 0),
-  locked_until timestamptz,
   last_login_at timestamptz,
   created_at timestamptz NOT NULL DEFAULT now(),
   updated_at timestamptz NOT NULL DEFAULT now(),

@@ -4,14 +4,15 @@ services:
     restart: unless-stopped
     environment:
       POSTGRES_DB: act
-      POSTGRES_USER: act
-      POSTGRES_PASSWORD: act_local_password
+      POSTGRES_USER: act_admin
+      POSTGRES_PASSWORD: act_admin_local_password
     ports:
-      - "5434:5432"
+      - "127.0.0.1:5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U act -d act"]
+      test: ["CMD-SHELL", "pg_isready -U act_admin -d act"]
       interval: 5s
       timeout: 5s
       retries: 5
