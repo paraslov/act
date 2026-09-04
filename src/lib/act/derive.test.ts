@@ -122,6 +122,17 @@ describe("filterEpisodes", () => {
     expect(filterEpisodes(eps, { text: "SCROLLED" })).toHaveLength(1);
     expect(filterEpisodes(eps, { text: "nothing here" })).toHaveLength(0);
   });
+
+  it("limits text search to hooks, moves and values", () => {
+    const contextOnly = ep({
+      situation: "Quarterly planning",
+      workable: "Taking a short walk",
+    });
+    expect(filterEpisodes([contextOnly], { text: "quarterly" })).toHaveLength(
+      0,
+    );
+    expect(filterEpisodes([contextOnly], { text: "walk" })).toHaveLength(0);
+  });
 });
 
 describe("band shape & breakdown", () => {

@@ -80,13 +80,7 @@ export function matchesFilters(
   }
   const query = normalizeText(filters.text).trim();
   if (query) {
-    const haystacks = [
-      episode.hook,
-      episode.move,
-      episode.value,
-      episode.workable,
-      episode.situation,
-    ];
+    const haystacks = [episode.hook, episode.move, episode.value];
     if (!haystacks.some((field) => normalizeText(field).includes(query))) {
       return false;
     }

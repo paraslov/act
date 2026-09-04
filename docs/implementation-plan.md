@@ -12,7 +12,7 @@
 - [x] **Step 5** — App shell: 236px sidebar (replace top `Navigation`), streak/master-stat blocks, responsive collapse
 - [x] **Step 6** — New-episode modal (shadcn `dialog`): all fields, tipping-scale SVG, flexibility check, opens from 3 places
 - [x] **Step 7** — Today view (`/`): header, alert frame, morning card (Save buttons + "Saved ✓"), Today-so-far dark card, evening card
-- [ ] **Step 8** — Episodes view (`/episodes`): filter bar (URL state), episode cards, empty state
+- [x] **Step 8** — Episodes view (`/episodes`): filter bar (URL state), episode cards, empty state
 - [ ] **Step 9** — Journal view (`/journal`): range/jump, day list, last-7 table, day-strip SVG, selected-episode + morning/evening + episodes-this-day (URL state)
 
 **Phase 2 — Progress**

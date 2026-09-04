@@ -85,7 +85,36 @@
     }
   },
   "episodes": {
-    "newEpisode": "＋ New episode"
+    "title": "Episodes",
+    "shown": "{shown} of {total} shown",
+    "newEpisode": "＋ New episode",
+    "intro": "The raw material. Write them whenever — evening, next morning, three days later. Rough beats absent.",
+    "filters": {
+      "label": "Episode filters",
+      "directionLabel": "Filter by direction",
+      "all": "All",
+      "toward": "Toward",
+      "away": "Away",
+      "statusLabel": "Filter by status effect",
+      "anyStatus": "Any status effect",
+      "skillLabel": "Filter by skill",
+      "anySkill": "Any skill",
+      "timeLabel": "Filter by time",
+      "anyTime": "Any time",
+      "searchLabel": "Search episodes",
+      "searchPlaceholder": "Search hooks, moves, values…",
+      "clear": "Clear"
+    },
+    "emptyTitle": "No episodes match those filters.",
+    "emptyDescription": "Widen the direction or clear the search.",
+    "card": {
+      "toward": "Toward",
+      "away": "Away",
+      "score": "{score}/10",
+      "towardMove": "Toward move",
+      "awayMove": "Away move",
+      "workable": "Workable"
+    }
   },
   "journal": {
     "addEpisode": "Add an episode to this day"

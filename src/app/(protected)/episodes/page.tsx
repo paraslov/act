@@ -1,13 +1,7 @@
-import { getTranslations } from "next-intl/server";
-import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
-import { PagePlaceholder } from "@/components/page-placeholder";
+import { EpisodesView } from "@/components/episodes/episodes-view";
+import { listEpisodes } from "@/lib/db/episodes";
 
 export default async function EpisodesPage() {
-  const t = await getTranslations("episodes");
-  return (
-    <PagePlaceholder
-      title="episodes"
-      action={<NewEpisodeTrigger>{t("newEpisode")}</NewEpisodeTrigger>}
-    />
-  );
+  const episodes = await listEpisodes();
+  return <EpisodesView episodes={episodes} />;
 }
