@@ -1,0 +1,65 @@
+{
+  "common": {
+    "appName": "ACT",
+    "save": "Save",
+    "saved": "Saved ✓",
+    "clear": "Clear",
+    "signOut": "Sign out",
+    "notWritten": "— not written"
+  },
+  "nav": {
+    "groupDaily": "DAILY",
+    "groupReference": "REFERENCE",
+    "today": "Today",
+    "journal": "Journal",
+    "episodes": "Episodes",
+    "progress": "Progress",
+    "flexibility": "Flexibility",
+    "loop": "The loop",
+    "vault": "Vault",
+    "streakUnit": "days with a Toward Move made while uncomfortable"
+  },
+  "today": {
+    "intro": "Three intentions in the morning, a review in the evening. Episodes get written whenever you have a minute — they don't need to be filled mid-situation.",
+    "alert": {
+      "label": "The only test that matters",
+      "question": "When the discomfort came — did I make a workable Toward Move, even though it was hard?"
+    },
+    "morning": {
+      "heading": "Morning set-up",
+      "save": "Save morning",
+      "openLabel": "What discomfort am I willing to let in today?",
+      "openHint": "Feel it without fighting it; think it without obeying it.",
+      "openPlaceholder": "Tight chest before the review call — allowed to be there.",
+      "awareLabel": "Where will autopilot most likely take over?",
+      "awareHint": "Name the situation in advance and you're half-way to catching it.",
+      "awarePlaceholder": "Right after the standup, when I want to over-explain.",
+      "engagedLabel": "Who do I want to act like today?",
+      "engagedHint": "A quality of action, not an outcome. Values are directions, goals are destinations.",
+      "engagedPlaceholder": "Direct and warm, even when I'd rather be vague.",
+      "towardLabel": "One Toward Move for today"
+    },
+    "soFar": {
+      "label": "TODAY SO FAR",
+      "writeEpisode": "Write an episode →",
+      "openInJournal": "Open today in the journal"
+    },
+    "evening": {
+      "heading": "Evening review",
+      "save": "Save evening",
+      "hookLabel": "Where did it catch me today?",
+      "hookPlaceholder": "The comment in the thread about the deadline.",
+      "awayLabel": "What Away Move did I make?",
+      "awayPlaceholder": "Went quiet for two hours instead of asking.",
+      "flexLabel": "Where did flexibility show up?",
+      "flexPlaceholder": "Noticed the sulk, came back, asked the question.",
+      "nextLabel": "What Toward Move do I want to try next time?",
+      "nextPlaceholder": "Ask within five minutes, before the story sets."
+    }
+  },
+  "locale": {
+    "label": "Language",
+    "en": "English",
+    "ru": "Русский"
+  }
+}

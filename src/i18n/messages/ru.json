@@ -1,0 +1,6 @@
+{
+  "_note": "RU is intentionally empty for v1. Keys added here override EN; anything missing (or left as an empty string) falls back to EN. Therapeutic copy needs product-owner review before it is authored.",
+  "locale": {
+    "ru": "Русский"
+  }
+}
