@@ -10,7 +10,7 @@
 - [x] **Step 3** — Reference constants: `src/lib/act/constants.ts` (STATES, SKILLS, AXES, BANDS, HOOK_TYPES) + derive/date helpers `src/lib/act/*.ts`
 - [x] **Step 4** — Data access + server actions: `episodes.ts`, `day-entries.ts` (repos through `withCurrentUserDb`) and `src/actions/episodes.ts`, `src/actions/day.ts`
 - [x] **Step 5** — App shell: 236px sidebar (replace top `Navigation`), streak/master-stat blocks, responsive collapse
-- [ ] **Step 6** — New-episode modal (shadcn `dialog`): all fields, tipping-scale SVG, flexibility check, opens from 3 places
+- [x] **Step 6** — New-episode modal (shadcn `dialog`): all fields, tipping-scale SVG, flexibility check, opens from 3 places
 - [ ] **Step 7** — Today view (`/`): header, alert frame, morning card (Save buttons + "Saved ✓"), Today-so-far dark card, evening card
 - [ ] **Step 8** — Episodes view (`/episodes`): filter bar (URL state), episode cards, empty state
 - [ ] **Step 9** — Journal view (`/journal`): range/jump, day list, last-7 table, day-strip SVG, selected-episode + morning/evening + episodes-this-day (URL state)

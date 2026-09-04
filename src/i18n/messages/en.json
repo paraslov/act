@@ -68,6 +68,45 @@
       "nextPlaceholder": "Ask within five minutes, before the story sets."
     }
   },
+  "episodes": {
+    "newEpisode": "＋ New episode"
+  },
+  "journal": {
+    "addEpisode": "Add an episode to this day"
+  },
+  "episodeModal": {
+    "title": "New episode",
+    "subtitle": "Written after the fact. Under a minute.",
+    "close": "Close",
+    "whenLabel": "When did it happen?",
+    "hookLabel": "Hook — what caught you",
+    "hookPlaceholder": "“They think I'm incompetent”",
+    "directionLabel": "Which way did the behaviour go?",
+    "away": "AWAY",
+    "toward": "TOWARD",
+    "awaySummary": "Relief now, narrower life later",
+    "towardSummary": "Uncomfortable, but workable",
+    "unpickedNote": "Neither is the moral option. Pick the one the behaviour actually went.",
+    "towardNote": "Toward logged. Note the discomfort didn't have to drop first — that's the whole test.",
+    "awayNote": "Away logged without a verdict. The useful question is “toward what was it working?”, not “was that bad?”",
+    "scaleLabel": "A tipping scale showing Away and Toward around the choice point",
+    "choicePoint": "CHOICE POINT",
+    "statusLabel": "Status effect — where you got stuck",
+    "skillLabel": "Skill you reached for",
+    "valueLabel": "Value in play — who you wanted to be",
+    "valuePlaceholder": "Honest, even when it's awkward",
+    "towardMoveLabel": "Toward Move you made",
+    "towardMovePlaceholder": "Asked one clarifying question instead of leaving",
+    "awayMoveLabel": "Away Move you made",
+    "awayMovePlaceholder": "Went quiet instead of asking",
+    "workableLabel": "What turned out workable",
+    "workablePlaceholder": "Naming the story out loud dropped its grip",
+    "flexibilityTitle": "Flexibility check",
+    "flexibilityHint": "0–2 each. 10/10 is not the goal — the pattern over weeks is.",
+    "save": "Save episode",
+    "saving": "Saving…",
+    "saveError": "The episode couldn't be saved. Please try again."
+  },
   "locale": {
     "label": "Language",
     "en": "English",
