@@ -3,7 +3,7 @@
 ## Implementation steps — checklist
 
 **Phase 1 — Core practice loop (MVP)**
-- [ ] **Step 0** — Add shadcn primitives (`select`, `dialog`, `tabs`, `tooltip`, `popover`) via CLI; wire Google fonts (Inter, Newsreader, JetBrains Mono)
+- [x] **Step 0** — Add shadcn primitives (`select`, `dialog`, `tabs`, `tooltip`, `popover`) via CLI; wire Google fonts (Inter, Newsreader, JetBrains Mono)
 - [ ] **Step 1** — Design tokens: add page bg + toward/away/aware/alert tokens to `globals.css` (light + dark), font CSS vars, radii
 - [ ] **Step 2** — DB migration `0003_act_tables.sql`: `episodes` + `day_entries` with RLS **and `act_app` GRANTs**; run `db:migrate`
 - [ ] **Step 2.5** — i18n scaffold: install `next-intl`, message catalog with `en` (verbatim design copy) + stubbed `ru`, locale from `user_settings` (cookie fallback); all UI strings go through the catalog from the start
