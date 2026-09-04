@@ -41,6 +41,19 @@ export async function getDayEntry(day: string): Promise<DayEntry | null> {
   });
 }
 
+/** Lists every day entry owned by the current user, newest-first. */
+export async function listDayEntries(): Promise<DayEntry[]> {
+  return withCurrentUserDb(async (client) => {
+    const result = await client.query<DayEntryRow>(
+      `SELECT user_id, day, morning, evening
+         FROM day_entries
+        ORDER BY day DESC`,
+    );
+
+    return result.rows.map(mapDayEntry);
+  });
+}
+
 /**
  * Creates or updates a day entry. Only supplied halves are changed, and partial
  * fields are merged so saving morning data never erases evening data (or vice versa).

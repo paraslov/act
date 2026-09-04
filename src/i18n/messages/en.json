@@ -117,6 +117,53 @@
     }
   },
   "journal": {
+    "title": "Journal",
+    "eyebrow": "One day at a time",
+    "intro": "Everything a single day held: what you set out to do, what caught you and when, and what you made of it by evening.",
+    "rangeLabel": "Journal range",
+    "range7": "7 days",
+    "range30": "30 days",
+    "rangeAll": "All",
+    "jump": "Jump to a date",
+    "dayListLabel": "Days in journal range",
+    "dayMeta": "{toward}↑ {away}↓",
+    "notesOnly": "notes only",
+    "empty": "empty",
+    "lastSeven": "Last 7 days",
+    "weekSummary": "{toward} toward · {away} away",
+    "nothingLogged": "nothing logged",
+    "columns": {
+      "day": "Day",
+      "direction": "Tw · Aw",
+      "shape": "Shape",
+      "effect": "Top effect",
+      "logged": "Logged"
+    },
+    "counts": "{toward} · {away}",
+    "daySummary": "{toward} toward · {away} away",
+    "stripHint": "Above the line: toward moves. Below: away moves — sized by how much the day bent around them. Click a marker.",
+    "markerTitle": "{band} · {direction} · {hook}",
+    "toward": "Toward",
+    "away": "Away",
+    "notWritten": "— not written",
+    "morning": {
+      "title": "Morning",
+      "open": "Open",
+      "aware": "Aware",
+      "engaged": "Engaged",
+      "toward": "Toward move planned"
+    },
+    "evening": {
+      "title": "Evening",
+      "hook": "Where it caught me",
+      "away": "Away move",
+      "flex": "Flexibility showed up",
+      "next": "Next time"
+    },
+    "episodesTitle": "Episodes this day",
+    "episodeCount": "{count, plural, one {# episode} other {# episodes}}",
+    "score": "{score}/10",
+    "noEpisodes": "No episodes logged for this day.",
     "addEpisode": "Add an episode to this day"
   },
   "episodeModal": {

@@ -13,7 +13,7 @@
 - [x] **Step 6** — New-episode modal (shadcn `dialog`): all fields, tipping-scale SVG, flexibility check, opens from 3 places
 - [x] **Step 7** — Today view (`/`): header, alert frame, morning card (Save buttons + "Saved ✓"), Today-so-far dark card, evening card
 - [x] **Step 8** — Episodes view (`/episodes`): filter bar (URL state), episode cards, empty state
-- [ ] **Step 9** — Journal view (`/journal`): range/jump, day list, last-7 table, day-strip SVG, selected-episode + morning/evening + episodes-this-day (URL state)
+- [x] **Step 9** — Journal view (`/journal`): range/jump, day list, last-7 table, day-strip SVG, selected-episode + morning/evening + episodes-this-day (URL state)
 
 **Phase 2 — Progress**
 - [ ] **Step 10** — Progress view (`/progress`): toward/away split + by-band chart, flexibility radar SVG, status effects, recurring hooks, skill usage, boss-test grid
