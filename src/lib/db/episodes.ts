@@ -9,6 +9,7 @@ import type {
   EpisodeFilters,
 } from "@/lib/act/types";
 import { withCurrentUserDb } from "@/lib/db/user-context";
+import { postgresDateValue } from "@/lib/db/values";
 
 type EpisodeRow = {
   id: string;
@@ -51,13 +52,6 @@ const episodeColumns = `
   state, skill, value, move, workable, checks, created_at, updated_at
 `;
 
-function dateValue(value: string | Date): string {
-  if (value instanceof Date) {
-    return value.toISOString().slice(0, 10);
-  }
-  return value;
-}
-
 function timestampValue(value: string | Date): string {
   return value instanceof Date ? value.toISOString() : value;
 }
@@ -66,7 +60,7 @@ function mapEpisode(row: EpisodeRow): Episode {
   return {
     id: row.id,
     userId: row.user_id,
-    day: dateValue(row.day),
+    day: postgresDateValue(row.day),
     band: row.band,
     dir: row.dir,
     weight: row.weight,

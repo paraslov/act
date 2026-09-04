@@ -2,6 +2,7 @@ import "server-only";
 
 import type { DayEntry, DayEvening, DayMorning } from "@/lib/act/types";
 import { withCurrentUserDb } from "@/lib/db/user-context";
+import { postgresDateValue } from "@/lib/db/values";
 
 type DayEntryRow = {
   user_id: string;
@@ -15,17 +16,10 @@ export type DayEntryPatch = {
   evening?: DayEvening;
 };
 
-function dateValue(value: string | Date): string {
-  if (value instanceof Date) {
-    return value.toISOString().slice(0, 10);
-  }
-  return value;
-}
-
 function mapDayEntry(row: DayEntryRow): DayEntry {
   return {
     userId: row.user_id,
-    day: dateValue(row.day),
+    day: postgresDateValue(row.day),
     morning: row.morning ?? {},
     evening: row.evening ?? {},
   };
