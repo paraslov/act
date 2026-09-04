@@ -99,6 +99,16 @@ export async function listEpisodes(
   });
 }
 
+/** Returns the total number of episodes owned by the current user. */
+export async function countEpisodes(): Promise<number> {
+  return withCurrentUserDb(async (client) => {
+    const result = await client.query<{ count: number }>(
+      "SELECT count(*)::integer AS count FROM episodes",
+    );
+    return result.rows[0]?.count ?? 0;
+  });
+}
+
 /** Lists the current user's episodes for one calendar day, newest-first. */
 export async function getEpisodesForDay(day: string): Promise<Episode[]> {
   return withCurrentUserDb(async (client) => {

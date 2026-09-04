@@ -1,16 +1,20 @@
 import type { ReactNode } from "react";
 import { requireCurrentUser } from "@/auth/session";
-import { Navigation } from "@/components/navigation";
+import { AppSidebar } from "@/components/app-sidebar";
+import { countEpisodes } from "@/lib/db/episodes";
 
 export default async function ProtectedLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
   const user = await requireCurrentUser();
+  const episodeCount = await countEpisodes();
 
   return (
-    <>
-      <Navigation user={user} />
-      {children}
-    </>
+    <div className="min-h-screen bg-page min-[900px]:flex min-[900px]:items-stretch">
+      <AppSidebar user={user} episodeCount={episodeCount} />
+      <main className="min-w-0 flex-1 px-5 pt-6 pb-16 min-[900px]:max-w-[1220px] min-[900px]:px-8 min-[900px]:pt-7">
+        {children}
+      </main>
+    </div>
   );
 }

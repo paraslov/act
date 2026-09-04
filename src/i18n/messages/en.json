@@ -17,7 +17,18 @@
     "flexibility": "Flexibility",
     "loop": "The loop",
     "vault": "Vault",
+    "practice": "Practice",
+    "masterStat": "Master stat",
+    "masterStatLine1": "Psychological",
+    "masterStatLine2": "Flexibility",
+    "masterStatDescription": "Everything else here is a way to train it. Read the page →",
+    "streak": "Streak",
+    "days": "days",
+    "toggleTheme": "Toggle theme",
     "streakUnit": "days with a Toward Move made while uncomfortable"
+  },
+  "placeholder": {
+    "description": "This view is ready for its screen implementation in the next build step."
   },
   "today": {
     "intro": "Three intentions in the morning, a review in the evening. Episodes get written whenever you have a minute — they don't need to be filled mid-situation.",

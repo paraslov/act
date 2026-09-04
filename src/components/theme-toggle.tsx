@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 
-export function ThemeToggle() {
+export function ThemeToggle({ ariaLabel }: { ariaLabel: string }) {
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme, setTheme } = useTheme();
 
@@ -16,7 +16,8 @@ export function ThemeToggle() {
       type="button"
       variant="outline"
       size="icon"
-      aria-label="Toggle theme"
+      aria-label={ariaLabel}
+      title={ariaLabel}
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       disabled={!mounted}
     >
