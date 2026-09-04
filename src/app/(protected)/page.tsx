@@ -1,13 +1,25 @@
-import { getTranslations } from "next-intl/server";
-import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
-import { PagePlaceholder } from "@/components/page-placeholder";
+import { TodayView } from "@/components/today/today-view";
+import { formatDayMono, todayId } from "@/lib/act/date";
+import { dayNumber } from "@/lib/act/derive";
+import { getDayEntry } from "@/lib/db/day-entries";
+import { listEpisodes } from "@/lib/db/episodes";
 
 export default async function HomePage() {
-  const t = await getTranslations("today.soFar");
+  const today = todayId();
+  const [entry, allEpisodes] = await Promise.all([
+    getDayEntry(today),
+    listEpisodes(),
+  ]);
+  const episodes = allEpisodes.filter((episode) => episode.day === today);
+
   return (
-    <PagePlaceholder
-      title="today"
-      action={<NewEpisodeTrigger>{t("writeEpisode")}</NewEpisodeTrigger>}
+    <TodayView
+      day={today}
+      dayLabel={formatDayMono(today)}
+      practiceDay={dayNumber(allEpisodes, today)}
+      morning={entry?.morning ?? {}}
+      evening={entry?.evening ?? {}}
+      episodes={episodes}
     />
   );
 }
