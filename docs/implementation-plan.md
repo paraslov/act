@@ -16,7 +16,7 @@
 - [x] **Step 9** — Journal view (`/journal`): range/jump, day list, last-7 table, day-strip SVG, selected-episode + morning/evening + episodes-this-day (URL state)
 
 **Phase 2 — Progress**
-- [ ] **Step 10** — Progress view (`/progress`): toward/away split + by-band chart, flexibility radar SVG, status effects, recurring hooks, skill usage, boss-test grid
+- [x] **Step 10** — Progress view (`/progress`): toward/away split + by-band chart, flexibility radar SVG, status effects, recurring hooks, skill usage, boss-test grid
 
 **Phase 3 — Reference (static)**
 - [ ] **Step 11** — Reference constants (LOOP_REF, LIB, FLEX_PILLARS/MYTHS/GROWTH) + `/reference/flexibility`, `/reference/loop`, `/reference/vault`

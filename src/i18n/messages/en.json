@@ -36,7 +36,7 @@
     "intro": "Three intentions in the morning, a review in the evening. Episodes get written whenever you have a minute — they don't need to be filled mid-situation.",
     "alert": {
       "label": "The only test that matters",
-      "question": "When the discomfort came — did I make a workable Toward Move, even though it was hard?"
+      "question": "When the autopilot happens — did I notice it and make a workable Toward Move?"
     },
     "morning": {
       "heading": "Morning set-up",
@@ -165,6 +165,51 @@
     "score": "{score}/10",
     "noEpisodes": "No episodes logged for this day.",
     "addEpisode": "Add an episode to this day"
+  },
+  "progress": {
+    "title": "Progress",
+    "intro": "Not less anxiety — those are pleasant side effects. What is tracked here: discomfort present <em>and</em> behaviour still going where you chose.",
+    "split": {
+      "title": "Toward / Away",
+      "description": "Across {count, plural, one {# episode} other {# episodes}}. Away moves are data, not verdicts — they show where the price is being paid.",
+      "toward": "Toward · {percent}%",
+      "away": "Away · {percent}%",
+      "riskiest": "Riskiest window",
+      "byTime": "By time of day",
+      "bandTitle": "{band} — {toward} toward, {away} away"
+    },
+    "radar": {
+      "title": "Flexibility shape",
+      "description": "Five axes averaged across your episodes. Recent set against the previous one — the shape matters, not the area.",
+      "imageTitle": "Flexibility shape",
+      "imageDescription": "Recent five episodes compared with the previous five across five axes."
+    },
+    "status": {
+      "title": "Status effects",
+      "description": "Which process keeps catching you, how often, and what the counter-move is."
+    },
+    "countShare": "{count}× · {percent}%",
+    "count": "{count}×",
+    "hooks": {
+      "title": "Hooks that keep catching you",
+      "description": "Named repeat offenders. Naming already loosens fusion a little."
+    },
+    "skills": {
+      "title": "Skills you actually reach for",
+      "description": "Six skills, not thirty techniques. A flat bar is a hint about next week — not a failure.",
+      "untouched": "Untouched this month: {skills}. Pick one and give it a week — two techniques, no more.",
+      "allUsed": "All six in circulation. Next week, deepen rather than broaden."
+    },
+    "boss": {
+      "eyebrow": "Boss test",
+      "summary": "Of {total} hard moments logged, you moved toward your values in {toward}.",
+      "cellTitle": "{day} {band} — {direction}",
+      "caption": "This is a self-observation heuristic, not a validated scale. Use it to spot patterns — never as evidence in a case against yourself."
+    },
+    "direction": {
+      "toward": "toward",
+      "away": "away"
+    }
   },
   "episodeModal": {
     "title": "New episode",
