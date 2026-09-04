@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/components/page-placeholder";
+import { FlexibilityView } from "@/components/reference/flexibility-view";
 
 export default function FlexibilityPage() {
-  return <PagePlaceholder title="flexibility" />;
+  return <FlexibilityView />;
 }

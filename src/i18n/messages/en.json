@@ -211,6 +211,50 @@
       "away": "away"
     }
   },
+  "reference": {
+    "flexibility": {
+      "title": "Psychological flexibility",
+      "eyebrow": "Master stat · reference",
+      "lead": "Every other number in this app is a proxy for this one. It is not a mood, a trait or a score you win — it is a capacity: how much room there is between a hook and what you do next, and whether that room gets used for something you actually care about.",
+      "definitionLabel": "The definition worth memorising",
+      "definition": "Contacting the present moment fully — thoughts, feelings and sensations included — and, depending on what the situation affords, persisting in or changing behaviour in the service of chosen values.",
+      "definitionNote": "Both halves are load-bearing. Contact without direction is meditation; direction without contact is white-knuckling.",
+      "pillarsLabel": "Three pillars, six processes",
+      "failsAs": "Fails as",
+      "mythsTitle": "What it is not",
+      "growthTitle": "How it actually grows",
+      "growthSubtitle": "Three rules, in order of how often they get broken.",
+      "growthLinks": "The mechanics of each move live in <loop>The loop</loop>; the reps get recorded in <episodes>Episodes</episodes>.",
+      "checkTitle": "How this app reads it",
+      "checkScale": "0–2 × 5 per episode",
+      "checkIntro": "Five questions, asked about one concrete episode rather than about you. The shape across the five matters; the total does not.",
+      "evidence": "Evidence: the flexibility model itself is well supported <a>(a)</a>; this five-axis check is a personal heuristic <c>(c)</c>, not a validated instrument. Use it to spot patterns, never as evidence in a case against yourself."
+    },
+    "loop": {
+      "title": "The loop",
+      "eyebrow": "Reference · nothing to fill in",
+      "intro": "The whole hexaflex folds into five operations you run in your head — 30 to 90 seconds, no app involved. This page exists to be re-read until the sequence is yours. Write the episode later, in <episodes>Episodes</episodes>.",
+      "trap": "Trap:",
+      "closingLabel": "If you only remember one thing",
+      "closing": "The hooks don't have to go away first. Notice, drop the rope, pick the direction, take one small step."
+    },
+    "vault": {
+      "title": "Vault",
+      "intro": "Depth on demand. Open a card when you want to refresh the mechanics — none of this belongs in the daily surface.",
+      "tabsLabel": "Reference topics",
+      "coreMap": "Core map",
+      "concepts": "Concepts",
+      "skills": "Skills",
+      "basement": "Basement",
+      "openCard": "Open {title}",
+      "closeCard": "Close {title}",
+      "inShort": "In short",
+      "inPractice": "In practice",
+      "example": "Example",
+      "deeper": "Deeper",
+      "legend": "Evidence tags: <a>(a)</a> well replicated · <b>(b)</b> plausible, mixed data · <c>(c)</c> speculative / for self-observation. Scored self-checks in this app are personal heuristics (c), not diagnostic instruments."
+    }
+  },
   "episodeModal": {
     "title": "New episode",
     "subtitle": "Written after the fact. Under a minute.",

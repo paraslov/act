@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/components/page-placeholder";
+import { LoopView } from "@/components/reference/loop-view";
 
 export default function LoopPage() {
-  return <PagePlaceholder title="loop" />;
+  return <LoopView />;
 }

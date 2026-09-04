@@ -19,7 +19,7 @@
 - [x] **Step 10** — Progress view (`/progress`): toward/away split + by-band chart, flexibility radar SVG, status effects, recurring hooks, skill usage, boss-test grid
 
 **Phase 3 — Reference (static)**
-- [ ] **Step 11** — Reference constants (LOOP_REF, LIB, FLEX_PILLARS/MYTHS/GROWTH) + `/reference/flexibility`, `/reference/loop`, `/reference/vault`
+- [x] **Step 11** — Reference constants (LOOP_REF, LIB, FLEX_PILLARS/MYTHS/GROWTH) + `/reference/flexibility`, `/reference/loop`, `/reference/vault`
 
 **Cross-cutting**
 - [ ] **Step 12** — Compute real streak + "day N"; wire sidebar Episodes count

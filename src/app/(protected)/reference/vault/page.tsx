@@ -1,5 +1,5 @@
-import { PagePlaceholder } from "@/components/page-placeholder";
+import { VaultView } from "@/components/reference/vault-view";
 
 export default function VaultPage() {
-  return <PagePlaceholder title="vault" />;
+  return <VaultView />;
 }
