@@ -95,7 +95,7 @@ as `DATABASE_URL`, plus `AUTH_THROTTLE_SECRET`; do not expose
 
 ## CI and deployment
 
-Use Node.js 22 (`.node-version`) and the pinned pnpm version in `package.json`.
+Use Node.js 24 (`.node-version`) and the pinned pnpm version in `package.json`.
 Run `pnpm check` for lint, type checking, and unit tests; `pnpm build` verifies
 production compilation. GitHub Actions also validates migrations and PostgreSQL
 row-level security in an isolated database.

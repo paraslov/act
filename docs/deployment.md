@@ -3,7 +3,7 @@
 ## Continuous integration
 
 `.github/workflows/ci.yml` runs on pull requests, pushes to `main`, and manual
-workflow runs. It installs the locked pnpm dependencies on Node.js 22 and runs:
+workflow runs. It installs the locked pnpm dependencies on Node.js 24 and runs:
 
 - Biome lint and formatting checks, Next.js route type generation, TypeScript,
   all unit tests, and a production build.
@@ -46,7 +46,7 @@ operator shell before merging the corresponding application change.
 ## Connect Vercel
 
 1. Import this GitHub repository into Vercel. Select Next.js, repository root
-   (`.`), Node.js 22.x, and production branch `main`.
+   (`.`), Node.js 24.x, and production branch `main`.
 2. Add these environment variables separately for Production and Preview:
 
    | Variable | Value |
