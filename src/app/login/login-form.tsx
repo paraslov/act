@@ -1,6 +1,7 @@
 "use client";
 
 import { Loader2, LogIn } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { type LoginState, login } from "@/actions/auth";
 import { Button } from "@/components/ui/button";
@@ -10,12 +11,13 @@ import { Label } from "@/components/ui/label";
 const initialState: LoginState = {};
 
 export function LoginForm() {
+  const t = useTranslations("login");
   const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
     <form action={formAction} className="space-y-5">
       <div className="space-y-2">
-        <Label htmlFor="email">Email</Label>
+        <Label htmlFor="email">{t("email")}</Label>
         <Input
           id="email"
           name="email"
@@ -29,7 +31,7 @@ export function LoginForm() {
       </div>
 
       <div className="space-y-2">
-        <Label htmlFor="password">Password</Label>
+        <Label htmlFor="password">{t("password")}</Label>
         <Input
           id="password"
           name="password"
@@ -42,7 +44,7 @@ export function LoginForm() {
 
       {state.error ? (
         <p className="text-sm text-destructive" role="alert">
-          {state.error}
+          {t(state.error)}
         </p>
       ) : null}
 
@@ -52,7 +54,7 @@ export function LoginForm() {
         ) : (
           <LogIn className="size-4" />
         )}
-        {pending ? "Signing in…" : "Sign in"}
+        {pending ? t("pending") : t("submit")}
       </Button>
     </form>
   );

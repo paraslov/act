@@ -198,6 +198,7 @@ export function unusedSkills(episodes: Episode[]): string[] {
 }
 
 export type HookTally = {
+  id: string;
   label: string;
   type: string;
   count: number;
@@ -214,6 +215,7 @@ export function hookGroupTallies(episodes: Episode[]): HookTally[] {
       ),
     ).length;
     return {
+      id: group.id,
       label: group.label,
       type: group.type,
       count,

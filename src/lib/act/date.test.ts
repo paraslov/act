@@ -35,6 +35,13 @@ describe("date helpers", () => {
     expect(formatDayTitle("2026-09-01")).toBe("Tuesday, 1 September");
   });
 
+  it("uses Russian weekdays and inflected month names without shifting the day", () => {
+    expect(formatDayLabel("2026-09-01", "ru")).toBe("вт, 1 сент.");
+    expect(formatDayMono("2026-09-01", "ru")).toBe("ВТ, 1 СЕНТ.");
+    expect(formatDayTitle("2026-09-01", "ru")).toBe("вторник, 1 сентября");
+    expect(formatDayTitle("2026-01-01", "ru")).toBe("четверг, 1 января");
+  });
+
   it("returns today as a YYYY-MM-DD id", () => {
     expect(todayId()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
   });

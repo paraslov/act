@@ -30,7 +30,7 @@ type AccountRow = {
 };
 
 export type LoginState = {
-  error?: string;
+  error?: "invalidInput" | "invalidCredentials";
 };
 
 export async function login(
@@ -43,7 +43,7 @@ export async function login(
   });
 
   if (!parsed.success) {
-    return { error: "Enter a valid email and password." };
+    return { error: "invalidInput" };
   }
 
   const email = parsed.data.email;
@@ -59,7 +59,7 @@ export async function login(
   const activeAccountExists = Boolean(account?.is_active);
 
   if (await isLoginBlocked(email, source, activeAccountExists)) {
-    return { error: "Email or password is incorrect." };
+    return { error: "invalidCredentials" };
   }
 
   // Run the same expensive operation even when the account does not exist.
@@ -72,7 +72,7 @@ export async function login(
 
   if (!account || !account.is_active || !passwordMatches) {
     await recordLoginFailure(email, source, activeAccountExists);
-    return { error: "Email or password is incorrect." };
+    return { error: "invalidCredentials" };
   }
 
   await query(

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useMemo, useState, useTransition } from "react";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
 import { Button } from "@/components/ui/button";
@@ -20,8 +20,6 @@ import {
   type SkillId,
   STATES,
   type StateId,
-  skillLabel,
-  stateLabel,
 } from "@/lib/act/constants";
 import { formatDayLabel } from "@/lib/act/date";
 import { checksTotal, filterEpisodes } from "@/lib/act/derive";
@@ -122,6 +120,7 @@ function FilterBar({
   pending: boolean;
 }) {
   const t = useTranslations("episodes.filters");
+  const act = useTranslations("act");
 
   function patch(next: Partial<ViewFilters>) {
     onChange({ ...filters, ...next });
@@ -152,7 +151,7 @@ function FilterBar({
           <SelectItem value="all">{t("anyStatus")}</SelectItem>
           {STATES.map((state) => (
             <SelectItem key={state.id} value={state.id}>
-              {state.label}
+              {act(`states.${state.id}.label`)}
             </SelectItem>
           ))}
         </SelectContent>
@@ -175,7 +174,7 @@ function FilterBar({
           <SelectItem value="all">{t("anySkill")}</SelectItem>
           {SKILLS.map((skill) => (
             <SelectItem key={skill.id} value={skill.id}>
-              {skill.label}
+              {act(`skills.${skill.id}.label`)}
             </SelectItem>
           ))}
         </SelectContent>
@@ -232,6 +231,8 @@ function FilterBar({
 
 function EpisodeCard({ episode }: { episode: Episode }) {
   const t = useTranslations("episodes.card");
+  const act = useTranslations("act");
+  const locale = useLocale();
   const directionLabel = episode.dir === "toward" ? t("toward") : t("away");
   const moveLabel = episode.dir === "toward" ? t("towardMove") : t("awayMove");
 
@@ -240,7 +241,7 @@ function EpisodeCard({ episode }: { episode: Episode }) {
       <div className="mb-2.5 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-[9px]">
           <span className="font-mono text-[11px] text-muted-foreground">
-            {formatDayLabel(episode.day)}
+            {formatDayLabel(episode.day, locale)}
           </span>
           <span className="font-mono text-[11px] text-muted-foreground/75">
             {BANDS[episode.band]}
@@ -274,10 +275,10 @@ function EpisodeCard({ episode }: { episode: Episode }) {
 
       <div className="mb-3 flex flex-wrap gap-2">
         <span className="rounded-chip border border-away-border bg-away-tint px-[9px] py-1 text-xs text-away">
-          {stateLabel(episode.state)}
+          {act(`states.${episode.state}.label`)}
         </span>
         <span className="rounded-chip border border-toward-border bg-toward-tint px-[9px] py-1 text-xs text-toward">
-          {skillLabel(episode.skill)}
+          {act(`skills.${episode.skill}.label`)}
         </span>
         <span className="rounded-chip border bg-muted/70 px-[9px] py-1 text-xs text-foreground/75">
           {episode.value}
@@ -290,7 +291,7 @@ function EpisodeCard({ episode }: { episode: Episode }) {
           return (
             <span
               key={axis.id}
-              title={axis.label}
+              title={act(`axes.${axis.id}.label`)}
               className="block h-[5px] flex-1 overflow-hidden rounded-full bg-muted"
             >
               <span

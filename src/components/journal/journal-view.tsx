@@ -1,10 +1,10 @@
 "use client";
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useTransition } from "react";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
-import { BANDS, stateLabel } from "@/lib/act/constants";
+import { BANDS } from "@/lib/act/constants";
 import {
   daysBetween,
   formatDayLabel,
@@ -181,6 +181,7 @@ function DayStrip({
 }
 
 function SelectedEpisodeCard({ episode }: { episode: Episode }) {
+  const act = useTranslations("act");
   const t = useTranslations("journal");
 
   return (
@@ -205,7 +206,7 @@ function SelectedEpisodeCard({ episode }: { episode: Episode }) {
           {BANDS[episode.band]}
         </span>
         <span className="rounded-chip border bg-card px-2 py-[3px] text-[11.5px] text-foreground/70">
-          {stateLabel(episode.state)}
+          {act(`states.${episode.state}.label`)}
         </span>
       </div>
       <p className="mb-1 font-serif text-[19px] leading-[1.35] tracking-[-0.01em]">
@@ -268,6 +269,8 @@ export function JournalView({
   dayEntries,
 }: JournalViewProps) {
   const t = useTranslations("journal");
+  const act = useTranslations("act");
+  const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -420,7 +423,7 @@ export function JournalView({
                 >
                   <span className="flex items-center justify-between gap-2">
                     <span className="text-[13.5px] font-medium">
-                      {formatDayLabel(day)}
+                      {formatDayLabel(day, locale)}
                     </span>
                     <span className="flex gap-[3px]" aria-hidden="true">
                       {dayEpisodes.slice(0, 6).map((episode) => (
@@ -500,7 +503,7 @@ export function JournalView({
                           day === today && "font-semibold",
                         )}
                       >
-                        {formatDayLabel(day)}
+                        {formatDayLabel(day, locale)}
                       </span>
                       <span className="font-mono text-xs">
                         {dayEpisodes.length
@@ -528,7 +531,7 @@ export function JournalView({
                         ))}
                       </span>
                       <span className="truncate text-[11.5px] text-foreground/65">
-                        {topEffect ? stateLabel(topEffect) : "—"}
+                        {topEffect ? act(`states.${topEffect}.label`) : "—"}
                       </span>
                       <span className="text-right font-mono text-[10.5px] tracking-[0.1em] text-muted-foreground">
                         {morningLogged ? "M" : "·"} {eveningLogged ? "E" : "·"}
@@ -543,7 +546,7 @@ export function JournalView({
           <section className="rounded-card border bg-card px-6 py-[22px]">
             <div className="mb-1 flex flex-wrap items-baseline justify-between gap-3">
               <h2 className="font-serif text-[26px] tracking-[-0.015em]">
-                {formatDayTitle(selectedDay)}
+                {formatDayTitle(selectedDay, locale)}
               </h2>
               <span className="font-mono text-[11px] tracking-[0.1em] text-muted-foreground uppercase">
                 {t("daySummary", {
@@ -642,7 +645,7 @@ export function JournalView({
                         {t(episode.dir)}
                       </span>
                       <span className="text-[11.5px] text-foreground/65">
-                        {stateLabel(episode.state)}
+                        {act(`states.${episode.state}.label`)}
                       </span>
                       <span className="ml-auto font-mono text-[10.5px] text-muted-foreground">
                         {t("score", { score: checksTotal(episode.checks) })}

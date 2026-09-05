@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { AXES, BANDS } from "@/lib/act/constants";
 import { formatDayLabel } from "@/lib/act/date";
 import {
@@ -8,7 +8,6 @@ import {
   skillTallies,
   statusEffectTallies,
   towardAwaySplit,
-  unusedSkills,
 } from "@/lib/act/derive";
 import type { Episode } from "@/lib/act/types";
 import { cn } from "@/lib/utils";
@@ -42,7 +41,7 @@ function radarPolygon(values: number[], radius = RADAR_RADIUS): string {
     .join(" ");
 }
 
-function Radar({
+async function Radar({
   episodes,
   title,
   description,
@@ -51,17 +50,18 @@ function Radar({
   title: string;
   description: string;
 }) {
+  const act = await getTranslations("act");
   const comparison = radarComparison(episodes);
   const rings = [1, 0.66, 0.33];
 
   return (
     <svg
-      width="300"
+      width="420"
       height="224"
-      viewBox="0 0 300 224"
+      viewBox="-60 0 420 224"
       role="img"
       aria-labelledby="flexibility-radar-title flexibility-radar-description"
-      className="h-auto w-full max-w-[300px] shrink-0"
+      className="h-auto w-full max-w-[420px] shrink-0"
     >
       <title id="flexibility-radar-title">{title}</title>
       <desc id="flexibility-radar-description">{description}</desc>
@@ -107,7 +107,7 @@ function Radar({
             }
             className="fill-muted-foreground font-mono text-[9.5px] tracking-[0.08em]"
           >
-            {axis.label.toUpperCase()}
+            {act(`axes.${axis.id}.label`).toUpperCase()}
           </text>
         );
       })}
@@ -151,9 +151,9 @@ function CardHeading({
   );
 }
 
-function signedDelta(value: number): string {
-  if (Math.abs(value) < 0.05) return "±0.0";
-  return `${value > 0 ? "+" : "−"}${Math.abs(value).toFixed(1)}`;
+function signedDelta(value: number, formatter: Intl.NumberFormat): string {
+  if (Math.abs(value) < 0.05) return `±${formatter.format(0)}`;
+  return `${value > 0 ? "+" : "−"}${formatter.format(Math.abs(value))}`;
 }
 
 function chronological(episodes: Episode[]): Episode[] {
@@ -166,6 +166,12 @@ function chronological(episodes: Episode[]): Episode[] {
 
 export async function ProgressView({ episodes }: { episodes: Episode[] }) {
   const t = await getTranslations("progress");
+  const act = await getTranslations("act");
+  const locale = await getLocale();
+  const numberFormat = new Intl.NumberFormat(locale, {
+    minimumFractionDigits: 1,
+    maximumFractionDigits: 1,
+  });
   const split = towardAwaySplit(episodes);
   const towardPercent = percent(split.toward / Math.max(1, split.total));
   const awayPercent = split.total ? 100 - towardPercent : 0;
@@ -181,7 +187,9 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
   const maxHook = Math.max(1, ...hooks.map((hook) => hook.count));
   const skills = skillTallies(episodes);
   const maxSkill = Math.max(1, ...skills.map((skill) => skill.count));
-  const untouched = unusedSkills(episodes);
+  const untouched = skills
+    .filter((skill) => skill.count === 0)
+    .map((skill) => act(`skills.${skill.id}.label`));
   const bossCells = chronological(episodes);
 
   return (
@@ -293,16 +301,18 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
               {radar.map((axis) => (
                 <div key={axis.axis}>
                   <div className="mb-1 flex justify-between gap-3 text-[12.5px]">
-                    <span className="text-foreground/80">{axis.label}</span>
+                    <span className="text-foreground/80">
+                      {act(`axes.${axis.axis}.label`)}
+                    </span>
                     <span className="font-mono text-muted-foreground">
-                      {axis.recent.toFixed(1)}{" "}
+                      {numberFormat.format(axis.recent)}{" "}
                       <span
                         className={cn(
                           axis.delta > 0.05 && "text-toward",
                           axis.delta < -0.05 && "text-away",
                         )}
                       >
-                        {signedDelta(axis.delta)}
+                        {signedDelta(axis.delta, numberFormat)}
                       </span>
                     </span>
                   </div>
@@ -336,7 +346,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
                       state.count === 0 && "text-muted-foreground",
                     )}
                   >
-                    {state.label}
+                    {act(`states.${state.id}.label`)}
                   </span>
                   <span className="shrink-0 font-mono text-xs text-muted-foreground">
                     {t("countShare", {
@@ -355,7 +365,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
                   />
                 </span>
                 <p className="text-[12.5px] leading-[1.55] text-muted-foreground">
-                  {state.description}
+                  {act(`states.${state.id}.description`)}
                 </p>
               </div>
             ))}
@@ -370,13 +380,13 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
             />
             <div className="flex flex-col gap-3">
               {hooks.map((hook) => (
-                <div key={hook.label} className="flex items-center gap-3">
+                <div key={hook.id} className="flex items-center gap-3">
                   <span className="w-[30px] shrink-0 font-mono text-[15px] text-foreground/80">
                     {t("count", { count: hook.count })}
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="mb-[5px] text-[13.5px] text-foreground/85">
-                      {hook.label}
+                      {act(`hookGroups.${hook.id}.label`)}
                     </p>
                     <span className="block h-[7px] overflow-hidden rounded-full bg-muted">
                       <span
@@ -386,7 +396,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
                     </span>
                   </div>
                   <span className="shrink-0 font-mono text-[10px] tracking-[0.1em] text-muted-foreground uppercase">
-                    {hook.type}
+                    {act(`hookTypes.${hook.type}.label`)}
                   </span>
                 </div>
               ))}
@@ -401,8 +411,8 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
             <div className="flex flex-col gap-[11px]">
               {skills.map((skill) => (
                 <div key={skill.id} className="flex items-center gap-3">
-                  <span className="w-[118px] shrink-0 text-[13.5px] text-foreground/85">
-                    {skill.label}
+                  <span className="w-[150px] shrink-0 text-[13.5px] text-foreground/85">
+                    {act(`skills.${skill.id}.label`)}
                   </span>
                   <span className="block h-[9px] flex-1 overflow-hidden rounded-full bg-muted">
                     <span
@@ -441,7 +451,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
                 <span
                   key={episode.id}
                   title={t("boss.cellTitle", {
-                    day: formatDayLabel(episode.day),
+                    day: formatDayLabel(episode.day, locale),
                     band: BANDS[episode.band],
                     direction: t(`direction.${episode.dir}`),
                   })}

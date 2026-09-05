@@ -43,6 +43,17 @@ one transaction, and a reset revokes every existing session for that account.
 There is intentionally no signup page or signup API. Because the app does not
 yet use MFA, provisioned passwords must contain at least 15 characters.
 
+## Languages
+
+Choose English or Русский from the language selector on the sign-in screen or
+in the sidebar. Signed-in preferences are saved to your account and mirrored in
+a cookie; guests use the cookie. English is the default. Russian covers the main
+interface and reference content, with ACT terms such as Toward/Away retained.
+
+Message catalogs live in `src/i18n/messages`. Missing translations fall back to
+English; dates and plural forms follow the selected language. User-written notes
+and the IDs stored in PostgreSQL are unchanged by language selection.
+
 ## Authentication abuse protection
 
 Failed sign-ins are tracked in PostgreSQL so throttling is shared by every

@@ -16,6 +16,7 @@ const pillarColors = {
 
 export async function FlexibilityView() {
   const t = await getTranslations("reference.flexibility");
+  const act = await getTranslations("act");
 
   return (
     <div className="max-w-[900px]">
@@ -62,22 +63,22 @@ export async function FlexibilityView() {
               {pillar.key}
             </p>
             <h2 className="font-serif text-[22px] tracking-[-0.01em]">
-              {pillar.name}
+              {act(`pillars.${pillar.key}.name`)}
             </h2>
             <p className="mt-[3px] mb-3 text-xs text-muted-foreground">
-              {pillar.processes}
+              {act(`pillars.${pillar.key}.processes`)}
             </p>
             <p className="mb-3 text-[13.5px] leading-[1.6] text-foreground/85">
-              {pillar.body}
+              {act(`pillars.${pillar.key}.body`)}
             </p>
             <p className="mb-1 font-mono text-[9.5px] tracking-[0.14em] text-away uppercase">
               {t("failsAs")}
             </p>
             <p className="mb-3 text-[13px] leading-[1.55] text-foreground/70">
-              {pillar.fail}
+              {act(`pillars.${pillar.key}.fail`)}
             </p>
             <p className="border-t border-border/70 pt-3 font-serif text-base leading-[1.4] text-foreground/90">
-              {pillar.ask}
+              {act(`pillars.${pillar.key}.ask`)}
             </p>
           </section>
         ))}
@@ -89,13 +90,13 @@ export async function FlexibilityView() {
             {t("mythsTitle")}
           </h2>
           <div className="flex flex-col gap-[13px]">
-            {FLEX_MYTHS.map((myth) => (
+            {FLEX_MYTHS.map((myth, index) => (
               <div key={myth.title}>
                 <h3 className="mb-[3px] text-[13.5px] font-semibold">
-                  {myth.title}
+                  {act(`myths.${index}.title`)}
                 </h3>
                 <p className="text-[13px] leading-[1.6] text-foreground/70">
-                  {myth.body}
+                  {act(`myths.${index}.body`)}
                 </p>
               </div>
             ))}
@@ -117,10 +118,10 @@ export async function FlexibilityView() {
                 </span>
                 <div className="min-w-0 flex-1">
                   <h3 className="mb-[3px] text-[13.5px] font-semibold">
-                    {item.title}
+                    {act(`growth.${item.n}.title`)}
                   </h3>
                   <p className="text-[13px] leading-[1.6] text-foreground/70">
-                    {item.body}
+                    {act(`growth.${item.n}.body`)}
                   </p>
                 </div>
               </div>
@@ -164,11 +165,11 @@ export async function FlexibilityView() {
               key={axis.id}
               className="flex items-baseline gap-3.5 border-b border-border/50 pb-2.5 max-[560px]:flex-col max-[560px]:gap-1"
             >
-              <span className="w-[104px] shrink-0 font-mono text-[10.5px] tracking-[0.12em] text-toward uppercase">
-                {axis.label}
+              <span className="w-[140px] shrink-0 font-mono text-[10.5px] tracking-[0.12em] text-toward uppercase">
+                {act(`axes.${axis.id}.label`)}
               </span>
               <span className="min-w-0 flex-1 text-sm leading-[1.55] text-foreground/85">
-                {axis.prompt}
+                {act(`axes.${axis.id}.prompt`)}
               </span>
             </div>
           ))}

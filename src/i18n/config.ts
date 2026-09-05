@@ -3,8 +3,8 @@
  *
  * There is deliberately no `/[locale]` route segment: the active locale is
  * resolved per request from `user_settings.settings.locale`, falling back to a
- * cookie, then to `en`. RU ships as a stubbed catalog and falls back to EN key
- * by key until translated copy is reviewed.
+ * cookie, then to `en`. Both EN and RU ship complete catalogs; missing
+ * translations still fall back to EN key by key.
  */
 export const locales = ["en", "ru"] as const;
 

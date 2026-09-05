@@ -3,7 +3,7 @@
  * off that string, mirroring `dayRecord()`/`shiftId()` in the design prototype.
  *
  * Weekday and month names are never stored — they are derived from the date via
- * `Intl` so they stay correct and can become locale-aware later.
+ * `Intl` using the active display locale.
  *
  * Timezone: v1 uses a single fixed zone (`DEFAULT_TIMEZONE`) to decide which
  * calendar day "today" is. The per-user timezone will be stored in
@@ -58,18 +58,34 @@ function part(id: string, options: Intl.DateTimeFormatOptions): string {
 }
 
 /** "Tue 1 Sep" — short label used in lists. */
-export function formatDayLabel(id: string): string {
+export function formatDayLabel(id: string, locale = "en"): string {
+  if (locale === "ru") {
+    return new Intl.DateTimeFormat(locale, {
+      timeZone: "UTC",
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    }).format(idToDate(id));
+  }
   const d = idToDate(id);
   return `${part(id, { weekday: "short" })} ${d.getUTCDate()} ${part(id, { month: "short" })}`;
 }
 
 /** "TUE 1 SEP" — uppercase, for the mono header. */
-export function formatDayMono(id: string): string {
-  return formatDayLabel(id).toUpperCase();
+export function formatDayMono(id: string, locale = "en"): string {
+  return formatDayLabel(id, locale).toLocaleUpperCase(locale);
 }
 
 /** "Tuesday, 1 September" — long title. */
-export function formatDayTitle(id: string): string {
+export function formatDayTitle(id: string, locale = "en"): string {
+  if (locale === "ru") {
+    return new Intl.DateTimeFormat(locale, {
+      timeZone: "UTC",
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+    }).format(idToDate(id));
+  }
   const d = idToDate(id);
   return `${part(id, { weekday: "long" })}, ${d.getUTCDate()} ${part(id, { month: "long" })}`;
 }

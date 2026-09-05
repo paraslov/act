@@ -1,3 +1,4 @@
+import { getLocale } from "next-intl/server";
 import { TodayView } from "@/components/today/today-view";
 import { formatDayMono, todayId } from "@/lib/act/date";
 import { dayNumber } from "@/lib/act/derive";
@@ -5,6 +6,7 @@ import { getDayEntry } from "@/lib/db/day-entries";
 import { listEpisodes } from "@/lib/db/episodes";
 
 export default async function HomePage() {
+  const locale = await getLocale();
   const today = todayId();
   const [entry, allEpisodes] = await Promise.all([
     getDayEntry(today),
@@ -15,7 +17,7 @@ export default async function HomePage() {
   return (
     <TodayView
       day={today}
-      dayLabel={formatDayMono(today)}
+      dayLabel={formatDayMono(today, locale)}
       practiceDay={dayNumber(allEpisodes, today)}
       morning={entry?.morning ?? {}}
       evening={entry?.evening ?? {}}

@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import { z } from "zod";
+import { getCurrentUser } from "@/auth/session";
 import { LOCALE_COOKIE, locales } from "@/i18n/config";
 import { updateUserSettings } from "@/lib/db/user-settings";
 
@@ -10,12 +11,14 @@ const localeSchema = z.enum(locales);
 
 /**
  * Persists the chosen locale to `user_settings` and mirrors it in a cookie so it
- * is available before the settings row loads. Called by the sidebar locale switch.
+ * is available on the sign-in screen too. Guests only update their locale cookie.
  */
 export async function setLocaleAction(locale: string): Promise<void> {
   const parsed = localeSchema.parse(locale);
 
-  await updateUserSettings({ locale: parsed });
+  if (await getCurrentUser()) {
+    await updateUserSettings({ locale: parsed });
+  }
 
   (await cookies()).set(LOCALE_COOKIE, parsed, {
     httpOnly: false,

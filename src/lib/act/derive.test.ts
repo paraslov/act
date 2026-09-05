@@ -297,3 +297,28 @@ describe("streak & day number", () => {
     expect(dayNumber(eps, "2026-09-01")).toBe(4);
   });
 });
+
+describe("Russian episode text", () => {
+  it("searches Cyrillic case-insensitively and treats ё and е alike", () => {
+    const episodes = [
+      ep({ hook: "Всё уже испортил" }),
+      ep({ hook: "Другой эпизод" }),
+    ];
+    expect(filterEpisodes(episodes, { text: "ВСЕ" })).toEqual([episodes[0]]);
+  });
+
+  it("groups Russian and English hooks together without translating saved text", () => {
+    const episodes = [
+      ep({ hook: "Я не справляюсь" }),
+      ep({ hook: "I can't handle this" }),
+      ep({ hook: "Хочется закрыть ноутбук" }),
+    ];
+    expect(
+      hookGroupTallies(episodes).map(({ id, count }) => ({ id, count })),
+    ).toEqual([
+      { id: "0", count: 2 },
+      { id: "1", count: 1 },
+    ]);
+    expect(episodes[0].hook).toBe("Я не справляюсь");
+  });
+});

@@ -16,6 +16,7 @@ const tabKeys: Record<VaultCategory, string> = {
 
 export function VaultView() {
   const t = useTranslations("reference.vault");
+  const act = useTranslations("act.vault");
   const [openCard, setOpenCard] = useState<string | null>(
     "Psychological Flexibility",
   );
@@ -49,6 +50,7 @@ export function VaultView() {
           <TabsContent key={category} value={category} className="mt-0">
             <div className="flex flex-col gap-[9px]">
               {LIB[category].map((card, index) => {
+                const title = act(`${category}.${index}.t`);
                 const isOpen = openCard === card.t;
                 const panelId = `vault-${category.toLowerCase().replaceAll(" ", "-")}-${index}`;
 
@@ -64,15 +66,15 @@ export function VaultView() {
                         aria-controls={panelId}
                         aria-label={
                           isOpen
-                            ? t("closeCard", { title: card.t })
-                            : t("openCard", { title: card.t })
+                            ? t("closeCard", { title })
+                            : t("openCard", { title })
                         }
                         onClick={() => setOpenCard(isOpen ? null : card.t)}
                         className="flex w-full cursor-pointer items-center justify-between gap-3.5 bg-card px-5 py-[15px] text-left hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
                       >
                         <span className="flex flex-wrap items-baseline gap-2.5">
                           <span className="font-serif text-xl tracking-[-0.01em]">
-                            {card.t}
+                            {title}
                           </span>
                           <span className="rounded-[5px] border border-border/70 px-1.5 py-0.5 font-mono text-[10px] tracking-[0.12em] text-muted-foreground uppercase">
                             {card.ev}
@@ -93,10 +95,13 @@ export function VaultView() {
                         className="flex flex-col gap-3.5 px-5 pb-5"
                       >
                         {[
-                          [t("inShort"), card.short],
-                          [t("inPractice"), card.practice],
-                          [t("example"), card.example],
-                          [t("deeper"), card.deep],
+                          [t("inShort"), act(`${category}.${index}.short`)],
+                          [
+                            t("inPractice"),
+                            act(`${category}.${index}.practice`),
+                          ],
+                          [t("example"), act(`${category}.${index}.example`)],
+                          [t("deeper"), act(`${category}.${index}.deep`)],
                         ].map(([label, content]) => (
                           <div key={label}>
                             <h3 className="mb-1 font-mono text-[10px] tracking-[0.16em] text-toward uppercase">

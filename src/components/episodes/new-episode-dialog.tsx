@@ -209,6 +209,7 @@ export function NewEpisodeDialogProvider({
   children: ReactNode;
 }) {
   const t = useTranslations("episodeModal");
+  const act = useTranslations("act");
   const router = useRouter();
   const hookRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
@@ -376,7 +377,7 @@ export function NewEpisodeDialogProvider({
                           "border-primary bg-primary text-primary-foreground",
                       )}
                     >
-                      {type.label}
+                      {act(`hookTypes.${type.id}.label`)}
                     </button>
                   ))}
                 </span>
@@ -443,13 +444,13 @@ export function NewEpisodeDialogProvider({
                   <SelectContent position="popper">
                     {STATES.map((state) => (
                       <SelectItem key={state.id} value={state.id}>
-                        {state.label}
+                        {act(`states.${state.id}.label`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
                 <span className="mt-1.5 block text-[12.5px] leading-[1.45] text-muted-foreground">
-                  {selectedState.description}
+                  {act(`states.${selectedState.id}.description`)}
                 </span>
               </div>
 
@@ -470,7 +471,7 @@ export function NewEpisodeDialogProvider({
                   <SelectContent position="popper">
                     {SKILLS.map((skill) => (
                       <SelectItem key={skill.id} value={skill.id}>
-                        {skill.label}
+                        {act(`skills.${skill.id}.label`)}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -532,14 +533,14 @@ export function NewEpisodeDialogProvider({
                       className="flex items-center justify-between gap-2.5"
                     >
                       <span className="text-[13px] text-muted-foreground">
-                        {axis.prompt}
+                        {act(`axes.${axis.id}.prompt`)}
                       </span>
                       <span className="flex shrink-0 gap-1">
                         {([0, 1, 2] as const).map((value) => (
                           <button
                             key={value}
                             type="button"
-                            aria-label={`${axis.label}: ${value}`}
+                            aria-label={`${act(`axes.${axis.id}.label`)}: ${value}`}
                             aria-pressed={form.checks[axis.id] === value}
                             onClick={() =>
                               setField("checks", {

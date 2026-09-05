@@ -2,15 +2,13 @@
 
 import { LogOut } from "lucide-react";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useLocale, useTranslations } from "next-intl";
-import { useTransition } from "react";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { logout } from "@/actions/auth";
-import { setLocaleAction } from "@/actions/settings";
 import type { CurrentUser } from "@/auth/session";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
-import { type Locale, locales } from "@/i18n/config";
 import { cn } from "@/lib/utils";
 
 type NavItem = {
@@ -99,17 +97,7 @@ export function AppSidebar({
   episodeCount: number;
   streak: number;
 }) {
-  const locale = useLocale() as Locale;
-  const router = useRouter();
   const t = useTranslations();
-  const [isLocalePending, startLocaleTransition] = useTransition();
-
-  function changeLocale(nextLocale: Locale) {
-    startLocaleTransition(async () => {
-      await setLocaleAction(nextLocale);
-      router.refresh();
-    });
-  }
 
   return (
     <aside className="grid w-full shrink-0 grid-cols-[auto_minmax(0,1fr)] gap-x-4 border-b bg-background px-4 py-3 min-[900px]:sticky min-[900px]:top-0 min-[900px]:flex min-[900px]:h-screen min-[900px]:w-[236px] min-[900px]:flex-col min-[900px]:overflow-y-auto min-[900px]:border-r min-[900px]:border-b-0 min-[900px]:px-3.5 min-[900px]:py-5">
@@ -177,22 +165,7 @@ export function AppSidebar({
         <span className="mr-auto hidden min-w-0 truncate text-xs text-muted-foreground min-[900px]:block">
           {user.email}
         </span>
-        <label className="sr-only" htmlFor="app-locale">
-          {t("locale.label")}
-        </label>
-        <select
-          id="app-locale"
-          value={locale}
-          disabled={isLocalePending}
-          onChange={(event) => changeLocale(event.target.value as Locale)}
-          className="h-9 cursor-pointer rounded-button border bg-background px-2 font-mono text-[10px] uppercase outline-none focus-visible:ring-3 focus-visible:ring-ring/50 disabled:opacity-50"
-        >
-          {locales.map((item) => (
-            <option key={item} value={item}>
-              {t(`locale.${item}`)}
-            </option>
-          ))}
-        </select>
+        <LocaleSwitcher />
         <ThemeToggle ariaLabel={t("nav.toggleTheme")} />
         <form action={logout}>
           <Button

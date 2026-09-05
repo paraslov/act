@@ -4,6 +4,7 @@ import { LOOP_REF } from "@/lib/act/constants";
 
 export async function LoopView() {
   const t = await getTranslations("reference.loop");
+  const act = await getTranslations("act.loop");
 
   return (
     <div className="max-w-[900px]">
@@ -38,20 +39,21 @@ export async function LoopView() {
               <div className="min-w-0 flex-1">
                 <header className="flex flex-wrap items-baseline gap-2.5">
                   <h2 className="font-serif text-[23px] leading-[1.3] tracking-[-0.01em]">
-                    {step.question}
+                    {act(`${step.n}.question`)}
                   </h2>
                   <span className="font-mono text-[10px] tracking-[0.16em] text-toward uppercase">
-                    {step.name}
+                    {act(`${step.n}.name`)}
                   </span>
                 </header>
                 <p className="mt-[7px] max-w-[68ch] text-[13.5px] leading-[1.6] text-foreground/80">
-                  {step.help}
+                  {act(`${step.n}.help`)}
                 </p>
                 <p className="mt-2 max-w-[68ch] text-[13.5px] leading-[1.6] text-muted-foreground italic">
-                  {step.example}
+                  {act(`${step.n}.example`)}
                 </p>
                 <p className="mt-2 max-w-[68ch] text-[12.5px] leading-[1.55] text-muted-foreground/85">
-                  <span className="font-medium">{t("trap")}</span> {step.trap}
+                  <span className="font-medium">{t("trap")}</span>{" "}
+                  {act(`${step.n}.trap`)}
                 </p>
               </div>
             </div>
