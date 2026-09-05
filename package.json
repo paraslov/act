@@ -11,6 +11,7 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "biome check .",
+    "lint:app": "biome check src scripts tests",
     "format": "biome format --write .",
     "test": "vitest run",
     "db:up": "docker compose up -d --wait postgres",
@@ -21,7 +22,7 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test:db": "node --test tests/db/*.test.mjs",
     "check": "pnpm lint && pnpm typecheck && pnpm test",
-    "vercel-build": "pnpm check && pnpm build"
+    "vercel-build": "pnpm lint:app && pnpm typecheck && pnpm test && pnpm build"
   },
   "dependencies": {
     "@radix-ui/react-slot": "^1.2.3",

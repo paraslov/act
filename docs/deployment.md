@@ -71,6 +71,12 @@ in its own build. Vercel does not automatically wait for the separate GitHub
 database job, so the `main` ruleset is required for that gate. No Vercel token
 in GitHub or separate deployment Action is needed for this setup.
 
+Deployment lint uses `pnpm lint:app` to check `src`, `scripts`, and `tests`.
+Vercel can add generated files and rewrite configuration formatting in its
+build workspace, so checking the entire workspace there can fail on files
+outside application code. GitHub CI and local `pnpm check` retain the full
+repository lint and formatting check, including root configuration files.
+
 Configure a custom domain and a login rate-limit rule in Vercel as appropriate.
 To roll back, promote a known-good deployment in Vercel; database migrations
 are not rolled back with application code. Keep schema changes compatible
