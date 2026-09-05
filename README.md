@@ -92,3 +92,14 @@ environment. Migration `0002_security_hardening.sql` grants `act_app` the exact
 runtime permissions. In Vercel, configure only the restricted role's pooled URL
 as `DATABASE_URL`, plus `AUTH_THROTTLE_SECRET`; do not expose
 `DATABASE_ADMIN_URL` to the application runtime.
+
+## CI and deployment
+
+Use Node.js 22 (`.node-version`) and the pinned pnpm version in `package.json`.
+Run `pnpm check` for lint, type checking, and unit tests; `pnpm build` verifies
+production compilation. GitHub Actions also validates migrations and PostgreSQL
+row-level security in an isolated database.
+
+See [the deployment guide](docs/deployment.md) for GitHub required checks,
+production/preview database provisioning, Vercel environment variables, Git-based
+continuous deployment, and rollback instructions.

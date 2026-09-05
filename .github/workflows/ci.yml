@@ -1,0 +1,68 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint, types, tests and build
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm check
+      - run: pnpm build
+
+  database:
+    name: Migrations and database isolation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: act
+          POSTGRES_USER: act_admin
+          POSTGRES_PASSWORD: act_admin_local_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U act_admin -d act"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DATABASE_ADMIN_URL: postgresql://act_admin:act_admin_local_password@localhost:5432/act
+      DATABASE_URL: postgresql://act_app:act_app_local_password@localhost:5432/act
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Create restricted runtime role
+        run: psql "$DATABASE_ADMIN_URL" -v ON_ERROR_STOP=1 -f docker/postgres/init/001-app-role.sql
+      - run: pnpm db:migrate
+      - name: Verify migrations can be rerun
+        run: pnpm db:migrate
+      - run: pnpm test:db

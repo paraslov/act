@@ -28,3 +28,6 @@ next-env.d.ts
 /coverage
 .idea/*
 docs/design/*
+
+# Vercel local project metadata
+/.vercel/
