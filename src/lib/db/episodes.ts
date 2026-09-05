@@ -5,6 +5,7 @@ import { filterEpisodes } from "@/lib/act/derive";
 import type {
   Checks,
   Episode,
+  EpisodeActivity,
   EpisodeDir,
   EpisodeFilters,
 } from "@/lib/act/types";
@@ -29,6 +30,11 @@ type EpisodeRow = {
   checks: Checks;
   created_at: string | Date;
   updated_at: string | Date;
+};
+
+type EpisodeActivityRow = {
+  day: string | Date;
+  dir: EpisodeDir;
 };
 
 export type CreateEpisodeInput = {
@@ -93,13 +99,16 @@ export async function listEpisodes(
   });
 }
 
-/** Returns the total number of episodes owned by the current user. */
-export async function countEpisodes(): Promise<number> {
+/** Minimal list used to derive shell-level count and streak values. */
+export async function listEpisodeActivity(): Promise<EpisodeActivity[]> {
   return withCurrentUserDb(async (client) => {
-    const result = await client.query<{ count: number }>(
-      "SELECT count(*)::integer AS count FROM episodes",
+    const result = await client.query<EpisodeActivityRow>(
+      "SELECT day, dir FROM episodes",
     );
-    return result.rows[0]?.count ?? 0;
+    return result.rows.map((row) => ({
+      day: postgresDateValue(row.day),
+      dir: row.dir,
+    }));
   });
 }
 

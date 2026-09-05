@@ -14,7 +14,12 @@ import {
   type StateId,
 } from "@/lib/act/constants";
 import { daysBetween, shiftId, todayId } from "@/lib/act/date";
-import type { Checks, Episode, EpisodeFilters } from "@/lib/act/types";
+import type {
+  Checks,
+  Episode,
+  EpisodeActivity,
+  EpisodeFilters,
+} from "@/lib/act/types";
 
 /** Lowercases and strips diacritics for case/diacritic-insensitive matching. */
 export function normalizeText(value: string | null | undefined): string {
@@ -270,7 +275,7 @@ export function radarComparison(episodes: Episode[]): RadarAxis[] {
  * from the day before, so an unfinished today does not zero an existing streak.
  */
 export function towardStreak(
-  episodes: Episode[],
+  episodes: readonly EpisodeActivity[],
   today: string = todayId(),
 ): number {
   const towardDays = new Set(
@@ -290,7 +295,7 @@ export function towardStreak(
  * calendar days from the earliest logged episode. Returns 1 when nothing is logged.
  */
 export function dayNumber(
-  episodes: Episode[],
+  episodes: readonly Pick<EpisodeActivity, "day">[],
   today: string = todayId(),
 ): number {
   if (episodes.length === 0) return 1;

@@ -29,6 +29,9 @@ export type Episode = {
   updatedAt: string;
 };
 
+/** Minimal episode projection used by shell-level count and streak derivations. */
+export type EpisodeActivity = Pick<Episode, "day" | "dir">;
+
 export type DayMorning = {
   open?: string;
   aware?: string;

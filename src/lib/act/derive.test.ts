@@ -260,6 +260,24 @@ describe("streak & day number", () => {
     expect(towardStreak(eps, "2026-09-03")).toBe(2);
   });
 
+  it("keeps that grace when today only has away moves", () => {
+    const eps = [
+      ep({ day: "2026-09-03", dir: "away" }),
+      ep({ day: "2026-09-02", dir: "toward" }),
+      ep({ day: "2026-09-01", dir: "toward" }),
+    ];
+    expect(towardStreak(eps, "2026-09-03")).toBe(2);
+  });
+
+  it("counts a day once even when it has several toward moves", () => {
+    const eps = [
+      ep({ day: "2026-09-03", dir: "toward" }),
+      ep({ day: "2026-09-03", dir: "toward" }),
+      ep({ day: "2026-09-02", dir: "toward" }),
+    ];
+    expect(towardStreak(eps, "2026-09-03")).toBe(2);
+  });
+
   it("breaks the streak on a gap", () => {
     const eps = [
       ep({ day: "2026-09-03", dir: "toward" }),
@@ -272,5 +290,10 @@ describe("streak & day number", () => {
     const eps = [ep({ day: "2026-08-25" }), ep({ day: "2026-09-01" })];
     expect(dayNumber(eps, "2026-09-01")).toBe(8);
     expect(dayNumber([], "2026-09-01")).toBe(1);
+  });
+
+  it("counts calendar days rather than only days with entries", () => {
+    const eps = [ep({ day: "2026-08-29" }), ep({ day: "2026-09-01" })];
+    expect(dayNumber(eps, "2026-09-01")).toBe(4);
   });
 });

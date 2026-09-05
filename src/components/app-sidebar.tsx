@@ -93,11 +93,11 @@ function NavLinks({
 export function AppSidebar({
   user,
   episodeCount,
-  streak = null,
+  streak,
 }: {
   user: CurrentUser;
   episodeCount: number;
-  streak?: number | null;
+  streak: number;
 }) {
   const locale = useLocale() as Locale;
   const router = useRouter();
@@ -163,7 +163,7 @@ export function AppSidebar({
           {t("nav.streak")}
         </p>
         <p className="font-serif text-[28px] leading-none tracking-[-0.02em]">
-          {streak ?? "—"}{" "}
+          {streak}{" "}
           <span className="font-sans text-[13px] tracking-normal text-muted-foreground">
             {t("nav.days")}
           </span>

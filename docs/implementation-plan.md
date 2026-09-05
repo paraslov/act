@@ -22,7 +22,7 @@
 - [x] **Step 11** — Reference constants (LOOP_REF, LIB, FLEX_PILLARS/MYTHS/GROWTH) + `/reference/flexibility`, `/reference/loop`, `/reference/vault`
 
 **Cross-cutting**
-- [ ] **Step 12** — Compute real streak + "day N"; wire sidebar Episodes count
+- [x] **Step 12** — Compute real streak + "day N"; wire sidebar Episodes count
 - [ ] **Step 13** — Dark-mode pass on new accents; `pnpm lint`, `pnpm test`, `pnpm build`; end-to-end manual verification
 
 ---
