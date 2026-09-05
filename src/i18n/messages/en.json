@@ -23,7 +23,7 @@
     "masterStatLine2": "Flexibility",
     "masterStatDescription": "Everything else here is a way to train it. Read the page →",
     "streak": "Streak",
-    "days": "days",
+    "days": "{count, plural, one {day} other {days}}",
     "toggleTheme": "Toggle theme",
     "streakUnit": "days with a Toward Move made while uncomfortable"
   },

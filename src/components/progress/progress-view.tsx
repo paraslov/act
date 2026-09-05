@@ -426,8 +426,8 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
             </p>
           </Card>
 
-          <section className="rounded-card bg-primary px-6 py-[22px] text-primary-foreground">
-            <p className="mb-2.5 font-mono text-[10px] tracking-[0.16em] text-primary-foreground/70 uppercase">
+          <section className="rounded-card bg-inverse px-6 py-[22px] text-inverse-foreground">
+            <p className="mb-2.5 font-mono text-[10px] tracking-[0.16em] text-inverse-muted uppercase">
               {t("boss.eyebrow")}
             </p>
             <p className="mb-[18px] font-serif text-[21px] leading-[1.3] tracking-[-0.01em]">
@@ -452,7 +452,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
                 />
               ))}
             </div>
-            <p className="text-[13px] leading-[1.6] text-primary-foreground/75">
+            <p className="text-[13px] leading-[1.6] text-inverse-muted">
               {t("boss.caption")}
             </p>
           </section>

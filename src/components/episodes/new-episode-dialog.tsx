@@ -109,7 +109,7 @@ function TippingScale({ direction }: { direction: EpisodeDir | null }) {
         y1="30"
         x2="150"
         y2="66"
-        stroke="oklch(0.88 0 0)"
+        className="stroke-muted-foreground/60"
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -118,7 +118,7 @@ function TippingScale({ direction }: { direction: EpisodeDir | null }) {
         y1="66"
         x2="174"
         y2="66"
-        stroke="oklch(0.88 0 0)"
+        className="stroke-muted-foreground/60"
         strokeWidth="2"
         strokeLinecap="round"
       />
@@ -129,7 +129,7 @@ function TippingScale({ direction }: { direction: EpisodeDir | null }) {
         fontSize="8.5"
         fontFamily="var(--font-mono), monospace"
         letterSpacing="1.2"
-        fill="oklch(0.68 0 0)"
+        className="fill-muted-foreground"
       >
         {t("choicePoint")}
       </text>
@@ -550,7 +550,7 @@ export function NewEpisodeDialogProvider({
                             className={cn(
                               "size-7 rounded-[7px] border bg-background text-[13px] text-muted-foreground transition-colors",
                               form.checks[axis.id] === value &&
-                                "border-toward bg-toward text-white",
+                                "border-toward bg-toward text-toward-foreground",
                             )}
                           >
                             {value}

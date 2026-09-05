@@ -32,6 +32,7 @@
   --radius-modal: 16px;
   --color-page: var(--page);
   --color-toward: var(--toward);
+  --color-toward-foreground: var(--toward-foreground);
   --color-toward-tint: var(--toward-tint);
   --color-toward-border: var(--toward-border);
   --color-toward-muted: var(--toward-muted);
@@ -43,6 +44,9 @@
   --color-alert: var(--alert);
   --color-alert-tint: var(--alert-tint);
   --color-alert-label: var(--alert-label);
+  --color-inverse: var(--inverse);
+  --color-inverse-foreground: var(--inverse-foreground);
+  --color-inverse-muted: var(--inverse-muted);
   --font-sans:
     var(--font-sans), ui-sans-serif, system-ui, -apple-system,
     BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -75,14 +79,22 @@
   /* ACT — page surface (warm off-white, distinct from --background/--card) */
   --page: oklch(0.97 0.004 85);
 
+  /* Editorial cards stay dark in both themes. Do not use --primary here:
+     it inverts in dark mode and washes out the charts on these surfaces. */
+  --inverse: oklch(0.205 0 0);
+  --inverse-foreground: oklch(0.985 0 0);
+  --inverse-muted: oklch(0.78 0 0);
+
   /* ACT — toward (green). Never means "good". */
   --toward: oklch(0.5 0.1 158);
+  --toward-foreground: oklch(0.985 0 0);
   --toward-tint: oklch(0.98 0.02 158);
   --toward-border: oklch(0.88 0.05 158);
   --toward-muted: oklch(0.78 0.06 158);
 
   /* ACT — away (amber, never red; never means "bad"). */
-  --away: oklch(0.62 0.12 50);
+  /* Small amber labels need contrast against both the page and tinted cards. */
+  --away: oklch(0.55 0.12 50);
   --away-tint: oklch(0.98 0.02 55);
   --away-border: oklch(0.9 0.05 55);
   --away-muted: oklch(0.84 0.06 55);
@@ -120,6 +132,7 @@
   --page: oklch(0.16 0.003 85);
 
   --toward: oklch(0.72 0.13 158);
+  --toward-foreground: oklch(0.205 0 0);
   --toward-tint: oklch(0.26 0.03 158);
   --toward-border: oklch(0.4 0.05 158);
   --toward-muted: oklch(0.5 0.05 158);

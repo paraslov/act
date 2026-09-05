@@ -358,7 +358,7 @@ export function JournalView({
         {t("intro")}
       </p>
 
-      <div className="grid items-start gap-5 min-[1041px]:grid-cols-[220px_minmax(520px,1fr)]">
+      <div className="grid items-start gap-5 min-[1041px]:grid-cols-[220px_minmax(0,1fr)]">
         <aside className="flex flex-col gap-2.5">
           <section className="rounded-card border bg-card p-3">
             <fieldset className="mb-[9px] flex gap-[3px] rounded-[9px] bg-muted/80 p-[3px]">

@@ -236,8 +236,8 @@ function TodaySoFar({ day, episodes }: { day: string; episodes: Episode[] }) {
   const away = episodes.length - toward;
 
   return (
-    <section className="rounded-card bg-[oklch(0.205_0_0)] px-[22px] pt-[22px] pb-5 text-[oklch(0.985_0_0)] shadow-sm">
-      <p className="mb-1 font-mono text-[10px] tracking-[0.16em] text-[oklch(0.72_0_0)] uppercase">
+    <section className="rounded-card bg-inverse px-[22px] pt-[22px] pb-5 text-inverse-foreground shadow-sm">
+      <p className="mb-1 font-mono text-[10px] tracking-[0.16em] text-inverse-muted uppercase">
         {t("label")}
       </p>
       <p className="mb-3.5 font-serif text-[22px] leading-tight tracking-[-0.01em]">

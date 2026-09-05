@@ -59,8 +59,8 @@ export async function LoopView() {
         ))}
       </div>
 
-      <section className="mt-4 rounded-card bg-[oklch(0.205_0_0)] px-6 py-[22px] text-[oklch(0.985_0_0)]">
-        <p className="mb-2 font-mono text-[10px] tracking-[0.16em] text-[oklch(0.72_0_0)] uppercase">
+      <section className="mt-4 rounded-card bg-inverse px-6 py-[22px] text-inverse-foreground">
+        <p className="mb-2 font-mono text-[10px] tracking-[0.16em] text-inverse-muted uppercase">
           {t("closingLabel")}
         </p>
         <p className="max-w-[60ch] font-serif text-[22px] leading-[1.35] tracking-[-0.01em]">

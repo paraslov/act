@@ -165,7 +165,7 @@ export function AppSidebar({
         <p className="font-serif text-[28px] leading-none tracking-[-0.02em]">
           {streak}{" "}
           <span className="font-sans text-[13px] tracking-normal text-muted-foreground">
-            {t("nav.days")}
+            {t("nav.days", { count: streak })}
           </span>
         </p>
         <p className="mt-1.5 text-[11.5px] leading-[1.45] text-muted-foreground">

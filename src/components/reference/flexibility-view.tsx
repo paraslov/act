@@ -32,14 +32,14 @@ export async function FlexibilityView() {
         {t("lead")}
       </p>
 
-      <section className="mb-[22px] rounded-card bg-[oklch(0.205_0_0)] px-[26px] py-6 text-[oklch(0.985_0_0)]">
-        <p className="mb-2.5 font-mono text-[10px] tracking-[0.16em] text-[oklch(0.72_0_0)] uppercase">
+      <section className="mb-[22px] rounded-card bg-inverse px-[26px] py-6 text-inverse-foreground">
+        <p className="mb-2.5 font-mono text-[10px] tracking-[0.16em] text-inverse-muted uppercase">
           {t("definitionLabel")}
         </p>
         <p className="max-w-[62ch] font-serif text-[23px] leading-[1.4] tracking-[-0.01em]">
           {t("definition")}
         </p>
-        <p className="mt-3.5 max-w-[66ch] text-[13px] leading-[1.6] text-[oklch(0.78_0_0)]">
+        <p className="mt-3.5 max-w-[66ch] text-[13px] leading-[1.6] text-inverse-muted">
           {t("definitionNote")}
         </p>
       </section>

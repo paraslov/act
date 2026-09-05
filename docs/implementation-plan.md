@@ -23,7 +23,7 @@
 
 **Cross-cutting**
 - [x] **Step 12** — Compute real streak + "day N"; wire sidebar Episodes count
-- [ ] **Step 13** — Dark-mode pass on new accents; `pnpm lint`, `pnpm test`, `pnpm build`; end-to-end manual verification
+- [x] **Step 13** — Dark-mode pass on new accents; `pnpm lint`, `pnpm test`, `pnpm build`; end-to-end manual verification ([verification results](step-13-verification.md))
 
 ---
 
