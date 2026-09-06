@@ -4,6 +4,7 @@ import { formatDayLabel } from "@/lib/act/date";
 import {
   bandBreakdown,
   hookGroupTallies,
+  hookTypeTallies,
   radarComparison,
   skillTallies,
   statusEffectTallies,
@@ -183,6 +184,8 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
   const radar = radarComparison(episodes);
   const states = statusEffectTallies(episodes);
   const maxState = Math.max(1, ...states.map((state) => state.count));
+  const hookTypes = hookTypeTallies(episodes);
+  const maxHookType = Math.max(1, ...hookTypes.map((hook) => hook.count));
   const hooks = hookGroupTallies(episodes);
   const maxHook = Math.max(1, ...hooks.map((hook) => hook.count));
   const skills = skillTallies(episodes);
@@ -328,49 +331,89 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
           </div>
         </Card>
 
-        <Card>
-          <CardHeading
-            title={t("status.title")}
-            description={t("status.description")}
-          />
-          <div className="flex flex-col gap-3">
-            {states.map((state) => (
-              <div
-                key={state.id}
-                className="border-b pb-3 last:border-0 last:pb-0"
-              >
-                <div className="mb-[5px] flex items-baseline justify-between gap-2.5">
-                  <span
-                    className={cn(
-                      "text-sm font-medium",
-                      state.count === 0 && "text-muted-foreground",
-                    )}
-                  >
-                    {act(`states.${state.id}.label`)}
-                  </span>
-                  <span className="shrink-0 font-mono text-xs text-muted-foreground">
-                    {t("countShare", {
-                      count: state.count,
-                      percent: percent(state.share),
-                    })}
+        <div className="flex flex-col gap-5">
+          <Card>
+            <CardHeading
+              title={t("hookTypes.title")}
+              description={t("hookTypes.description")}
+            />
+            <div className="flex flex-col gap-3">
+              {hookTypes.map((hook) => (
+                <div
+                  key={hook.id}
+                  className="border-b pb-3 last:border-0 last:pb-0"
+                >
+                  <div className="mb-[5px] flex items-baseline justify-between gap-2.5">
+                    <span
+                      className={cn(
+                        "text-sm font-medium",
+                        hook.count === 0 && "text-muted-foreground",
+                      )}
+                    >
+                      {act(`hookTypes.${hook.id}.label`)}
+                    </span>
+                    <span className="shrink-0 font-mono text-xs text-muted-foreground">
+                      {t("countShare", {
+                        count: hook.count,
+                        percent: percent(hook.share),
+                      })}
+                    </span>
+                  </div>
+                  <span className="block h-[7px] overflow-hidden rounded-full bg-muted">
+                    <span
+                      className="block h-full rounded-full bg-away"
+                      style={{ width: scaledWidth(hook.count, maxHookType) }}
+                    />
                   </span>
                 </div>
-                <span className="mb-[7px] block h-[7px] overflow-hidden rounded-full bg-muted">
-                  <span
-                    className={cn(
-                      "block h-full rounded-full",
-                      state.count ? "bg-away" : "bg-muted-foreground/20",
-                    )}
-                    style={{ width: scaledWidth(state.count, maxState) }}
-                  />
-                </span>
-                <p className="text-[12.5px] leading-[1.55] text-muted-foreground">
-                  {act(`states.${state.id}.description`)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </Card>
+              ))}
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeading
+              title={t("status.title")}
+              description={t("status.description")}
+            />
+            <div className="flex flex-col gap-3">
+              {states.map((state) => (
+                <div
+                  key={state.id}
+                  className="border-b pb-3 last:border-0 last:pb-0"
+                >
+                  <div className="mb-[5px] flex items-baseline justify-between gap-2.5">
+                    <span
+                      className={cn(
+                        "text-sm font-medium",
+                        state.count === 0 && "text-muted-foreground",
+                      )}
+                    >
+                      {act(`states.${state.id}.label`)}
+                    </span>
+                    <span className="shrink-0 font-mono text-xs text-muted-foreground">
+                      {t("countShare", {
+                        count: state.count,
+                        percent: percent(state.share),
+                      })}
+                    </span>
+                  </div>
+                  <span className="mb-[7px] block h-[7px] overflow-hidden rounded-full bg-muted">
+                    <span
+                      className={cn(
+                        "block h-full rounded-full",
+                        state.count ? "bg-away" : "bg-muted-foreground/20",
+                      )}
+                      style={{ width: scaledWidth(state.count, maxState) }}
+                    />
+                  </span>
+                  <p className="text-[12.5px] leading-[1.55] text-muted-foreground">
+                    {act(`states.${state.id}.description`)}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
 
         <div className="flex flex-col gap-5">
           <Card>

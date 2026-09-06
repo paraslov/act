@@ -205,8 +205,28 @@ function SelectedEpisodeCard({ episode }: { episode: Episode }) {
         <span className="font-mono text-[10.5px] text-muted-foreground">
           {BANDS[episode.band]}
         </span>
-        <span className="rounded-chip border bg-card px-2 py-[3px] text-[11.5px] text-foreground/70">
+        <span className="rounded-chip border bg-muted/70 px-2 py-[3px] text-[11.5px] text-foreground/75">
+          {act(`hookTypes.${episode.hookType}.label`)}
+        </span>
+        <span
+          className={cn(
+            "rounded-chip border px-2 py-[3px] text-[11.5px]",
+            episode.state === "none"
+              ? "bg-muted/70 text-muted-foreground"
+              : "border-away-border bg-away-tint text-away",
+          )}
+        >
           {act(`states.${episode.state}.label`)}
+        </span>
+        <span
+          className={cn(
+            "rounded-chip border px-2 py-[3px] text-[11.5px]",
+            episode.skill === "none"
+              ? "bg-muted/70 text-muted-foreground"
+              : "border-toward-border bg-toward-tint text-toward",
+          )}
+        >
+          {act(`skills.${episode.skill}.label`)}
         </span>
       </div>
       <p className="mb-1 font-serif text-[19px] leading-[1.35] tracking-[-0.01em]">
@@ -644,8 +664,28 @@ export function JournalView({
                       >
                         {t(episode.dir)}
                       </span>
-                      <span className="text-[11.5px] text-foreground/65">
+                      <span className="rounded-chip border bg-muted/70 px-2 py-[3px] text-[11.5px] text-foreground/75">
+                        {act(`hookTypes.${episode.hookType}.label`)}
+                      </span>
+                      <span
+                        className={cn(
+                          "rounded-chip border px-2 py-[3px] text-[11.5px]",
+                          episode.state === "none"
+                            ? "bg-muted/70 text-muted-foreground"
+                            : "border-away-border bg-away-tint text-away",
+                        )}
+                      >
                         {act(`states.${episode.state}.label`)}
+                      </span>
+                      <span
+                        className={cn(
+                          "rounded-chip border px-2 py-[3px] text-[11.5px]",
+                          episode.skill === "none"
+                            ? "bg-muted/70 text-muted-foreground"
+                            : "border-toward-border bg-toward-tint text-toward",
+                        )}
+                      >
+                        {act(`skills.${episode.skill}.label`)}
                       </span>
                       <span className="ml-auto font-mono text-[10.5px] text-muted-foreground">
                         {t("score", { score: checksTotal(episode.checks) })}

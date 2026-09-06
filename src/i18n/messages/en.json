@@ -94,6 +94,8 @@
     "filters": {
       "label": "Episode filters",
       "directionLabel": "Filter by direction",
+      "hookTypeLabel": "Filter by hook type",
+      "anyHookType": "Any hook type",
       "all": "All",
       "toward": "Toward",
       "away": "Away",
@@ -191,6 +193,10 @@
       "description": "Which process keeps catching you, how often, and what the counter-move is."
     },
     "countShare": "{count}× · {percent}%",
+    "hookTypes": {
+      "title": "Hooks",
+      "description": "What catches your attention: hook types you recorded, ranked by frequency with their share of all episodes."
+    },
     "count": "{count}×",
     "hooks": {
       "title": "Hooks that keep catching you",

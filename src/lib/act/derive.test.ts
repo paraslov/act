@@ -8,6 +8,7 @@ import {
   dayNumber,
   filterEpisodes,
   hookGroupTallies,
+  hookTypeTallies,
   normalizeText,
   radarComparison,
   skillTallies,
@@ -123,6 +124,35 @@ describe("filterEpisodes", () => {
     expect(filterEpisodes(eps, { text: "nothing here" })).toHaveLength(0);
   });
 
+  it("combines recorded hook types with the other filters and clears them", () => {
+    const match = ep({
+      hookType: "urge",
+      dir: "away",
+      band: 3,
+      hook: "Open the game",
+    });
+    const episodes = [
+      match,
+      ep({ hookType: "thought", dir: "away", band: 3, hook: "Open the game" }),
+      ep({ hookType: "urge", dir: "toward", band: 3, hook: "Open the game" }),
+      ep({ hookType: "urge", dir: "away", band: 4, hook: "Open the game" }),
+      ep({ hookType: "urge", dir: "away", band: 3, hook: "Check messages" }),
+    ];
+    expect(
+      filterEpisodes(episodes, {
+        hookType: "urge",
+        dir: "away",
+        band: 3,
+        state: "fusion",
+        skill: "notice",
+        text: "game",
+      }),
+    ).toEqual([match]);
+    expect(filterEpisodes(episodes, { hookType: "feeling" })).toEqual([]);
+    expect(filterEpisodes(episodes, { hookType: "all" })).toEqual(episodes);
+    expect(filterEpisodes(episodes, {})).toEqual(episodes);
+  });
+
   it("limits text search to hooks, moves and values", () => {
     const contextOnly = ep({
       situation: "Quarterly planning",
@@ -217,6 +247,33 @@ describe("tallies", () => {
     expect(groups.map((g) => g.label)).toContain(
       "Urge to shut the laptop when it gets boring",
     );
+  });
+
+  it("counts saved hook types independently of text and includes unused types", () => {
+    const episodes = [
+      ep({ hookType: "urge", hook: "Something unrelated", dir: "away" }),
+      ep({ hookType: "urge", hook: "Something unrelated", dir: "toward" }),
+      ep({ hookType: "memory", hook: "Flash of anger" }),
+      ep({ hookType: "thought", hook: "Flash of anger" }),
+    ];
+    expect(hookTypeTallies(episodes)).toEqual([
+      { id: "urge", count: 2, share: 0.5 },
+      { id: "thought", count: 1, share: 0.25 },
+      { id: "memory", count: 1, share: 0.25 },
+      { id: "feeling", count: 0, share: 0 },
+    ]);
+    expect(hookTypeTallies([...episodes].reverse())).toEqual(
+      hookTypeTallies(episodes),
+    );
+  });
+
+  it("returns zero counts and shares for all hook types when there are no episodes", () => {
+    expect(hookTypeTallies([])).toEqual([
+      { id: "thought", count: 0, share: 0 },
+      { id: "feeling", count: 0, share: 0 },
+      { id: "urge", count: 0, share: 0 },
+      { id: "memory", count: 0, share: 0 },
+    ]);
   });
 });
 

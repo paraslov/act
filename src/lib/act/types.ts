@@ -57,6 +57,7 @@ export type DayEntry = {
 /** Episode-list filters (Episodes view). `"all"` means the facet is unfiltered. */
 export type EpisodeFilters = {
   dir?: EpisodeDir | "all";
+  hookType?: HookType | "all";
   state?: StateId | "all";
   skill?: SkillId | "all";
   band?: number | "all";

@@ -8,6 +8,8 @@ import {
   type AxisKey,
   BANDS,
   HOOK_GROUPS,
+  HOOK_TYPES,
+  type HookType,
   SKILLS,
   type SkillId,
   STATES,
@@ -60,6 +62,13 @@ export function matchesFilters(
   filters: EpisodeFilters,
 ): boolean {
   if (filters.dir && filters.dir !== "all" && episode.dir !== filters.dir) {
+    return false;
+  }
+  if (
+    filters.hookType &&
+    filters.hookType !== "all" &&
+    episode.hookType !== filters.hookType
+  ) {
     return false;
   }
   if (
@@ -204,6 +213,22 @@ export type HookTally = {
   count: number;
   share: number;
 };
+
+export type HookTypeTally = {
+  id: HookType;
+  count: number;
+  share: number;
+};
+
+/** All four recorded hook types, including unused types, most-frequent first. */
+export function hookTypeTallies(episodes: Episode[]): HookTypeTally[] {
+  return HOOK_TYPES.map((type) => {
+    const count = episodes.filter(
+      (episode) => episode.hookType === type.id,
+    ).length;
+    return { id: type.id, count, share: share(count, episodes.length) };
+  }).sort((a, b) => b.count - a.count);
+}
 
 /** Recurring-hook groups with at least one match, sorted most-frequent first. */
 export function hookGroupTallies(episodes: Episode[]): HookTally[] {

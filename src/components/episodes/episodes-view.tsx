@@ -16,6 +16,8 @@ import {
 import {
   AXES,
   BANDS,
+  HOOK_TYPES,
+  type HookType,
   SKILLS,
   type SkillId,
   STATES,
@@ -30,6 +32,7 @@ type DirectionFilter = EpisodeDir | "all";
 
 type ViewFilters = {
   dir: DirectionFilter;
+  hookType: HookType | "all";
   effect: StateId | "all";
   skill: SkillId | "all";
   band: (typeof BANDS)[number] | "all";
@@ -54,14 +57,20 @@ function isBand(value: string | null): value is (typeof BANDS)[number] {
   return BANDS.some((item) => item === value);
 }
 
+function isHookType(value: string | null): value is HookType {
+  return HOOK_TYPES.some((item) => item.id === value);
+}
+
 function readFilters(params: URLSearchParams): ViewFilters {
   const dir = params.get("dir");
+  const hookType = params.get("hookType");
   const effect = params.get("effect");
   const skill = params.get("skill");
   const band = params.get("band");
 
   return {
     dir: isDirection(dir) ? dir : "all",
+    hookType: isHookType(hookType) ? hookType : "all",
     effect: isState(effect) ? effect : "all",
     skill: isSkill(skill) ? skill : "all",
     band: isBand(band) ? band : "all",
@@ -72,6 +81,7 @@ function readFilters(params: URLSearchParams): ViewFilters {
 function filtersQuery(filters: ViewFilters): string {
   const params = new URLSearchParams();
   if (filters.dir !== "all") params.set("dir", filters.dir);
+  if (filters.hookType !== "all") params.set("hookType", filters.hookType);
   if (filters.effect !== "all") params.set("effect", filters.effect);
   if (filters.skill !== "all") params.set("skill", filters.skill);
   if (filters.band !== "all") params.set("band", filters.band);
@@ -133,6 +143,29 @@ function FilterBar({
       className="mb-4 flex flex-wrap items-center gap-3.5 rounded-card border bg-card px-4 py-3.5"
     >
       <DirectionPicker value={filters.dir} onChange={(dir) => patch({ dir })} />
+
+      <Select
+        value={filters.hookType}
+        onValueChange={(hookType) =>
+          patch({ hookType: hookType as ViewFilters["hookType"] })
+        }
+      >
+        <SelectTrigger
+          size="sm"
+          aria-label={t("hookTypeLabel")}
+          className="rounded-button bg-card text-[13px] shadow-none dark:bg-card"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">{t("anyHookType")}</SelectItem>
+          {HOOK_TYPES.map((type) => (
+            <SelectItem key={type.id} value={type.id}>
+              {act(`hookTypes.${type.id}.label`)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
 
       <Select
         value={filters.effect}
@@ -217,6 +250,7 @@ function FilterBar({
         onClick={() =>
           onChange({
             dir: "all",
+            hookType: "all",
             effect: "all",
             skill: "all",
             band: "all",
@@ -276,6 +310,9 @@ function EpisodeCard({ episode }: { episode: Episode }) {
       )}
 
       <div className="mb-3 flex flex-wrap gap-2">
+        <span className="rounded-chip border bg-muted/70 px-[9px] py-1 text-xs text-foreground/75">
+          {act(`hookTypes.${episode.hookType}.label`)}
+        </span>
         <span
           className={cn(
             "rounded-chip border px-[9px] py-1 text-xs",
@@ -362,6 +399,7 @@ export function EpisodesView({ episodes }: { episodes: Episode[] }) {
     const band = filters.band === "all" ? "all" : BANDS.indexOf(filters.band);
     return filterEpisodes(episodes, {
       dir: filters.dir,
+      hookType: filters.hookType,
       state: filters.effect,
       skill: filters.skill,
       band,
