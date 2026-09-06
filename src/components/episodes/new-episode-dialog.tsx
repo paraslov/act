@@ -82,8 +82,8 @@ function initialForm(day: string, band = currentBand()): FormState {
     hook: "",
     hookType: "thought",
     dir: null,
-    state: "fusion",
-    skill: "notice",
+    state: "none",
+    skill: "none",
     value: "",
     move: "",
     workable: "",
@@ -230,8 +230,7 @@ export function NewEpisodeDialogProvider({
     () => ({ openEpisodeDialog }),
     [openEpisodeDialog],
   );
-  const selectedState =
-    STATES.find((state) => state.id === form.state) ?? STATES[0];
+  const selectedState = STATES.find((state) => state.id === form.state);
   const score = AXES.reduce(
     (total, axis) => total + (form.checks[axis.id] ?? 0),
     0,
@@ -442,6 +441,9 @@ export function NewEpisodeDialogProvider({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent position="popper">
+                    <SelectItem value="none">
+                      {act("states.none.label")}
+                    </SelectItem>
                     {STATES.map((state) => (
                       <SelectItem key={state.id} value={state.id}>
                         {act(`states.${state.id}.label`)}
@@ -449,9 +451,11 @@ export function NewEpisodeDialogProvider({
                     ))}
                   </SelectContent>
                 </Select>
-                <span className="mt-1.5 block text-[12.5px] leading-[1.45] text-muted-foreground">
-                  {act(`states.${selectedState.id}.description`)}
-                </span>
+                {selectedState && (
+                  <span className="mt-1.5 block text-[12.5px] leading-[1.45] text-muted-foreground">
+                    {act(`states.${selectedState.id}.description`)}
+                  </span>
+                )}
               </div>
 
               <div className="mb-[13px]">
@@ -469,6 +473,9 @@ export function NewEpisodeDialogProvider({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent position="popper">
+                    <SelectItem value="none">
+                      {act("skills.none.label")}
+                    </SelectItem>
                     {SKILLS.map((skill) => (
                       <SelectItem key={skill.id} value={skill.id}>
                         {act(`skills.${skill.id}.label`)}

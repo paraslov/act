@@ -43,13 +43,13 @@ const createEpisodeSchema = z.object({
     .default("thought"),
   situation: optionalTextSchema,
   state: z
-    .enum(STATES.map((state) => state.id))
+    .enum(["none", ...STATES.map((state) => state.id)])
     .optional()
-    .default("fusion"),
+    .default("none"),
   skill: z
-    .enum(SKILLS.map((skill) => skill.id))
+    .enum(["none", ...SKILLS.map((skill) => skill.id)])
     .optional()
-    .default("notice"),
+    .default("none"),
   value: optionalTextSchema.transform((value) => value || "—"),
   move: optionalTextSchema.transform((value) => value || "—"),
   workable: optionalTextSchema.transform((value) => value || "—"),

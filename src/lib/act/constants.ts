@@ -178,8 +178,9 @@ export const TOWARD = "oklch(0.5 0.1 158)";
 export const AWAY = "oklch(0.62 0.12 50)";
 
 export type AxisKey = (typeof AXES)[number]["id"];
-export type StateId = (typeof STATES)[number]["id"];
-export type SkillId = (typeof SKILLS)[number]["id"];
+/** `none` records an explicit absence without adding a reference effect or skill. */
+export type StateId = (typeof STATES)[number]["id"] | "none";
+export type SkillId = (typeof SKILLS)[number]["id"] | "none";
 export type HookType = (typeof HOOK_TYPES)[number]["id"];
 
 /** Display string for a band index; empty string for an out-of-range index. */
@@ -189,10 +190,12 @@ export function bandLabel(index: number): string {
 
 /** Human label for a status-effect id, falling back to the first state. */
 export function stateLabel(id: string): string {
+  if (id === "none") return en.act.states.none.label;
   return (STATES.find((s) => s.id === id) ?? STATES[0]).label;
 }
 
 /** Human label for a skill id, falling back to the first skill. */
 export function skillLabel(id: string): string {
+  if (id === "none") return en.act.skills.none.label;
   return (SKILLS.find((s) => s.id === id) ?? SKILLS[0]).label;
 }

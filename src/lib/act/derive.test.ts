@@ -149,6 +149,26 @@ describe("band shape & breakdown", () => {
 });
 
 describe("tallies", () => {
+  it("keeps episodes without status or skill out of reference tallies", () => {
+    const empty = ep({ state: "none", skill: "none" });
+    expect(topStatusEffect([empty])).toBeNull();
+    expect(statusEffectTallies([empty]).every((item) => item.count === 0)).toBe(
+      true,
+    );
+    expect(skillTallies([empty]).every((item) => item.count === 0)).toBe(true);
+    expect(unusedSkills([empty])).toHaveLength(6);
+
+    const episodes = [empty, ep()];
+    expect(statusEffectTallies(episodes)[0]).toMatchObject({
+      count: 1,
+      share: 0.5,
+    });
+    expect(skillTallies(episodes)[0]).toMatchObject({ count: 1, share: 0.5 });
+    expect(filterEpisodes(episodes, { state: "none", skill: "none" })).toEqual([
+      empty,
+    ]);
+  });
+
   const eps = [
     ep({ state: "fusion", skill: "notice" }),
     ep({ state: "fusion", skill: "defuse" }),

@@ -43,11 +43,11 @@ function isDirection(value: string | null): value is DirectionFilter {
 }
 
 function isState(value: string | null): value is StateId {
-  return STATES.some((item) => item.id === value);
+  return value === "none" || STATES.some((item) => item.id === value);
 }
 
 function isSkill(value: string | null): value is SkillId {
-  return SKILLS.some((item) => item.id === value);
+  return value === "none" || SKILLS.some((item) => item.id === value);
 }
 
 function isBand(value: string | null): value is (typeof BANDS)[number] {
@@ -149,6 +149,7 @@ function FilterBar({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">{t("anyStatus")}</SelectItem>
+          <SelectItem value="none">{act("states.none.label")}</SelectItem>
           {STATES.map((state) => (
             <SelectItem key={state.id} value={state.id}>
               {act(`states.${state.id}.label`)}
@@ -172,6 +173,7 @@ function FilterBar({
         </SelectTrigger>
         <SelectContent>
           <SelectItem value="all">{t("anySkill")}</SelectItem>
+          <SelectItem value="none">{act("skills.none.label")}</SelectItem>
           {SKILLS.map((skill) => (
             <SelectItem key={skill.id} value={skill.id}>
               {act(`skills.${skill.id}.label`)}
@@ -274,10 +276,24 @@ function EpisodeCard({ episode }: { episode: Episode }) {
       )}
 
       <div className="mb-3 flex flex-wrap gap-2">
-        <span className="rounded-chip border border-away-border bg-away-tint px-[9px] py-1 text-xs text-away">
+        <span
+          className={cn(
+            "rounded-chip border px-[9px] py-1 text-xs",
+            episode.state === "none"
+              ? "bg-muted/70 text-muted-foreground"
+              : "border-away-border bg-away-tint text-away",
+          )}
+        >
           {act(`states.${episode.state}.label`)}
         </span>
-        <span className="rounded-chip border border-toward-border bg-toward-tint px-[9px] py-1 text-xs text-toward">
+        <span
+          className={cn(
+            "rounded-chip border px-[9px] py-1 text-xs",
+            episode.skill === "none"
+              ? "bg-muted/70 text-muted-foreground"
+              : "border-toward-border bg-toward-tint text-toward",
+          )}
+        >
           {act(`skills.${episode.skill}.label`)}
         </span>
         <span className="rounded-chip border bg-muted/70 px-[9px] py-1 text-xs text-foreground/75">

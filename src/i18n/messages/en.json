@@ -330,6 +330,7 @@
       }
     },
     "states": {
+      "none": { "label": "No status" },
       "fusion": {
         "label": "Cognitive Fusion",
         "description": "The question isn't “do I believe it 100%?” but “how much is this thought steering my behaviour right now?” Counter-skill: Defuse."
@@ -356,6 +357,7 @@
       }
     },
     "skills": {
+      "none": { "label": "Skill wasn’t used" },
       "notice": {
         "label": "Notice"
       },
