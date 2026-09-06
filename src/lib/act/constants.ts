@@ -121,27 +121,43 @@ export const LOOP_REF = [
 /** Layered reference library for the Vault. */
 export const LIB = {
   "Core map": [
-    { ev: "(a/b)", ...en.act.vault["Core map"]["0"] },
-    { ev: "(b)", ...en.act.vault["Core map"]["1"] },
-    { ev: "(c)", ...en.act.vault["Core map"]["2"] },
+    {
+      id: "psychological-flexibility",
+      ev: "(a/b)",
+      ...en.act.vault["Core map"]["0"],
+    },
+    { id: "open-aware-engaged", ev: "(b)", ...en.act.vault["Core map"]["1"] },
+    { id: "choice-point", ev: "(c)", ...en.act.vault["Core map"]["2"] },
   ],
   Concepts: [
-    { ev: "(b)", ...en.act.vault.Concepts["0"] },
-    { ev: "(a/b)", ...en.act.vault.Concepts["1"] },
-    { ev: "frame", ...en.act.vault.Concepts["2"] },
-    { ev: "(b/c)", ...en.act.vault.Concepts["3"] },
+    { id: "cognitive-fusion", ev: "(b)", ...en.act.vault.Concepts["0"] },
+    {
+      id: "experiential-avoidance",
+      ev: "(a/b)",
+      ...en.act.vault.Concepts["1"],
+    },
+    { id: "workability", ev: "frame", ...en.act.vault.Concepts["2"] },
+    { id: "self-as-context", ev: "(b/c)", ...en.act.vault.Concepts["3"] },
   ],
   Skills: [
-    { ev: "(b)", ...en.act.vault.Skills["0"] },
-    { ev: "(b)", ...en.act.vault.Skills["1"] },
-    { ev: "(b)", ...en.act.vault.Skills["2"] },
-    { ev: "(b)", ...en.act.vault.Skills["3"] },
-    { ev: "(b)", ...en.act.vault.Skills["4"] },
-    { ev: "(a)", ...en.act.vault.Skills["5"] },
+    { id: "notice", ev: "(b)", ...en.act.vault.Skills["0"] },
+    { id: "defuse", ev: "(b)", ...en.act.vault.Skills["1"] },
+    { id: "accept-make-room", ev: "(b)", ...en.act.vault.Skills["2"] },
+    { id: "anchor-return", ev: "(b)", ...en.act.vault.Skills["3"] },
+    { id: "orient-to-values", ev: "(b)", ...en.act.vault.Skills["4"] },
+    { id: "committed-action", ev: "(a)", ...en.act.vault.Skills["5"] },
   ],
   Basement: [
-    { ev: "frame", ...en.act.vault.Basement["0"] },
-    { ev: "(b)", ...en.act.vault.Basement["1"] },
+    {
+      id: "functional-contextualism",
+      ev: "frame",
+      ...en.act.vault.Basement["0"],
+    },
+    {
+      id: "rft-rule-governed-behaviour",
+      ev: "(b)",
+      ...en.act.vault.Basement["1"],
+    },
   ],
 } as const;
 

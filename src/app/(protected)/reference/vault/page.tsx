@@ -1,5 +1,10 @@
+import { Suspense } from "react";
 import { VaultView } from "@/components/reference/vault-view";
 
 export default function VaultPage() {
-  return <VaultView />;
+  return (
+    <Suspense>
+      <VaultView />
+    </Suspense>
+  );
 }

@@ -1,11 +1,15 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LIB, type VaultCategory } from "@/lib/act/constants";
-
-const categories = Object.keys(LIB) as VaultCategory[];
+import {
+  resolveVaultSelection,
+  VAULT_CATEGORIES,
+  type VaultCardId,
+} from "@/lib/reference/vault";
 
 const tabKeys: Record<VaultCategory, string> = {
   "Core map": "coreMap",
@@ -17,9 +21,36 @@ const tabKeys: Record<VaultCategory, string> = {
 export function VaultView() {
   const t = useTranslations("reference.vault");
   const act = useTranslations("act.vault");
-  const [openCard, setOpenCard] = useState<string | null>(
-    "Psychological Flexibility",
-  );
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const requestedCard = searchParams.get("card");
+  const { category: selectedCategory, cardId: openCard } =
+    resolveVaultSelection(searchParams.get("tab"), requestedCard);
+  const openedSection = useRef<HTMLElement | null>(null);
+
+  function navigate(category: VaultCategory, cardId: VaultCardId | null) {
+    const params = new URLSearchParams(searchParams);
+    params.set("tab", category);
+    params.set("card", cardId ?? "");
+    router.push(`/reference/vault?${params}`, { scroll: false });
+  }
+
+  useEffect(() => {
+    if (!requestedCard || !openCard) return;
+    const frame = requestAnimationFrame(() => {
+      const section = openedSection.current;
+      if (!section) return;
+      window.scrollTo({
+        top: Math.max(
+          0,
+          window.scrollY + section.getBoundingClientRect().top - 24,
+        ),
+        behavior: "instant",
+      });
+      section.querySelector("button")?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [requestedCard, openCard]);
 
   return (
     <div className="max-w-[900px]">
@@ -30,12 +61,18 @@ export function VaultView() {
         {t("intro")}
       </p>
 
-      <Tabs defaultValue="Core map">
+      <Tabs
+        value={selectedCategory}
+        onValueChange={(value) => {
+          const category = VAULT_CATEGORIES.find((tab) => tab === value);
+          if (category) navigate(category, null);
+        }}
+      >
         <TabsList
           aria-label={t("tabsLabel")}
           className="mb-[18px] h-auto flex-wrap justify-start gap-[7px] bg-transparent p-0"
         >
-          {categories.map((category) => (
+          {VAULT_CATEGORIES.map((category) => (
             <TabsTrigger
               key={category}
               value={category}
@@ -46,17 +83,19 @@ export function VaultView() {
           ))}
         </TabsList>
 
-        {categories.map((category) => (
+        {VAULT_CATEGORIES.map((category) => (
           <TabsContent key={category} value={category} className="mt-0">
             <div className="flex flex-col gap-[9px]">
               {LIB[category].map((card, index) => {
                 const title = act(`${category}.${index}.t`);
-                const isOpen = openCard === card.t;
-                const panelId = `vault-${category.toLowerCase().replaceAll(" ", "-")}-${index}`;
+                const isOpen = openCard === card.id;
+                const panelId = `vault-panel-${card.id}`;
 
                 return (
                   <section
-                    key={card.t}
+                    key={card.id}
+                    id={`vault-${card.id}`}
+                    ref={isOpen ? openedSection : undefined}
                     className="overflow-hidden rounded-xl border bg-card text-card-foreground"
                   >
                     <h2>
@@ -69,7 +108,9 @@ export function VaultView() {
                             ? t("closeCard", { title })
                             : t("openCard", { title })
                         }
-                        onClick={() => setOpenCard(isOpen ? null : card.t)}
+                        onClick={() =>
+                          navigate(category, isOpen ? null : card.id)
+                        }
                         className="flex w-full cursor-pointer items-center justify-between gap-3.5 bg-card px-5 py-[15px] text-left hover:bg-accent focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ring"
                       >
                         <span className="flex flex-wrap items-baseline gap-2.5">

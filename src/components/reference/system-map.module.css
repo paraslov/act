@@ -1,0 +1,403 @@
+.map {
+  --map-secondary: oklch(0.48 0 0);
+  --map-faint: oklch(0.6 0 0);
+  --map-hairline: oklch(0.94 0 0);
+  --map-connector: oklch(0.85 0 0);
+  --map-fill: oklch(0.975 0 0);
+  --map-node-border: oklch(0.9 0 0);
+  --map-hover-border: oklch(0.7 0 0);
+  --map-dashed-border: oklch(0.88 0 0);
+  --map-open: oklch(0.55 0.13 55);
+  --map-engaged: oklch(0.48 0.1 158);
+  --map-metric: oklch(0.4 0.08 158);
+  max-width: 1080px;
+  line-height: 1.5;
+}
+
+[class~="dark"] .map {
+  --map-secondary: var(--muted-foreground);
+  --map-faint: var(--muted-foreground);
+  --map-hairline: var(--border);
+  --map-connector: oklch(0.4 0 0);
+  --map-fill: var(--muted);
+  --map-node-border: oklch(0.4 0 0);
+  --map-hover-border: oklch(0.6 0 0);
+  --map-dashed-border: oklch(0.4 0 0);
+  --map-open: var(--away);
+  --map-engaged: var(--toward);
+  --map-metric: var(--toward);
+}
+
+.map a:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 3px;
+}
+
+.header,
+.choiceHeader {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.header h1 {
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 34px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.micro,
+.eyebrow,
+.choiceNote {
+  font-family: var(--font-mono), monospace;
+  font-weight: 400;
+  font-size: 9.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--map-secondary);
+}
+
+.eyebrow {
+  font-size: 11.5px;
+  letter-spacing: 0.08em;
+  color: var(--muted-foreground);
+}
+.lead {
+  margin: 8px 0 22px;
+  max-width: 70ch;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--map-secondary);
+}
+.northStar {
+  display: block;
+  padding: 22px 24px;
+  border-radius: 14px;
+  background: var(--inverse);
+  color: var(--inverse-foreground);
+  text-align: center;
+}
+.northStar:hover {
+  background: oklch(0.26 0 0);
+}
+.northStar .micro {
+  display: block;
+  color: oklch(0.72 0 0);
+  font-size: 10px;
+}
+.northStarTitle {
+  display: block;
+  margin-top: 7px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 30px;
+  letter-spacing: -0.015em;
+}
+.definition {
+  display: block;
+  margin: 6px auto 0;
+  max-width: 62ch;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--inverse-muted);
+  text-wrap: pretty;
+}
+.stem {
+  height: 18px;
+  width: 1px;
+  margin-inline: auto;
+  background: var(--map-connector);
+}
+.bracket {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+.bracket > div {
+  height: 18px;
+  border-top: 1px solid var(--map-connector);
+}
+.bracket > div:first-child {
+  margin-left: 50%;
+  border-left: 1px solid var(--map-connector);
+}
+.bracket > div:nth-child(2)::after {
+  content: "";
+  display: block;
+  width: 1px;
+  height: 100%;
+  margin-inline: auto;
+  background: var(--map-connector);
+}
+.bracket > div:last-child {
+  margin-right: 50%;
+  border-right: 1px solid var(--map-connector);
+}
+.pillars {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.pillar {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+}
+.pillarKey {
+  margin-bottom: 3px;
+  font-size: 10px;
+}
+.pillar[data-pillar="Open"] .pillarKey {
+  color: var(--map-open);
+}
+.pillar[data-pillar="Aware"] .pillarKey {
+  color: var(--aware);
+}
+.pillar[data-pillar="Engaged"] .pillarKey {
+  color: var(--map-engaged);
+}
+.pillar h2 {
+  margin-bottom: 4px;
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 22px;
+  letter-spacing: -0.01em;
+}
+.question {
+  font-size: 13px;
+  color: var(--muted-foreground);
+}
+.band {
+  padding-top: 13px;
+  border-top: 1px solid var(--map-hairline);
+}
+.band h3 {
+  margin-bottom: 8px;
+}
+.nodes,
+.loopNodes,
+.basementNodes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.node {
+  display: inline-block;
+  max-width: 100%;
+  padding: 6px 11px;
+  border: 1px solid var(--map-node-border);
+  border-radius: 8px;
+  background: var(--map-fill);
+  font-size: 13px;
+  font-weight: 500;
+  overflow-wrap: anywhere;
+}
+.node:hover {
+  background: var(--card);
+  border-color: var(--map-hover-border);
+}
+.stuckLabel {
+  margin: 10px 0 6px;
+  letter-spacing: 0.14em;
+  color: var(--map-open);
+}
+.stuck {
+  padding: 5px 10px;
+  border-style: dashed;
+  border-color: var(--map-dashed-border);
+  background: transparent;
+  color: var(--map-secondary);
+  font-size: 12.5px;
+  font-weight: 400;
+}
+.stuck:hover {
+  border-color: var(--away);
+  color: var(--away);
+}
+.metric {
+  background: var(--card);
+  color: var(--map-metric);
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.metric:hover {
+  border-color: oklch(0.6 0.09 158);
+}
+.choice {
+  margin-top: 20px;
+  padding: 20px 22px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--card);
+}
+.choiceHeader {
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.choiceHeader h2 {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.choiceNote {
+  font-size: 10.5px;
+  letter-spacing: normal;
+  color: var(--map-faint);
+}
+.choiceFlow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.hook {
+  padding: 9px 13px;
+  border: 1px dashed var(--map-dashed-border);
+  border-radius: 10px;
+}
+.hook .micro {
+  letter-spacing: 0.14em;
+  color: var(--map-faint);
+}
+.hook :where(p + p) {
+  margin-top: 2px;
+  font-size: 13px;
+}
+.arrow {
+  font-size: 15px;
+  color: var(--map-hover-border);
+}
+.choicePoint {
+  padding: 11px 16px;
+  border-radius: 10px;
+  background: var(--inverse);
+  color: var(--inverse-foreground);
+  font-family: var(--font-serif), Georgia, serif;
+  font-size: 18px;
+}
+.choicePoint:hover {
+  background: oklch(0.28 0 0);
+}
+.away,
+.toward {
+  padding: 9px 14px;
+  border: 1px solid;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.away {
+  border-color: oklch(0.62 0.12 50);
+  background: oklch(0.985 0.015 50);
+  color: oklch(0.45 0.12 50);
+}
+.away:hover {
+  background: oklch(0.96 0.03 50);
+}
+.toward {
+  border-color: oklch(0.5 0.1 158);
+  background: oklch(0.985 0.015 158);
+  color: oklch(0.4 0.1 158);
+}
+.toward:hover {
+  background: oklch(0.96 0.03 158);
+}
+[class~="dark"] .away {
+  border-color: var(--away);
+  background: var(--away-tint);
+  color: var(--away);
+}
+[class~="dark"] .toward {
+  border-color: var(--toward);
+  background: var(--toward-tint);
+  color: var(--toward);
+}
+[class~="dark"] .away:hover {
+  background: var(--away-border);
+}
+[class~="dark"] .toward:hover {
+  background: var(--toward-border);
+}
+.choiceDescription {
+  margin-top: 14px;
+  max-width: 72ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--map-secondary);
+}
+.choiceDescription a,
+.operations a,
+.evidence a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.operations {
+  margin: 18px 0 8px;
+}
+.loopNodes,
+.basementNodes {
+  align-items: center;
+  gap: 8px;
+}
+.loopNode {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 8px 12px;
+  border-radius: 9px;
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--map-secondary);
+}
+.loopNode .micro {
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  color: var(--map-metric);
+}
+.basement {
+  margin-top: 20px;
+  padding: 18px 22px 20px;
+  border: 1px dashed var(--map-dashed-border);
+  border-radius: 14px;
+  background: var(--map-fill);
+}
+.basement h2 {
+  margin-bottom: 4px;
+  color: var(--muted-foreground);
+}
+.basement p {
+  margin-bottom: 12px;
+  max-width: 70ch;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--map-secondary);
+}
+.basementNode {
+  background: var(--card);
+  font-weight: 400;
+}
+.evidence {
+  margin-top: 18px;
+  max-width: 74ch;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--map-faint);
+}
+
+@media (width < 1040px) {
+  .stem,
+  .bracket {
+    display: none;
+  }
+  .pillars {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 18px;
+  }
+}

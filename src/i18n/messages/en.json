@@ -26,7 +26,8 @@
     "streak": "Streak",
     "days": "{count, plural, one {day} other {days}}",
     "toggleTheme": "Toggle theme",
-    "streakUnit": "days with a Toward Move made while uncomfortable"
+    "streakUnit": "days with a Toward Move made while uncomfortable",
+    "systemMap": "System map"
   },
   "placeholder": {
     "description": "This view is ready for its screen implementation in the next build step."
@@ -254,6 +255,28 @@
       "example": "Example",
       "deeper": "Deeper",
       "legend": "Evidence tags: <a>(a)</a> well replicated · <b>(b)</b> plausible, mixed data · <c>(c)</c> speculative / for self-observation. Scored self-checks in this app are personal heuristics (c), not diagnostic instruments."
+    },
+    "systemMap": {
+      "title": "System map",
+      "eyebrow": "Every node opens its Vault card",
+      "lead": "One tree for the whole system. Flexibility sits at the top; everything under it is either what is happening (Model), what you can do about it (Skills), or how you would know it worked (Metrics). Theory lives in the basement — known, not carried around daily.",
+      "northStar": "North star · master stat",
+      "definition": "Contact the present fully — and keep or change behaviour in the service of chosen values.",
+      "model": "Model · what is it",
+      "stuck": "Stuck as",
+      "skills": "Skills · what do I do",
+      "metrics": "Metrics · is it working",
+      "choiceTitle": "Choice Point — the interface",
+      "choiceNote": "Not a seventh process",
+      "hook": "Hook",
+      "hookTypes": "thought · feeling · urge · memory",
+      "away": "Away move",
+      "toward": "Toward move",
+      "choiceDescription": "The hook doesn't have to leave first. Away buys short-term relief; toward is scored against workability — workable toward what. Both get logged in <episodes>Episodes</episodes>.",
+      "operations": "The five operations · <loop>the loop</loop>",
+      "basement": "Theoretical basement",
+      "basementDescription": "Worth knowing once, not carrying around daily. It explains where fusion, shoulds and self-stories get their force.",
+      "evidence": "Evidence: flexibility as a construct <strong>(a/b)</strong>; the six processes as separate causal mechanisms <strong>(b)</strong> — they overlap empirically. Choice Point and the 0–2 checks are teaching devices and personal heuristics <strong>(c)</strong>. Full notes in the <vault>Vault</vault>."
     }
   },
   "episodeModal": {
@@ -330,7 +353,9 @@
       }
     },
     "states": {
-      "none": { "label": "No status" },
+      "none": {
+        "label": "No status"
+      },
       "fusion": {
         "label": "Cognitive Fusion",
         "description": "The question isn't “do I believe it 100%?” but “how much is this thought steering my behaviour right now?” Counter-skill: Defuse."
@@ -357,7 +382,9 @@
       }
     },
     "skills": {
-      "none": { "label": "Skill wasn’t used" },
+      "none": {
+        "label": "Skill wasn’t used"
+      },
       "notice": {
         "label": "Notice"
       },
@@ -465,7 +492,8 @@
         "processes": "Values · Committed action",
         "body": "A direction stays in sight and behaviour moves that way in small, repeatable steps, with the discomfort still aboard rather than dropped off first.",
         "fail": "Drift — the direction goes out of view, so every option looks equally fine — or the frozen and impulsive extremes.",
-        "ask": "What would the person I want to be do in the next sixty seconds?"
+        "ask": "What would the person I want to be do in the next sixty seconds?",
+        "mapAsk": "What would the person I want to be do next?"
       }
     },
     "myths": {
@@ -614,6 +642,25 @@
           "deep": "Distinguish functionally, never by wording: pliance (following for social consequences), tracking (following because the rule describes reality), augmenting (the rule changes how much consequences matter). The RFT → clinical-mechanism link is the weak joint in the chain."
         }
       }
+    },
+    "referenceNodes": {
+      "acceptance": "Acceptance",
+      "defusion": "Defusion",
+      "present": "Present moment",
+      "self": "Self-as-context",
+      "values": "Values",
+      "commit": "Committed action",
+      "avoidance": "Experiential avoidance",
+      "fusion": "Cognitive fusion",
+      "autopilot": "Autopilot · rehearsal · replay",
+      "selfContent": "Self-as-content",
+      "drift": "Values disconnection",
+      "stuck": "Inaction · impulsive action",
+      "accept": "Accept / make room",
+      "anchor": "Anchor / return",
+      "contextualism": "Functional contextualism",
+      "rft": "RFT",
+      "rules": "Rule-governed behaviour"
     }
   }
 }

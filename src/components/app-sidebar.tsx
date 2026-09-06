@@ -18,6 +18,7 @@ type NavItem = {
     | "journal"
     | "episodes"
     | "progress"
+    | "systemMap"
     | "flexibility"
     | "loop"
     | "vault";
@@ -32,6 +33,7 @@ const dailyItems: NavItem[] = [
 ];
 
 const referenceItems: NavItem[] = [
+  { href: "/reference/system-map", label: "systemMap" },
   { href: "/reference/flexibility", label: "flexibility" },
   { href: "/reference/loop", label: "loop" },
   { href: "/reference/vault", label: "vault" },
