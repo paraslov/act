@@ -11,8 +11,8 @@ workflow runs. It installs the locked pnpm dependencies on Node.js 24 and runs:
   apply all migrations twice, then test runtime permissions and user isolation
   for settings, day entries, and episodes, including pooled identity reset.
 
-No GitHub secrets are required. Database credentials in CI are disposable test
-credentials. The build fetches Google fonts and requires internet access.
+The test jobs require no secrets. Database credentials in CI are disposable test
+credentials. The production release job requires the secrets listed below. The build fetches Google fonts and requires internet access.
 Run `pnpm check` and `pnpm build` locally. `pnpm test:db` requires explicit
 `DATABASE_ADMIN_URL` and `DATABASE_URL` pointing to a migrated test database;
 it inserts temporary users and removes them afterwards. Never target production.
@@ -38,10 +38,10 @@ Require branches to be up to date before merging, and restrict bypasses.
    Preserve provider-required TLS parameters. The app rejects superuser and
    BYPASSRLS connections; the provider's default owner URL is unsuitable.
 
-Do not run migrations in the Vercel build command: preview builds may run
-concurrently, and the deployed app must not receive owner credentials. For
-later schema releases, apply backward-compatible migrations from a trusted
-operator shell before merging the corresponding application change.
+Production migrations run automatically in GitHub Actions after both test jobs
+pass and before Vercel deployment. Do not add migrations to the Vercel build
+command or expose owner credentials to the deployed app. Preview databases
+still require their own migrations using their own owner URL.
 
 ## Connect Vercel
 
@@ -53,6 +53,7 @@ operator shell before merging the corresponding application change.
    | --- | --- |
    | `DATABASE_URL` | Environment-specific pooled `act_app` URL with TLS |
    | `AUTH_THROTTLE_SECRET` | Unique random secret, at least 32 characters; generate with `openssl rand -base64 32` |
+   | `ENABLE_EXPERIMENTAL_COREPACK` | `1`, to enable the pinned package manager |
 
    Do not add `DATABASE_ADMIN_URL` or use `NEXT_PUBLIC_` for any secret.
    `AUTH_TRUST_PROXY_HEADERS` is unnecessary on Vercel.
@@ -60,16 +61,76 @@ operator shell before merging the corresponding application change.
    the exact pnpm version from `packageManager`; the Vercel build runs lint,
    type checking, unit tests, then Next.js compilation. Leave output-directory
    settings at the Next.js default. Select a function region near PostgreSQL.
-4. Deploy, then verify login, save a moment and a daily entry, refresh to
+4. Configure the release secrets below, then push to `main`. After deployment,
+   verify login, save a moment and a daily entry, refresh to
    confirm persistence, log out, and confirm protected pages require login.
    Use two preview accounts to check their records stay separate.
 
-Vercel's Git integration handles continuous deployment: branches/PRs create
-Preview deployments, and merges to `main` create Production deployments.
-GitHub's required checks gate merges; Vercel also repeats code quality checks
-in its own build. Vercel does not automatically wait for the separate GitHub
-database job, so the `main` ruleset is required for that gate. No Vercel token
-in GitHub or separate deployment Action is needed for this setup.
+## Enable automatic production migrations and deployment
+
+Complete this setup before merging the release workflow. `vercel.json` disables
+Vercel's automatic Git deployments for `main`, so application code cannot deploy
+before GitHub finishes its migrations. The currently deployed site keeps running.
+Production releases now come from the GitHub workflow; other branches can still
+receive Vercel previews using their separately configured databases.
+
+1. In GitHub, open this repository → Settings → Environments → New environment.
+   Name it `production`. Restrict deployment branches to `main`. Required
+   reviewers are optional; leave them unset for fully automatic releases.
+2. Add these **environment secrets** to `production` (not to Vercel):
+
+   | Secret | Where to get the value |
+   | --- | --- |
+   | `DATABASE_ADMIN_URL` | Neon → Connect → `neondb_owner`, pooling OFF; copy the complete production URL with the password |
+   | `VERCEL_TOKEN` | [Vercel account tokens](https://vercel.com/account/tokens); create a token scoped to the team owning ACT |
+   | `VERCEL_ORG_ID` | Vercel team settings → General → Team ID (the CLI calls it Org ID) |
+   | `VERCEL_PROJECT_ID` | ACT's Vercel project settings → General → Project ID |
+
+   Alternatively, `vercel link` in a trusted local terminal creates ignored
+   `.vercel/project.json`, whose `orgId` and `projectId` contain the two IDs.
+   Keep the restricted pooled `DATABASE_URL` and auth secret in Vercel as above.
+3. Commit and push these changes to `main`. In GitHub → Actions → CI, confirm
+   both test jobs pass, followed by **Migrate and deploy production**. The release
+   applies pending SQL files and deploys the exact tested checkout using a pinned
+   Vercel CLI. The owner URL is supplied only to the migration/validation steps;
+   it is never written to an environment file or passed to the Vercel CLI.
+4. If setup was incomplete on the first run, add the missing secrets and use
+   Actions → CI → Run workflow → `main`. This runs tests again before releasing.
+
+PRs and workflow runs on other branches never receive production release secrets
+or run production migrations. Runs for `main` are serialized and are not cancelled
+by subsequent pushes. Outdated commits are rejected before migration/deployment,
+so rerunning an old workflow cannot deploy an old checkout over a newer release.
+Do not bypass this sequence with a dashboard production redeploy or deploy hook
+when a release includes schema changes.
+
+## Adding future migrations
+
+1. Add a new SQL file, for example `migrations/0004_add_reminders.sql`. Preserve
+   zero-padded ordering and never edit or rename an already applied migration.
+2. Include appropriate grants for `act_app`; user-owned tables also need forced
+   RLS and policies following the existing migrations.
+3. Test locally with `pnpm db:migrate` and exercise the changed app behavior.
+   Apply separately to your preview database before testing a schema-dependent
+   preview. CI tests all migrations on a fresh PostgreSQL database and tests
+   concurrent execution, reruns, and rollback after a failed migration.
+4. Merge to `main`. GitHub tests, migrates production, then deploys automatically.
+
+The runner holds a PostgreSQL advisory lock on one direct connection throughout
+migration discovery and execution. Concurrent runners wait (up to 60 seconds for
+a lock) and then recheck which files were applied. Each SQL file and its migration
+record commit together; a failed file rolls back and blocks deployment. Earlier
+successful files remain applied. The connection closes and releases its lock on
+exit. Use the direct URL; transaction pooling is unsuitable for this session lock.
+Do not include transaction-control statements or operations such as
+`CREATE INDEX CONCURRENTLY` in these automatically wrapped migration files.
+
+Schema changes must remain compatible with the running and previous app versions:
+add a new column first, deploy code using it, and remove old columns in a later
+release. If migration succeeds but deployment fails, the schema remains updated
+and the previous app stays live. Fix the failure and run CI on current `main`;
+already-applied migration files will be skipped. Database rollback is a separate
+operator action, not part of Vercel application rollback.
 
 Deployment lint uses `pnpm lint:app` to check `src`, `scripts`, and `tests`.
 Vercel can add generated files and rewrite configuration formatting in its

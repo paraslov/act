@@ -112,5 +112,9 @@ production compilation. GitHub Actions also validates migrations and PostgreSQL
 row-level security in an isolated database.
 
 See [the deployment guide](docs/deployment.md) for GitHub required checks,
-production/preview database provisioning, Vercel environment variables, Git-based
-continuous deployment, and rollback instructions.
+production/preview database provisioning, Vercel environment variables, automatic
+production migrations and deployment through GitHub Actions, and rollback
+instructions. Production releases require a GitHub `production` environment with
+`DATABASE_ADMIN_URL`, `VERCEL_TOKEN`, `VERCEL_ORG_ID`, and `VERCEL_PROJECT_ID` secrets.
+The workflow tests, migrates, then deploys; native Vercel Git deployments for
+`main` are disabled so they cannot bypass migrations.

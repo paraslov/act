@@ -1,64 +1,47 @@
-import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
 import { config } from "dotenv";
 import pg from "pg";
+import { runMigrations } from "./lib/migrations.mjs";
 
 config({ path: ".env.local" });
 config({ path: ".env" });
 
 const connectionString = process.env.DATABASE_ADMIN_URL;
-
 if (!connectionString) {
   throw new Error("Set DATABASE_ADMIN_URL before migrating");
 }
 
-const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
-const migrationsDirectory = path.resolve(scriptDirectory, "../migrations");
-const pool = new pg.Pool({ connectionString, max: 1 });
-
+let url;
 try {
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS schema_migrations (
-      name text PRIMARY KEY,
-      applied_at timestamptz NOT NULL DEFAULT now()
-    )
-  `);
+  url = new URL(connectionString);
+} catch {
+  // URL parser errors include their input, which would expose credentials.
+  throw new Error(
+    "DATABASE_ADMIN_URL must be a complete PostgreSQL connection URL",
+  );
+}
+if (!["postgres:", "postgresql:"].includes(url.protocol)) {
+  throw new Error("DATABASE_ADMIN_URL must be a PostgreSQL connection URL");
+}
+if (url.hostname.includes("-pooler.")) {
+  throw new Error(
+    "DATABASE_ADMIN_URL must use the direct Neon URL with pooling OFF",
+  );
+}
 
-  const migrationNames = (await readdir(migrationsDirectory))
-    .filter((name) => name.endsWith(".sql"))
-    .sort();
-
-  for (const name of migrationNames) {
-    const alreadyApplied = await pool.query(
-      "SELECT 1 FROM schema_migrations WHERE name = $1",
-      [name],
-    );
-
-    if (alreadyApplied.rowCount) {
-      console.log(`skip ${name}`);
-      continue;
-    }
-
-    const sql = await readFile(path.join(migrationsDirectory, name), "utf8");
-    const client = await pool.connect();
-
-    try {
-      await client.query("BEGIN");
-      await client.query(sql);
-      await client.query("INSERT INTO schema_migrations (name) VALUES ($1)", [
-        name,
-      ]);
-      await client.query("COMMIT");
-      console.log(`apply ${name}`);
-    } catch (error) {
-      await client.query("ROLLBACK");
-      throw error;
-    } finally {
-      client.release();
-    }
-  }
+const directory = path.resolve(
+  path.dirname(fileURLToPath(import.meta.url)),
+  "../migrations",
+);
+const client = new pg.Client({
+  connectionString,
+  connectionTimeoutMillis: 10_000,
+});
+try {
+  await client.connect();
+  await runMigrations(client, directory);
 } finally {
-  await pool.end();
+  await client.end();
 }
