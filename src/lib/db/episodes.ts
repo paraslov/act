@@ -8,7 +8,9 @@ import type {
   EpisodeActivity,
   EpisodeDir,
   EpisodeFilters,
+  PersonalValueSnapshot,
 } from "@/lib/act/types";
+import { resolveOwnedActiveSnapshot } from "@/lib/db/personal-values";
 import { withCurrentUserDb } from "@/lib/db/user-context";
 import { postgresDateValue } from "@/lib/db/values";
 
@@ -28,6 +30,8 @@ type EpisodeRow = {
   move: string;
   workable: string;
   checks: Checks;
+  value_id: string | null;
+  value_snapshot: PersonalValueSnapshot | null;
   created_at: string | Date;
   updated_at: string | Date;
 };
@@ -51,11 +55,14 @@ export type CreateEpisodeInput = {
   move?: string;
   workable?: string;
   checks?: Checks;
+  /** Links one of the user's active values; its snapshot is stored with the row. */
+  valueId?: string | null;
 };
 
 const episodeColumns = `
   id, user_id, day, band, dir, weight, hook, hook_type, situation,
-  state, skill, value, move, workable, checks, created_at, updated_at
+  state, skill, value, move, workable, checks, value_id, value_snapshot,
+  created_at, updated_at
 `;
 
 function timestampValue(value: string | Date): string {
@@ -79,6 +86,8 @@ function mapEpisode(row: EpisodeRow): Episode {
     move: row.move,
     workable: row.workable,
     checks: row.checks ?? {},
+    valueId: row.value_id,
+    valueSnapshot: row.value_snapshot,
     createdAt: timestampValue(row.created_at),
     updatedAt: timestampValue(row.updated_at),
   };
@@ -132,13 +141,22 @@ export async function createEpisode(
   input: CreateEpisodeInput,
 ): Promise<Episode> {
   return withCurrentUserDb(async (client, userId) => {
+    // Ownership and active status are validated here rather than by a foreign key,
+    // in the same transaction as the insert that stores the resulting snapshot.
+    const snapshot = input.valueId
+      ? await resolveOwnedActiveSnapshot(client, input.valueId)
+      : null;
+    // A linked value also fills the free-text `value` column, which is what
+    // episode search scans. Episodes with no link keep whatever was typed.
+    const value = snapshot ? snapshot.title : (input.value ?? "");
+
     const result = await client.query<EpisodeRow>(
       `INSERT INTO episodes (
          user_id, day, band, dir, weight, hook, hook_type, situation,
-         state, skill, value, move, workable, checks
+         state, skill, value, move, workable, checks, value_id, value_snapshot
        ) VALUES (
          $1, $2::date, $3, $4, $5, $6, $7, $8,
-         $9, $10, $11, $12, $13, $14::jsonb
+         $9, $10, $11, $12, $13, $14::jsonb, $15, $16::jsonb
        )
        RETURNING ${episodeColumns}`,
       [
@@ -152,10 +170,12 @@ export async function createEpisode(
         input.situation ?? "",
         input.state,
         input.skill,
-        input.value ?? "",
+        value,
         input.move ?? "",
         input.workable ?? "",
         JSON.stringify(input.checks ?? {}),
+        snapshot?.valueId ?? null,
+        snapshot ? JSON.stringify(snapshot) : null,
       ],
     );
 

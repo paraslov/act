@@ -36,12 +36,16 @@ type JournalViewProps = {
   dayEntries: DayEntry[];
 };
 
-function hasText(value: string | undefined): boolean {
-  return Boolean(value?.trim());
+function hasText(value: unknown): boolean {
+  return typeof value === "string" && Boolean(value.trim());
 }
 
 function hasMorning(entry: DayEntry | undefined): boolean {
-  return Boolean(entry && Object.values(entry.morning).some(hasText));
+  if (!entry) return false;
+  // A linked value counts as a morning entry on its own, and its snapshot is an
+  // object — the text check skips non-strings rather than calling `.trim()`.
+  if (entry.morning.valueId || entry.morning.valueSnapshot) return true;
+  return Object.values(entry.morning).some(hasText);
 }
 
 function hasEvening(entry: DayEntry | undefined): boolean {

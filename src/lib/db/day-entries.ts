@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { DayEntry, DayEvening, DayMorning } from "@/lib/act/types";
+import { resolveOwnedActiveSnapshot } from "@/lib/db/personal-values";
 import { withCurrentUserDb } from "@/lib/db/user-context";
 import { postgresDateValue } from "@/lib/db/values";
 
@@ -11,9 +12,17 @@ type DayEntryRow = {
   evening: DayEvening;
 };
 
+/**
+ * Attaching a value is separate from the free-text morning fields so a value id
+ * is never treated as prose. `{ clear: true }` removes the link explicitly;
+ * omitting the selection leaves whatever is already stored alone.
+ */
+export type MorningValueSelection = { valueId: string } | { clear: true };
+
 export type DayEntryPatch = {
   morning?: DayMorning;
   evening?: DayEvening;
+  morningSelection?: MorningValueSelection;
 };
 
 function mapDayEntry(row: DayEntryRow): DayEntry {
@@ -63,7 +72,26 @@ export async function upsertDayEntry(
   patch: DayEntryPatch,
 ): Promise<DayEntry> {
   return withCurrentUserDb(async (client, userId) => {
-    const morning = patch.morning ? JSON.stringify(patch.morning) : null;
+    // The snapshot is resolved in this same transaction, so ownership validation
+    // and the write that stores it cannot drift apart. Both keys are written as
+    // JSON null when clearing — the `||` merge below only removes what is named.
+    const selection = patch.morningSelection;
+    let morningPatch = patch.morning;
+    if (selection && "clear" in selection) {
+      morningPatch = { ...patch.morning, valueId: null, valueSnapshot: null };
+    } else if (selection) {
+      const snapshot = await resolveOwnedActiveSnapshot(
+        client,
+        selection.valueId,
+      );
+      morningPatch = {
+        ...patch.morning,
+        valueId: snapshot.valueId,
+        valueSnapshot: snapshot,
+      };
+    }
+
+    const morning = morningPatch ? JSON.stringify(morningPatch) : null;
     const evening = patch.evening ? JSON.stringify(patch.evening) : null;
     const result = await client.query<DayEntryRow>(
       `INSERT INTO day_entries (user_id, day, morning, evening)

@@ -50,6 +50,18 @@ export const HOOK_TYPES = [
 ] as const;
 
 /**
+ * The four life domains a personal value can belong to. The order is fixed and
+ * display-only — domains are never ranked, scored or "completed", and an empty
+ * domain is not a gap. These ids are distinct from `AXES`, pillars and `BANDS`.
+ */
+export const DOMAINS = [
+  { id: "relationships", ...en.act.domains.relationships },
+  { id: "work_education", ...en.act.domains.work_education },
+  { id: "personal_growth_health", ...en.act.domains.personal_growth_health },
+  { id: "leisure", ...en.act.domains.leisure },
+] as const;
+
+/**
  * The eight three-hour time bands. Index 0–7 is what the `episodes.band` column
  * stores; these strings are display-only.
  */
@@ -198,6 +210,7 @@ export type AxisKey = (typeof AXES)[number]["id"];
 export type StateId = (typeof STATES)[number]["id"] | "none";
 export type SkillId = (typeof SKILLS)[number]["id"] | "none";
 export type HookType = (typeof HOOK_TYPES)[number]["id"];
+export type DomainId = (typeof DOMAINS)[number]["id"];
 
 /** Display string for a band index; empty string for an out-of-range index. */
 export function bandLabel(index: number): string {
@@ -208,6 +221,11 @@ export function bandLabel(index: number): string {
 export function stateLabel(id: string): string {
   if (id === "none") return en.act.states.none.label;
   return (STATES.find((s) => s.id === id) ?? STATES[0]).label;
+}
+
+/** Human label for a domain id, falling back to the first domain. */
+export function domainLabel(id: string): string {
+  return (DOMAINS.find((d) => d.id === id) ?? DOMAINS[0]).label;
 }
 
 /** Human label for a skill id, falling back to the first skill. */

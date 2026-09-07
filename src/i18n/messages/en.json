@@ -424,6 +424,24 @@
         "label": "Memory"
       }
     },
+    "domains": {
+      "relationships": {
+        "label": "Relationships",
+        "hint": "Partner, family, friends, the people you keep showing up for."
+      },
+      "work_education": {
+        "label": "Work & Education",
+        "hint": "Your job, study, craft — what you're building or learning."
+      },
+      "personal_growth_health": {
+        "label": "Personal Growth & Health",
+        "hint": "Body, mind, habits, how you treat yourself."
+      },
+      "leisure": {
+        "label": "Leisure",
+        "hint": "Rest, play, hobbies, time that doesn't have to earn anything."
+      }
+    },
     "hookGroups": {
       "0": {
         "label": "“They'll see I can't handle it” — the competence story"

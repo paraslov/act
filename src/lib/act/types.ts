@@ -1,6 +1,40 @@
-import type { AxisKey, HookType, SkillId, StateId } from "@/lib/act/constants";
+import type {
+  AxisKey,
+  DomainId,
+  HookType,
+  SkillId,
+  StateId,
+} from "@/lib/act/constants";
 
 export type EpisodeDir = "toward" | "away";
+
+/**
+ * One personal value, shaped like a row of `personal_values` with camelCase keys.
+ * `archivedAt` is null while the value is active. Values are never scored.
+ */
+export type PersonalValue = {
+  id: string;
+  userId: string;
+  title: string;
+  domains: DomainId[];
+  meaning: string;
+  examples: string[];
+  archivedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+/**
+ * A value frozen at the moment it was attached to a morning entry or an episode.
+ * Historical surfaces render from this, so editing or archiving the underlying
+ * value never rewrites what a past day recorded.
+ */
+export type PersonalValueSnapshot = {
+  valueId: string;
+  title: string;
+  meaning: string;
+  domains: DomainId[];
+};
 
 /** The five flexibility-check axes, each scored 0, 1 or 2. */
 export type Checks = Partial<Record<AxisKey, 0 | 1 | 2>>;
@@ -25,6 +59,9 @@ export type Episode = {
   move: string;
   workable: string;
   checks: Checks;
+  /** Live link to the value, kept alongside the snapshot for suggestions. */
+  valueId?: string | null;
+  valueSnapshot?: PersonalValueSnapshot | null;
   createdAt: string;
   updatedAt: string;
 };
@@ -37,6 +74,9 @@ export type DayMorning = {
   aware?: string;
   engaged?: string;
   toward?: string;
+  /** Live link to the value, kept alongside the snapshot for suggestions. */
+  valueId?: string | null;
+  valueSnapshot?: PersonalValueSnapshot | null;
 };
 
 export type DayEvening = {
