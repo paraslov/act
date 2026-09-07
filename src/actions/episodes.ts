@@ -54,6 +54,9 @@ const createEpisodeSchema = z.object({
   move: optionalTextSchema.transform((value) => value || "—"),
   workable: optionalTextSchema.transform((value) => value || "—"),
   checks: z.object(checksShape).optional().default({}),
+  // Optional and independent of `dir`: a value may sit beside an away move. The
+  // repository resolves its snapshot, refusing a foreign or archived value.
+  valueId: z.uuid().nullable().optional(),
 });
 
 export type CreateEpisodeActionInput = z.input<typeof createEpisodeSchema>;

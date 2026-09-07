@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import type { DayEntry } from "@/lib/act/types";
+import type { MorningValueSelection } from "@/lib/db/day-entries";
 import { upsertDayEntry } from "@/lib/db/day-entries";
 
 const daySchema = z
@@ -33,6 +34,9 @@ const eveningSchema = z.object({
 const saveMorningSchema = z.object({
   day: daySchema,
   morning: morningSchema,
+  // Kept outside `morning` so a value id is never merged in as free text. An
+  // explicit `null` clears the link; omitting the key leaves it as it was.
+  valueId: z.uuid().nullable().optional(),
 });
 
 const saveEveningSchema = z.object({
@@ -43,12 +47,22 @@ const saveEveningSchema = z.object({
 export type SaveMorningActionInput = z.input<typeof saveMorningSchema>;
 export type SaveEveningActionInput = z.input<typeof saveEveningSchema>;
 
+function morningSelectionFor(
+  valueId: string | null | undefined,
+): MorningValueSelection | undefined {
+  if (valueId === undefined) return undefined;
+  return valueId === null ? { clear: true } : { valueId };
+}
+
 /** Saves the morning half of a day without disturbing its evening reflection. */
 export async function saveMorningAction(
   input: SaveMorningActionInput,
 ): Promise<DayEntry> {
-  const { day, morning } = saveMorningSchema.parse(input);
-  const entry = await upsertDayEntry(day, { morning });
+  const { day, morning, valueId } = saveMorningSchema.parse(input);
+  const entry = await upsertDayEntry(day, {
+    morning,
+    morningSelection: morningSelectionFor(valueId),
+  });
   revalidatePath("/");
   return entry;
 }
