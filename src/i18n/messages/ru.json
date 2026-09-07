@@ -116,6 +116,8 @@
       "anySkill": "Любой навык",
       "timeLabel": "Фильтр по времени",
       "anyTime": "Любое время",
+      "domainLabel": "Фильтр по области",
+      "anyDomain": "Любая область",
       "searchLabel": "Поиск эпизодов",
       "searchPlaceholder": "Зацепки, действия, ценности…",
       "clear": "Сбросить"

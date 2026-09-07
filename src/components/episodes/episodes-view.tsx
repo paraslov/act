@@ -23,6 +23,8 @@ import {
 import {
   AXES,
   BANDS,
+  DOMAINS,
+  type DomainId,
   HOOK_TYPES,
   type HookType,
   SKILLS,
@@ -43,6 +45,7 @@ type ViewFilters = {
   effect: StateId | "all";
   skill: SkillId | "all";
   band: (typeof BANDS)[number] | "all";
+  domain: DomainId | "all";
   q: string;
 };
 
@@ -74,12 +77,17 @@ function isHookType(value: string | null): value is HookType {
   return HOOK_TYPES.some((item) => item.id === value);
 }
 
+function isDomain(value: string | null): value is DomainId {
+  return DOMAINS.some((item) => item.id === value);
+}
+
 function readFilters(params: URLSearchParams): ViewFilters {
   const dir = params.get("dir");
   const hookType = params.get("hookType");
   const effect = params.get("effect");
   const skill = params.get("skill");
   const band = params.get("band");
+  const domain = params.get("domain");
 
   return {
     dir: isDirection(dir) ? dir : "all",
@@ -87,6 +95,7 @@ function readFilters(params: URLSearchParams): ViewFilters {
     effect: isState(effect) ? effect : "all",
     skill: isSkill(skill) ? skill : "all",
     band: isBand(band) ? band : "all",
+    domain: isDomain(domain) ? domain : "all",
     q: params.get("q") ?? "",
   };
 }
@@ -98,6 +107,7 @@ function filtersQuery(filters: ViewFilters): string {
   if (filters.effect !== "all") params.set("effect", filters.effect);
   if (filters.skill !== "all") params.set("skill", filters.skill);
   if (filters.band !== "all") params.set("band", filters.band);
+  if (filters.domain !== "all") params.set("domain", filters.domain);
   if (filters.q) params.set("q", filters.q);
   return params.toString();
 }
@@ -250,6 +260,29 @@ function FilterBar({
         </SelectContent>
       </Select>
 
+      <Select
+        value={filters.domain}
+        onValueChange={(domain) =>
+          patch({ domain: domain as ViewFilters["domain"] })
+        }
+      >
+        <SelectTrigger
+          size="sm"
+          aria-label={t("domainLabel")}
+          className="rounded-button bg-card text-[13px] shadow-none dark:bg-card"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem value="all">{t("anyDomain")}</SelectItem>
+          {DOMAINS.map((domain) => (
+            <SelectItem key={domain.id} value={domain.id}>
+              {act(`domains.${domain.id}.label`)}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+
       <Input
         value={filters.q}
         onChange={(event) => patch({ q: event.target.value }, true)}
@@ -268,6 +301,7 @@ function FilterBar({
             effect: "all",
             skill: "all",
             band: "all",
+            domain: "all",
             q: "",
           })
         }
@@ -448,6 +482,7 @@ export function EpisodesView({ episodes }: { episodes: Episode[] }) {
       state: filters.effect,
       skill: filters.skill,
       band,
+      domain: filters.domain,
       text: filters.q,
     });
   }, [episodes, filters]);

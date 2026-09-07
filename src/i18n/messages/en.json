@@ -116,6 +116,8 @@
       "anySkill": "Any skill",
       "timeLabel": "Filter by time",
       "anyTime": "Any time",
+      "domainLabel": "Filter by area",
+      "anyDomain": "Any area",
       "searchLabel": "Search episodes",
       "searchPlaceholder": "Search hooks, moves, values…",
       "clear": "Clear"

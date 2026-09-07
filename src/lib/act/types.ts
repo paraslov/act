@@ -101,5 +101,7 @@ export type EpisodeFilters = {
   state?: StateId | "all";
   skill?: SkillId | "all";
   band?: number | "all";
+  /** Matches against the linked value's stored domains, never a live record. */
+  domain?: DomainId | "all";
   text?: string;
 };

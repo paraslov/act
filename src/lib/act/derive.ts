@@ -106,6 +106,12 @@ export function matchesFilters(
   ) {
     return false;
   }
+  if (filters.domain && filters.domain !== "all") {
+    // Domains come from the snapshot taken when the value was linked, so an
+    // edited or archived value never moves an old episode between areas. An
+    // episode with no linked value belongs to no area and drops out here.
+    if (!episode.valueSnapshot?.domains.includes(filters.domain)) return false;
+  }
   const query = normalizeText(filters.text).trim();
   if (query) {
     // The snapshot title is searched too: a linked value whose episode also has

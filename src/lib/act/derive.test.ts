@@ -18,7 +18,12 @@ import {
   towardStreak,
   unusedSkills,
 } from "./derive";
-import type { Checks, Episode, EpisodeDir } from "./types";
+import type {
+  Checks,
+  Episode,
+  EpisodeDir,
+  PersonalValueSnapshot,
+} from "./types";
 
 let seq = 0;
 
@@ -151,6 +156,34 @@ describe("filterEpisodes", () => {
     expect(filterEpisodes(episodes, { hookType: "feeling" })).toEqual([]);
     expect(filterEpisodes(episodes, { hookType: "all" })).toEqual(episodes);
     expect(filterEpisodes(episodes, {})).toEqual(episodes);
+  });
+
+  it("filters by the linked value's stored domains", () => {
+    const snapshot = (domains: PersonalValueSnapshot["domains"]) => ({
+      valueId: "v1",
+      title: "Be honest and warm",
+      meaning: "",
+      domains,
+    });
+    const twoAreas = ep({
+      valueSnapshot: snapshot(["relationships", "work_education"]),
+    });
+    const leisure = ep({ valueSnapshot: snapshot(["leisure"]) });
+    const unlinked = ep({ value: "Honest, in my own words" });
+    const episodes = [twoAreas, leisure, unlinked];
+
+    expect(filterEpisodes(episodes, { domain: "relationships" })).toEqual([
+      twoAreas,
+    ]);
+    expect(filterEpisodes(episodes, { domain: "work_education" })).toEqual([
+      twoAreas,
+    ]);
+    expect(filterEpisodes(episodes, { domain: "leisure" })).toEqual([leisure]);
+    // An episode with no linked value sits in no area at all.
+    expect(
+      filterEpisodes(episodes, { domain: "personal_growth_health" }),
+    ).toEqual([]);
+    expect(filterEpisodes(episodes, { domain: "all" })).toEqual(episodes);
   });
 
   it("limits text search to hooks, moves and values", () => {
