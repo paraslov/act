@@ -8,8 +8,21 @@ import { LIB, type VaultCategory } from "@/lib/act/constants";
 import {
   resolveVaultSelection,
   VAULT_CATEGORIES,
+  VAULT_LAYERS,
   type VaultCardId,
+  type VaultLayer,
 } from "@/lib/reference/vault";
+import {
+  OrientToValuesBlocks,
+  OrientToValuesFooter,
+} from "./orient-to-values-card";
+
+const layerKeys: Record<VaultLayer, string> = {
+  short: "inShort",
+  practice: "inPractice",
+  example: "example",
+  deep: "deeper",
+};
 
 const tabKeys: Record<VaultCategory, string> = {
   "Core map": "coreMap",
@@ -89,6 +102,7 @@ export function VaultView() {
               {LIB[category].map((card, index) => {
                 const title = act(`${category}.${index}.t`);
                 const isOpen = openCard === card.id;
+                const isValuesCard = card.id === "orient-to-values";
                 const panelId = `vault-panel-${card.id}`;
 
                 return (
@@ -135,24 +149,31 @@ export function VaultView() {
                         id={panelId}
                         className="flex flex-col gap-3.5 px-5 pb-5"
                       >
-                        {[
-                          [t("inShort"), act(`${category}.${index}.short`)],
-                          [
-                            t("inPractice"),
-                            act(`${category}.${index}.practice`),
-                          ],
-                          [t("example"), act(`${category}.${index}.example`)],
-                          [t("deeper"), act(`${category}.${index}.deep`)],
-                        ].map(([label, content]) => (
-                          <div key={label}>
+                        {VAULT_LAYERS.map((layer) => (
+                          <div key={layer}>
                             <h3 className="mb-1 font-mono text-[10px] tracking-[0.16em] text-toward uppercase">
-                              {label}
+                              {t(layerKeys[layer])}
                             </h3>
+                            {isValuesCard ? (
+                              <OrientToValuesBlocks
+                                layer={layer}
+                                slot="before"
+                              />
+                            ) : null}
                             <p className="max-w-[72ch] text-sm leading-[1.65] text-foreground/85">
-                              {content}
+                              {act.rich(`${category}.${index}.${layer}`, {
+                                em: (chunks) => <em>{chunks}</em>,
+                              })}
                             </p>
+                            {isValuesCard ? (
+                              <OrientToValuesBlocks
+                                layer={layer}
+                                slot="after"
+                              />
+                            ) : null}
                           </div>
                         ))}
+                        {isValuesCard ? <OrientToValuesFooter /> : null}
                       </div>
                     ) : null}
                   </section>

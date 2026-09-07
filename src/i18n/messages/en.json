@@ -357,7 +357,57 @@
       "inPractice": "In practice",
       "example": "Example",
       "deeper": "Deeper",
-      "legend": "Evidence tags: <a>(a)</a> well replicated · <b>(b)</b> plausible, mixed data · <c>(c)</c> speculative / for self-observation. Scored self-checks in this app are personal heuristics (c), not diagnostic instruments."
+      "legend": "Evidence tags: <a>(a)</a> well replicated · <b>(b)</b> plausible, mixed data · <c>(c)</c> speculative / for self-observation. Scored self-checks in this app are personal heuristics (c), not diagnostic instruments.",
+      "orientToValues": {
+        "distinctions": {
+          "domain": {
+            "term": "Domain",
+            "text": "Where in life. A stable area — Relationships, Work & Education, Personal Growth & Health, Leisure. You don’t finish a domain."
+          },
+          "value": {
+            "term": "Value",
+            "text": "How you want to act in that area. Ongoing, available every day, can’t be ticked off or lost."
+          },
+          "goal": {
+            "term": "Goal",
+            "text": "A result you can reach and cross out. Serves a value; is not one. Goals can be missed."
+          },
+          "action": {
+            "term": "Action",
+            "text": "What you actually do in the next minutes. Small, observable, today."
+          }
+        },
+        "mapLabel": "The four domains this app uses",
+        "valueSoundsLike": "A value sounds like",
+        "goalSoundsLike": "A goal sounds like",
+        "map": {
+          "relationships": {
+            "value": "Be honest and warm, even when it’s uncomfortable",
+            "goal": "Have the review conversation this week"
+          },
+          "work_education": {
+            "value": "Finish dull things without needing them to be interesting",
+            "goal": "File the tax paperwork by Friday"
+          },
+          "personal_growth_health": {
+            "value": "Take care of this body like it belongs to someone I love",
+            "goal": "Book the clinic appointment"
+          },
+          "leisure": {
+            "value": "Make room for play with nothing to show for it",
+            "goal": "Keep Saturday morning unplanned"
+          }
+        },
+        "mapNote": "The domains are areas, not scores. They are never ranked, never completed, and an empty one is not a gap.",
+        "example": {
+          "domain": "Work & Education",
+          "value": "Be honest and warm, even when it’s uncomfortable",
+          "goal": "Give Ann the review feedback this week",
+          "action": "Say the hard sentence before lunch today"
+        },
+        "source": "Source · <a>Association for Contextual Behavioral Science — ACT overview ↗</a> · domain wording adapted from standard values-clarification worksheets (Harris, <em>ACT Made Simple</em>, 2nd ed.).",
+        "footer": "Where this lives in the app: <values>My Values</values> holds the records · the morning set-up links one to the day · episodes can name one without judging the direction."
+      }
     },
     "systemMap": {
       "title": "System map",
@@ -738,10 +788,10 @@
         },
         "4": {
           "t": "Orient to values",
-          "short": "Answer “what matters here / who do I want to be?” — not “what do I feel like?” and not “how do I get rid of this feeling?”",
-          "practice": "One question at the point of tension: what quality of action do I want to show right now?",
-          "example": "“Patient” outweighing the urge to cut the conversation off.",
-          "deep": "Values ≠ goals. A value is a direction you can't finish; a goal is a destination you can tick off."
+          "short": "Answer “what matters here / who do I want to be?” — not “what do I feel like?” and not “how do I get rid of this feeling?” A value is a direction you can move in right now, so it can never be finished, failed, or scored.",
+          "practice": "One question is enough in the moment: <em>if this mattered to me, what would the next minute look like?</em> Four words get mixed up here, and telling them apart is most of the skill.",
+          "example": "The goal can be missed and the value still held: if the call slips to Thursday, the honest sentence is still available on Thursday.",
+          "deep": "In ACT terms values work as verbal motivators: they make behaviour reinforcing in the moment rather than only when a result lands. That’s why “away” and a value can appear in the same episode — the direction describes the move, not your worth. Evidence for values work as a component is plausible but mixed (b): most of the tested effect sits in committed action."
         },
         "5": {
           "t": "Committed Action",

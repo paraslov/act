@@ -30,3 +30,7 @@ export function resolveVaultSelection(tab: string | null, card: string | null) {
     cardId: card === "" ? null : LIB[category][0].id,
   };
 }
+
+/** The four layers every Vault card is written in, in display order. */
+export const VAULT_LAYERS = ["short", "practice", "example", "deep"] as const;
+export type VaultLayer = (typeof VAULT_LAYERS)[number];
