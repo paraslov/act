@@ -146,9 +146,10 @@ export async function createEpisode(
     const snapshot = input.valueId
       ? await resolveOwnedActiveSnapshot(client, input.valueId)
       : null;
-    // A linked value also fills the free-text `value` column, which is what
-    // episode search scans. Episodes with no link keep whatever was typed.
-    const value = snapshot ? snapshot.title : (input.value ?? "");
+    // Own words win: the free-text `value` column keeps whatever was typed, and
+    // a linked value only fills it when nothing was. Search scans this column
+    // plus the snapshot title, so both stay findable either way.
+    const value = input.value?.trim() ? input.value : (snapshot?.title ?? "");
 
     const result = await client.query<EpisodeRow>(
       `INSERT INTO episodes (

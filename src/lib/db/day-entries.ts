@@ -64,6 +64,27 @@ export async function listDayEntries(): Promise<DayEntry[]> {
 }
 
 /**
+ * Maps each day whose morning links a value to that value id. It is the whole
+ * projection the episode dialog needs to suggest a value for any day the user
+ * backdates to, without loading every entry's prose.
+ */
+export async function listMorningValueSelections(): Promise<
+  Record<string, string>
+> {
+  return withCurrentUserDb(async (client) => {
+    const result = await client.query<{ day: string | Date; value_id: string }>(
+      `SELECT day, morning->>'valueId' AS value_id
+         FROM day_entries
+        WHERE morning->>'valueId' IS NOT NULL`,
+    );
+
+    return Object.fromEntries(
+      result.rows.map((row) => [postgresDateValue(row.day), row.value_id]),
+    );
+  });
+}
+
+/**
  * Creates or updates a day entry. Only supplied halves are changed, and partial
  * fields are merged so saving morning data never erases evening data (or vice versa).
  */

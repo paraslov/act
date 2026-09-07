@@ -31,6 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { ValuePicker } from "@/components/values/value-picker";
 import {
   AXES,
   type AxisKey,
@@ -42,7 +43,7 @@ import {
   STATES,
   type StateId,
 } from "@/lib/act/constants";
-import type { Checks, EpisodeDir } from "@/lib/act/types";
+import type { Checks, EpisodeDir, PersonalValue } from "@/lib/act/types";
 import { cn } from "@/lib/utils";
 
 type FormState = {
@@ -54,6 +55,8 @@ type FormState = {
   state: StateId;
   skill: SkillId;
   value: string;
+  /** Linked value, independent of `dir` and of the free-text `value` above. */
+  valueId: string | null;
   move: string;
   workable: string;
   checks: Checks;
@@ -75,7 +78,11 @@ function emptyChecks(): Checks {
   return Object.fromEntries(AXES.map((axis) => [axis.id, 0])) as Checks;
 }
 
-function initialForm(day: string, band = currentBand()): FormState {
+function initialForm(
+  day: string,
+  band = currentBand(),
+  valueId: string | null = null,
+): FormState {
   return {
     day,
     band,
@@ -85,6 +92,7 @@ function initialForm(day: string, band = currentBand()): FormState {
     state: "none",
     skill: "none",
     value: "",
+    valueId,
     move: "",
     workable: "",
     checks: emptyChecks(),
@@ -203,9 +211,15 @@ function FieldLabel({ children }: { children: ReactNode }) {
 
 export function NewEpisodeDialogProvider({
   today,
+  values,
+  morningValues,
   children,
 }: {
   today: string;
+  /** Active values the picker may offer; an empty map or list is normal. */
+  values: PersonalValue[];
+  /** `day → valueId` for every morning that linked one. */
+  morningValues: Record<string, string>;
   children: ReactNode;
 }) {
   const t = useTranslations("episodeModal");
@@ -213,17 +227,41 @@ export function NewEpisodeDialogProvider({
   const router = useRouter();
   const hookRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
-  const [form, setForm] = useState(() => initialForm(today));
+  // Tracks whether the user has chosen for themselves. Once they have, changing
+  // the date never overwrites their choice, and clearing is never undone.
+  const [valuePicked, setValuePicked] = useState(false);
+
+  /**
+   * The value that day's morning linked — never today's selection for a day the
+   * user backdated to, and never an archived or deleted value.
+   */
+  const suggestionFor = useCallback(
+    (day: string): string | null => {
+      const valueId = morningValues[day];
+      return valueId && values.some((entry) => entry.id === valueId)
+        ? valueId
+        : null;
+    },
+    [morningValues, values],
+  );
+
+  const [form, setForm] = useState(() =>
+    initialForm(today, currentBand(), suggestionFor(today)),
+  );
   const [saveError, setSaveError] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   const openEpisodeDialog = useCallback(
     (day = today) => {
-      setForm((current) => ({ ...current, day }));
+      setForm((current) => ({
+        ...current,
+        day,
+        valueId: valuePicked ? current.valueId : suggestionFor(day),
+      }));
       setSaveError(false);
       setOpen(true);
     },
-    [today],
+    [suggestionFor, today, valuePicked],
   );
 
   const contextValue = useMemo(
@@ -241,12 +279,28 @@ export function NewEpisodeDialogProvider({
       : form.dir === "away"
         ? t("awayNote")
         : t("unpickedNote");
+  // A selection is only "suggested" while it is still the morning's, untouched.
+  const valueSuggested = !valuePicked && form.valueId !== null;
 
   function setField<Key extends keyof FormState>(
     key: Key,
     value: FormState[Key],
   ) {
     setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  /** Re-evaluates the suggestion for the newly chosen day, unless the user chose. */
+  function setDay(day: string) {
+    setForm((current) => ({
+      ...current,
+      day,
+      valueId: valuePicked ? current.valueId : suggestionFor(day),
+    }));
+  }
+
+  function pickValue(valueId: string | null) {
+    setValuePicked(true);
+    setField("valueId", valueId);
   }
 
   function saveEpisode() {
@@ -265,12 +319,14 @@ export function NewEpisodeDialogProvider({
           state: form.state,
           skill: form.skill,
           value: form.value,
+          valueId: form.valueId,
           move: form.move,
           workable: form.workable,
           checks: form.checks,
         });
         const keptBand = form.band;
-        setForm(initialForm(today, keptBand));
+        setValuePicked(false);
+        setForm(initialForm(today, keptBand, suggestionFor(today)));
         setOpen(false);
         router.refresh();
       } catch {
@@ -289,7 +345,7 @@ export function NewEpisodeDialogProvider({
             event.preventDefault();
             hookRef.current?.focus();
           }}
-          className="top-9 z-[60] block max-h-[calc(100dvh-6rem)] w-[calc(100%-2.5rem)] max-w-[600px] translate-y-0 overflow-y-auto rounded-modal border bg-card p-6 shadow-[0_26px_70px_rgba(0,0,0,0.24)] sm:p-[24px_26px_26px]"
+          className="top-9 z-[60] block max-h-[calc(100dvh-6rem)] w-[calc(100%-2.5rem)] translate-y-0 overflow-y-auto rounded-modal border bg-card p-6 shadow-[0_26px_70px_rgba(0,0,0,0.24)] sm:max-w-[600px] sm:p-[24px_26px_26px]"
         >
           <DialogHeader className="mb-[18px] flex-row items-start justify-between gap-4 text-left">
             <div>
@@ -329,7 +385,7 @@ export function NewEpisodeDialogProvider({
                   type="date"
                   value={form.day}
                   max={today}
-                  onChange={(event) => setField("day", event.target.value)}
+                  onChange={(event) => setDay(event.target.value)}
                   className="mb-1.5 h-9 rounded-button bg-page px-2.5 font-mono text-[13px] focus-visible:border-toward focus-visible:ring-toward/20"
                 />
                 <div className="grid grid-cols-4 gap-[5px]">
@@ -485,16 +541,41 @@ export function NewEpisodeDialogProvider({
                 </Select>
               </div>
 
-              <label className="mb-[13px] block" htmlFor="episode-value">
-                <FieldLabel>{t("valueLabel")}</FieldLabel>
-                <Input
-                  id="episode-value"
-                  value={form.value}
-                  onChange={(event) => setField("value", event.target.value)}
-                  placeholder={t("valuePlaceholder")}
-                  className="h-[38px] rounded-[9px] bg-page px-[11px] text-[13.5px] focus-visible:border-toward focus-visible:ring-toward/20"
-                />
-              </label>
+              <div className="mb-[13px] flex flex-wrap items-start gap-3.5 border-t pt-3.5">
+                <label
+                  className="block min-w-0 grow basis-[240px]"
+                  htmlFor="episode-value"
+                >
+                  <FieldLabel>{t("valueLabel")}</FieldLabel>
+                  <span className="mb-[7px] block text-[12px] leading-[1.45] text-muted-foreground">
+                    {t("valueHelp")}
+                  </span>
+                  <Input
+                    id="episode-value"
+                    value={form.value}
+                    onChange={(event) => setField("value", event.target.value)}
+                    placeholder={t("valuePlaceholder")}
+                    className="h-[38px] rounded-[9px] bg-page px-[11px] text-[13.5px] focus-visible:border-toward focus-visible:ring-toward/20"
+                  />
+                </label>
+                <div className="min-w-0 grow basis-[250px]">
+                  <ValuePicker
+                    values={values}
+                    value={form.valueId}
+                    onChange={pickValue}
+                    label={t("valuePickerLabel")}
+                    suggested={valueSuggested}
+                  />
+                </div>
+              </div>
+
+              {/* Direction-aware, but the link itself is never styled by it: a
+                  value may sit beside an away move and takes no accent colour. */}
+              <p className="mb-[13px] rounded-input border bg-page px-3 py-2.5 text-[12.5px] leading-[1.55] text-pretty text-muted-foreground">
+                {form.dir === "away"
+                  ? t("valueNoteAway")
+                  : t("valueNoteToward")}
+              </p>
 
               <label className="mb-[13px] block" htmlFor="episode-move">
                 <FieldLabel>

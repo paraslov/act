@@ -108,7 +108,14 @@ export function matchesFilters(
   }
   const query = normalizeText(filters.text).trim();
   if (query) {
-    const haystacks = [episode.hook, episode.move, episode.value];
+    // The snapshot title is searched too: a linked value whose episode also has
+    // its own wording never reaches the `value` column.
+    const haystacks = [
+      episode.hook,
+      episode.move,
+      episode.value,
+      episode.valueSnapshot?.title,
+    ];
     if (!haystacks.some((field) => normalizeText(field).includes(query))) {
       return false;
     }
