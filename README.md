@@ -111,6 +111,11 @@ Run `pnpm check` for lint, type checking, and unit tests; `pnpm build` verifies
 production compilation. GitHub Actions also validates migrations and PostgreSQL
 row-level security in an isolated database.
 
+`pnpm test:db` runs migration/RLS tests and repository integration tests against
+an already migrated disposable PostgreSQL database. Set `DATABASE_ADMIN_URL`
+and the restricted-role `DATABASE_URL` explicitly; these tests do not load
+`.env.local`. Unit tests (`pnpm test`) do not require a database.
+
 See [the deployment guide](docs/deployment.md) for GitHub required checks,
 production/preview database provisioning, Vercel environment variables, automatic
 production migrations and deployment through GitHub Actions, and rollback

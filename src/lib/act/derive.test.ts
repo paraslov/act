@@ -7,6 +7,7 @@ import {
   dayCounts,
   dayNumber,
   filterEpisodes,
+  hasMorningEntry,
   hookGroupTallies,
   hookTypeTallies,
   normalizeText,
@@ -20,12 +21,54 @@ import {
 } from "./derive";
 import type {
   Checks,
+  DayMorning,
   Episode,
   EpisodeDir,
   PersonalValueSnapshot,
 } from "./types";
 
 let seq = 0;
+
+describe("hasMorningEntry (shared Today and Journal helper)", () => {
+  it.each<DayMorning | undefined>([
+    undefined,
+    {},
+    { open: "", aware: "  ", engaged: "\n", toward: "" },
+    { valueId: null, valueSnapshot: null },
+  ])("does not count an empty or cleared morning: %j", (morning) => {
+    expect(hasMorningEntry(morning)).toBe(false);
+  });
+
+  it("counts a structured snapshot by itself without calling trim on it", () => {
+    expect(
+      hasMorningEntry({
+        valueSnapshot: {
+          valueId: "v1",
+          title: "Be present",
+          meaning: "Listen with care",
+          domains: ["relationships"],
+        },
+      }),
+    ).toBe(true);
+  });
+
+  it("counts a link even without a snapshot", () => {
+    expect(hasMorningEntry({ valueId: "v1" })).toBe(true);
+  });
+
+  it.each(["open", "aware", "engaged", "toward"] as const)(
+    "still counts legacy %s text after a link is cleared",
+    (field) => {
+      expect(
+        hasMorningEntry({
+          [field]: " Something worth saving ",
+          valueId: null,
+          valueSnapshot: null,
+        }),
+      ).toBe(true);
+    },
+  );
+});
 
 function ep(overrides: Partial<Episode> = {}): Episode {
   seq += 1;
@@ -195,6 +238,25 @@ describe("filterEpisodes", () => {
       0,
     );
     expect(filterEpisodes([contextOnly], { text: "walk" })).toHaveLength(0);
+  });
+
+  it("searches both own words and a frozen linked title on an away episode", () => {
+    const linked = ep({
+      dir: "away",
+      value: "My own words",
+      valueSnapshot: {
+        valueId: "v1",
+        title: "Curious résumé",
+        meaning: "Private meaning",
+        domains: ["work_education"],
+      },
+    });
+    const episodes = [linked, ep()];
+    expect(filterEpisodes(episodes, { text: "RESUME", dir: "away" })).toEqual([
+      linked,
+    ]);
+    expect(filterEpisodes(episodes, { text: "own words" })).toEqual([linked]);
+    expect(filterEpisodes(episodes, { text: "Private meaning" })).toEqual([]);
   });
 });
 

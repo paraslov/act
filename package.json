@@ -20,7 +20,7 @@
     "db:migrate": "node scripts/migrate.mjs",
     "db:create-user": "node scripts/create-user.mjs",
     "typecheck": "next typegen && tsc --noEmit",
-    "test:db": "node --test tests/db/*.test.mjs",
+    "test:db": "node --test tests/db/*.test.mjs && vitest run --config vitest.db.config.ts",
     "check": "pnpm lint && pnpm typecheck && pnpm test",
     "vercel-build": "pnpm lint:app && pnpm typecheck && pnpm test && pnpm build"
   },

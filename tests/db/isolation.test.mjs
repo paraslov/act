@@ -38,8 +38,17 @@ test("runtime grants and transaction-local RLS isolate users", async () => {
         "INSERT INTO episodes (user_id, day, band, dir, hook, state, skill) VALUES ($1, CURRENT_DATE, 0, 'toward', 'test', 'test', 'test')",
         [id],
       );
+      await admin.query(
+        "INSERT INTO personal_values (user_id, title, domains) VALUES ($1, 'Be present', ARRAY['relationships'])",
+        [id],
+      );
     }
-    for (const table of ["user_settings", "day_entries", "episodes"]) {
+    for (const table of [
+      "user_settings",
+      "day_entries",
+      "episodes",
+      "personal_values",
+    ]) {
       assert.equal((await app.query(`SELECT * FROM ${table}`)).rowCount, 0);
       await app.query("BEGIN");
       await app.query("SELECT set_config('app.current_user_id', $1, true)", [

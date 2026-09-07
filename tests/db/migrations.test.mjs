@@ -1,11 +1,120 @@
 import assert from "node:assert/strict";
 import { randomUUID } from "node:crypto";
-import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import { copyFile, mkdtemp, readdir, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import pg from "pg";
 import { runMigrations } from "../../scripts/lib/migrations.mjs";
+
+test("0004 preserves legacy episodes and day entries without creating values", async () => {
+  assert.ok(process.env.DATABASE_ADMIN_URL, "Set DATABASE_ADMIN_URL");
+  const schema = `values_migration_test_${randomUUID().replaceAll("-", "")}`;
+  const directory = await mkdtemp(
+    path.join(os.tmpdir(), "act-values-migration-"),
+  );
+  const client = new pg.Client({
+    connectionString: process.env.DATABASE_ADMIN_URL,
+  });
+  const source = new URL("../../migrations/", import.meta.url);
+  const valueMigration = "0004_personal_values.sql";
+  const userId = randomUUID();
+  try {
+    await client.connect();
+    await client.query(`CREATE SCHEMA ${schema}`);
+    await client.query(`SET search_path TO ${schema}`);
+    for (const name of (await readdir(source)).filter(
+      (name) => name.endsWith(".sql") && name < valueMigration,
+    )) {
+      await copyFile(new URL(name, source), path.join(directory, name));
+    }
+    await runMigrations(client, directory, () => {});
+    await client.query(
+      "INSERT INTO users (id, email, password_hash) VALUES ($1, $2, 'test-only')",
+      [userId, `${userId}@example.test`],
+    );
+    await client.query(
+      `INSERT INTO episodes (user_id, day, band, dir, hook, state, skill, value, move, checks)
+       VALUES ($1, '2026-09-01', 2, 'away', 'A difficult conversation', 'none', 'none',
+               'Мои собственные слова', 'Ask for time', '{"values": 1}')`,
+      [userId],
+    );
+    await client.query(
+      `INSERT INTO day_entries (user_id, day, morning, evening)
+       VALUES ($1, '2026-09-01', $2::jsonb, $3::jsonb),
+              ($1, '2026-09-02', '{}'::jsonb, '{}'::jsonb)`,
+      [
+        userId,
+        JSON.stringify({ open: "Make room", toward: "Спросить" }),
+        JSON.stringify({ flex: "Listened", next: "Try again" }),
+      ],
+    );
+    const episodesBefore = (
+      await client.query("SELECT to_jsonb(e) AS entry FROM episodes e")
+    ).rows;
+    const daysBefore = (
+      await client.query(
+        "SELECT to_jsonb(d) AS entry FROM day_entries d ORDER BY day",
+      )
+    ).rows;
+
+    await copyFile(
+      new URL(valueMigration, source),
+      path.join(directory, valueMigration),
+    );
+    const logs = [];
+    await runMigrations(client, directory, (line) => logs.push(line));
+    assert.deepEqual(
+      logs.filter((line) => line.startsWith("apply ")),
+      [`apply ${valueMigration}`],
+    );
+    const assertLegacyData = async () => {
+      assert.deepEqual(
+        (await client.query("SELECT to_jsonb(e) AS entry FROM episodes e"))
+          .rows,
+        episodesBefore.map(({ entry }) => ({
+          entry: { ...entry, value_id: null, value_snapshot: null },
+        })),
+      );
+      // Morning JSON stays verbatim: absent link keys read as null, without a rewrite.
+      assert.deepEqual(
+        (
+          await client.query(
+            "SELECT to_jsonb(d) AS entry FROM day_entries d ORDER BY day",
+          )
+        ).rows,
+        daysBefore,
+      );
+      assert.deepEqual(
+        (
+          await client.query(`SELECT morning->>'valueId' AS value_id,
+          morning->'valueSnapshot' AS value_snapshot FROM day_entries ORDER BY day`)
+        ).rows,
+        [
+          { value_id: null, value_snapshot: null },
+          { value_id: null, value_snapshot: null },
+        ],
+      );
+      assert.equal(
+        (await client.query("SELECT * FROM personal_values")).rowCount,
+        0,
+      );
+    };
+    await assertLegacyData();
+    const rerunLogs = [];
+    await runMigrations(client, directory, (line) => rerunLogs.push(line));
+    assert.ok(rerunLogs.includes(`skip ${valueMigration}`));
+    assert.ok(rerunLogs.every((line) => line.startsWith("skip ")));
+    await assertLegacyData();
+  } finally {
+    try {
+      await client.query(`DROP SCHEMA IF EXISTS ${schema} CASCADE`);
+    } finally {
+      await client.end();
+      await rm(directory, { recursive: true, force: true });
+    }
+  }
+});
 
 // An isolated schema in the explicitly configured disposable test database.
 test(
