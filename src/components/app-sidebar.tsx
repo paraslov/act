@@ -16,6 +16,7 @@ type NavItem = {
   label:
     | "today"
     | "journal"
+    | "values"
     | "episodes"
     | "progress"
     | "systemMap"
@@ -28,6 +29,7 @@ type NavItem = {
 const dailyItems: NavItem[] = [
   { href: "/", label: "today" },
   { href: "/journal", label: "journal" },
+  { href: "/values", label: "values" },
   { href: "/episodes", label: "episodes" },
   { href: "/progress", label: "progress" },
 ];
