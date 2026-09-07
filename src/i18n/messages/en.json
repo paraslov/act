@@ -59,10 +59,15 @@
       "engagedLabel": "Who do I want to act like today?",
       "engagedHint": "A quality of action, not an outcome. Values are directions, goals are destinations.",
       "engagedPlaceholder": "Direct and warm, even when I'd rather be vague.",
+      "valueLabel": "From My Values",
+      "valueNote": "Picked values stay editable all day, and never change your counts.",
+      "valueNoteEmpty": "Skip it and the morning works exactly as it did before.",
       "towardKey": "TOWARD",
       "towardLabel": "One Toward Move for today",
       "towardPlaceholder": "Give Ann the honest feedback before lunch",
-      "footer": "Nothing here is scored. It is a direction, not a target."
+      "towardValueLabel": "What is one small action that would express this value today?",
+      "towardValuePlaceholder": "Say the hard sentence before lunch",
+      "footer": "Every field is optional — including the value."
     },
     "soFar": {
       "label": "TODAY SO FAR",
@@ -77,11 +82,16 @@
       "time": "~5 MIN",
       "save": "Save evening",
       "saveError": "Your evening review couldn't be saved. Please try again.",
+      "morningLabel": "From this morning",
+      "morningReadOnly": "Read-only",
+      "morningActionLabel": "Planned action",
+      "noMorning": "No morning entry today — the evening stands on its own. Nothing is missing and nothing is counted against the day.",
       "hookLabel": "Where did it catch me today?",
       "hookPlaceholder": "The comment in the thread about the deadline.",
       "awayLabel": "What Away Move did I make?",
       "awayPlaceholder": "Went quiet for two hours instead of asking.",
       "flexLabel": "Where did flexibility show up?",
+      "flexValueHelp": "How did this value show up in what you did today? Optional — a sentence is plenty.",
       "flexPlaceholder": "Noticed the sulk, came back, asked the question.",
       "nextLabel": "What Toward Move do I want to try next time?",
       "nextPlaceholder": "Ask within five minutes, before the story sets."

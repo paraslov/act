@@ -18,10 +18,24 @@ import {
 import { daysBetween, shiftId, todayId } from "@/lib/act/date";
 import type {
   Checks,
+  DayMorning,
   Episode,
   EpisodeActivity,
   EpisodeFilters,
 } from "@/lib/act/types";
+
+/**
+ * True when a morning half holds anything at all. A linked value counts on its
+ * own, and its snapshot is an object — the text check skips non-strings rather
+ * than calling `.trim()` on them.
+ */
+export function hasMorningEntry(morning: DayMorning | undefined): boolean {
+  if (!morning) return false;
+  if (morning.valueId || morning.valueSnapshot) return true;
+  return Object.values(morning).some(
+    (field) => typeof field === "string" && Boolean(field.trim()),
+  );
+}
 
 /** Lowercases and strips diacritics for case/diacritic-insensitive matching. */
 export function normalizeText(value: string | null | undefined): string {

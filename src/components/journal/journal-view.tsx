@@ -15,6 +15,7 @@ import {
   bandShape,
   checksTotal,
   dayCounts,
+  hasMorningEntry,
   topStatusEffect,
 } from "@/lib/act/derive";
 import type {
@@ -41,11 +42,7 @@ function hasText(value: unknown): boolean {
 }
 
 function hasMorning(entry: DayEntry | undefined): boolean {
-  if (!entry) return false;
-  // A linked value counts as a morning entry on its own, and its snapshot is an
-  // object — the text check skips non-strings rather than calling `.trim()`.
-  if (entry.morning.valueId || entry.morning.valueSnapshot) return true;
-  return Object.values(entry.morning).some(hasText);
+  return hasMorningEntry(entry?.morning);
 }
 
 function hasEvening(entry: DayEntry | undefined): boolean {
