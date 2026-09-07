@@ -4,7 +4,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useTransition } from "react";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
-import { BANDS } from "@/lib/act/constants";
+import { BANDS, DOMAINS } from "@/lib/act/constants";
 import {
   daysBetween,
   formatDayLabel,
@@ -23,6 +23,7 @@ import type {
   DayEvening,
   DayMorning,
   Episode,
+  PersonalValueSnapshot,
 } from "@/lib/act/types";
 import { cn } from "@/lib/utils";
 
@@ -242,17 +243,43 @@ function SelectedEpisodeCard({ episode }: { episode: Episode }) {
 
 function NotesCard({
   title,
+  value,
   rows,
 }: {
   title: string;
+  /** The value as it was saved that day — the snapshot, never the live record. */
+  value?: PersonalValueSnapshot | null;
   rows: { key: string; text: string | undefined; accent?: string }[];
 }) {
   const t = useTranslations("journal");
+  const domainLabels = useTranslations("act.domains");
 
   return (
     <section className="rounded-card border bg-card px-[22px] py-5">
       <h3 className="mb-3 text-sm font-semibold tracking-[-0.01em]">{title}</h3>
       <div className="flex flex-col gap-3">
+        {value ? (
+          <div>
+            <p className="mb-[3px] font-mono text-[9.5px] tracking-[0.16em] text-muted-foreground uppercase">
+              {t("morning.value")}
+            </p>
+            <p className="font-serif text-[16px] leading-[1.35] tracking-[-0.01em] text-pretty">
+              {value.title}
+            </p>
+            <div className="mt-[5px] flex flex-wrap gap-[5px]">
+              {DOMAINS.filter((domain) =>
+                value.domains.includes(domain.id),
+              ).map((domain) => (
+                <span
+                  key={domain.id}
+                  className="rounded-chip border px-[7px] py-px font-mono text-[9px] tracking-[0.06em] text-muted-foreground uppercase"
+                >
+                  {domainLabels(`${domain.id}.label`)}
+                </span>
+              ))}
+            </div>
+          </div>
+        ) : null}
         {rows.map((row) => {
           const written = hasText(row.text);
           return (
@@ -594,6 +621,7 @@ export function JournalView({
           <div className="grid items-start gap-4 min-[700px]:grid-cols-2">
             <NotesCard
               title={t("morning.title")}
+              value={morning.valueSnapshot}
               rows={[
                 {
                   key: t("morning.open"),

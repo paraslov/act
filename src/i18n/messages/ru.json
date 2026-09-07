@@ -128,7 +128,8 @@
       "score": "{score}/10",
       "towardMove": "Шаг Toward",
       "awayMove": "Шаг Away",
-      "workable": "Что помогло"
+      "workable": "Что помогло",
+      "linkedValue": "Ценность"
     }
   },
   "journal": {
@@ -166,6 +167,7 @@
       "open": "Open",
       "aware": "Aware",
       "engaged": "Engaged",
+      "value": "Ценность",
       "toward": "Планируемый шаг Toward"
     },
     "evening": {

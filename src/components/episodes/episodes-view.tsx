@@ -2,7 +2,14 @@
 
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import { useEffect, useMemo, useState, useTransition } from "react";
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,6 +47,12 @@ type ViewFilters = {
 };
 
 const directionValues = ["all", "toward", "away"] as const;
+
+/**
+ * How long typing rests before the search term is written to the URL. The list
+ * itself filters on every keystroke — this only paces the navigation behind it.
+ */
+const searchWriteDelay = 300;
 
 function isDirection(value: string | null): value is DirectionFilter {
   return directionValues.some((item) => item === value);
@@ -126,14 +139,15 @@ function FilterBar({
   pending,
 }: {
   filters: ViewFilters;
-  onChange: (next: ViewFilters) => void;
+  /** `defer` asks for a paced URL write — typing sets it, every other control does not. */
+  onChange: (next: ViewFilters, defer?: boolean) => void;
   pending: boolean;
 }) {
   const t = useTranslations("episodes.filters");
   const act = useTranslations("act");
 
-  function patch(next: Partial<ViewFilters>) {
-    onChange({ ...filters, ...next });
+  function patch(next: Partial<ViewFilters>, defer?: boolean) {
+    onChange({ ...filters, ...next }, defer);
   }
 
   return (
@@ -238,7 +252,7 @@ function FilterBar({
 
       <Input
         value={filters.q}
-        onChange={(event) => patch({ q: event.target.value })}
+        onChange={(event) => patch({ q: event.target.value }, true)}
         aria-label={t("searchLabel")}
         placeholder={t("searchPlaceholder")}
         className="h-[34px] min-w-[180px] flex-1 rounded-button bg-card text-[13px] shadow-none focus-visible:border-toward focus-visible:ring-toward/20 dark:bg-card"
@@ -271,6 +285,16 @@ function EpisodeCard({ episode }: { episode: Episode }) {
   const locale = useLocale();
   const directionLabel = episode.dir === "toward" ? t("toward") : t("away");
   const moveLabel = episode.dir === "toward" ? t("towardMove") : t("awayMove");
+  // Historical display reads the stored snapshot, so editing or archiving the
+  // value leaves this episode as it was written.
+  const snapshot = episode.valueSnapshot ?? null;
+  // The typed words and a linked value can both be present. Only drop the
+  // free-text chip when it adds nothing beside the snapshot: the empty-field
+  // placeholder, or the same title over again.
+  const freeText = episode.value.trim();
+  const showFreeText =
+    Boolean(freeText) &&
+    (!snapshot || (freeText !== "—" && freeText !== snapshot.title));
 
   return (
     <article className="rounded-card border bg-card px-5 py-[18px] text-card-foreground">
@@ -333,9 +357,19 @@ function EpisodeCard({ episode }: { episode: Episode }) {
         >
           {act(`skills.${episode.skill}.label`)}
         </span>
-        <span className="rounded-chip border bg-muted/70 px-[9px] py-1 text-xs text-foreground/75">
-          {episode.value}
-        </span>
+        {showFreeText ? (
+          <span className="rounded-chip border bg-muted/70 px-[9px] py-1 text-xs text-foreground/75">
+            {freeText}
+          </span>
+        ) : null}
+        {snapshot ? (
+          <span className="flex items-center gap-[7px] rounded-chip border bg-card px-[9px] py-1 text-xs text-foreground/75">
+            <span className="font-mono text-[9px] tracking-[0.12em] text-muted-foreground uppercase">
+              {t("linkedValue")}
+            </span>
+            {snapshot.title}
+          </span>
+        ) : null}
       </div>
 
       <div className="mb-2.5 flex items-center gap-[5px]">
@@ -390,10 +424,21 @@ export function EpisodesView({ episodes }: { episodes: Episode[] }) {
     readFilters(new URLSearchParams(queryString)),
   );
   const [isPending, startTransition] = useTransition();
+  const deferredWrite = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    // A queued keystroke is newer than the URL it has not been written to yet,
+    // so only adopt the query string when nothing of ours is in flight.
+    if (deferredWrite.current) return;
     setFilters(readFilters(new URLSearchParams(queryString)));
   }, [queryString]);
+
+  useEffect(
+    () => () => {
+      if (deferredWrite.current) clearTimeout(deferredWrite.current);
+    },
+    [],
+  );
 
   const filtered = useMemo(() => {
     const band = filters.band === "all" ? "all" : BANDS.indexOf(filters.band);
@@ -407,14 +452,32 @@ export function EpisodesView({ episodes }: { episodes: Episode[] }) {
     });
   }, [episodes, filters]);
 
-  function changeFilters(next: ViewFilters) {
-    setFilters(next);
-    const query = filtersQuery(next);
-    startTransition(() => {
-      router.replace(query ? `${pathname}?${query}` : pathname, {
-        scroll: false,
+  const writeFilters = useCallback(
+    (next: ViewFilters) => {
+      const query = filtersQuery(next);
+      startTransition(() => {
+        router.replace(query ? `${pathname}?${query}` : pathname, {
+          scroll: false,
+        });
       });
-    });
+    },
+    [pathname, router],
+  );
+
+  function changeFilters(next: ViewFilters, defer?: boolean) {
+    setFilters(next);
+    // The list re-filters from `next` immediately either way. Only the URL
+    // write waits, so a typed word costs one navigation instead of one a key.
+    if (deferredWrite.current) clearTimeout(deferredWrite.current);
+    if (!defer) {
+      deferredWrite.current = null;
+      writeFilters(next);
+      return;
+    }
+    deferredWrite.current = setTimeout(() => {
+      deferredWrite.current = null;
+      writeFilters(next);
+    }, searchWriteDelay);
   }
 
   return (

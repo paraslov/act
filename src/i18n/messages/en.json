@@ -128,7 +128,8 @@
       "score": "{score}/10",
       "towardMove": "Toward move",
       "awayMove": "Away move",
-      "workable": "Workable"
+      "workable": "Workable",
+      "linkedValue": "Value"
     }
   },
   "journal": {
@@ -166,6 +167,7 @@
       "open": "Open",
       "aware": "Aware",
       "engaged": "Engaged",
+      "value": "Value",
       "toward": "Toward move planned"
     },
     "evening": {
