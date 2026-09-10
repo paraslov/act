@@ -29,37 +29,17 @@
   "today": {
     "title": "Today",
     "dayNumber": "day {number}",
-    "intro": "Three intentions in the morning, a review in the evening. Episodes get written whenever you have a minute — they don't need to be filled mid-situation.",
     "alert": {
       "label": "A question worth returning to",
       "question": "When autopilot takes over — do I notice it, and what can I choose next?"
     },
     "morning": {
-      "heading": "Morning set-up",
       "time": "~2 MIN",
-      "subtitle": "Three buttons you press before the day presses you.",
       "save": "Save morning",
       "saveError": "Your morning set-up couldn't be saved. Please try again.",
-      "openKey": "OPEN",
-      "openLabel": "What discomfort am I willing to let in today?",
-      "openHint": "Feel it without fighting it; think it without obeying it.",
-      "openPlaceholder": "Tight chest before the review call — allowed to be there.",
-      "awareKey": "AWARE",
-      "awareLabel": "Where will autopilot most likely take over?",
-      "awareHint": "Name the situation in advance and you're half-way to catching it.",
-      "awarePlaceholder": "Right after the standup, when I want to over-explain.",
-      "engagedKey": "ENGAGED",
-      "engagedLabel": "Who do I want to act like today?",
-      "engagedHint": "A quality of action, not an outcome. Values are directions, goals are destinations.",
-      "engagedPlaceholder": "Direct and warm, even when I'd rather be vague.",
       "valueLabel": "From My Values",
       "valueNote": "Picked values stay editable all day, and never change your counts.",
       "valueNoteEmpty": "Skip it and the morning works exactly as it did before.",
-      "towardKey": "TOWARD",
-      "towardLabel": "One Toward Move for today",
-      "towardPlaceholder": "Give Ann the honest feedback before lunch",
-      "towardValueLabel": "What is one small action that would express this value today?",
-      "towardValuePlaceholder": "Say the hard sentence before lunch",
       "footer": "Every field is optional — including the value."
     },
     "soFar": {
@@ -71,7 +51,6 @@
       "openInJournal": "Open today in the journal"
     },
     "evening": {
-      "heading": "Evening review",
       "time": "~5 MIN",
       "save": "Save evening",
       "saveError": "Your evening review couldn't be saved. Please try again.",
@@ -79,15 +58,7 @@
       "morningReadOnly": "Read-only",
       "morningActionLabel": "Planned action",
       "noMorning": "No morning entry today — the evening stands on its own. Nothing is missing and nothing is counted against the day.",
-      "hookLabel": "Where did it catch me today?",
-      "hookPlaceholder": "The comment in the thread about the deadline.",
-      "awayLabel": "What Away Move did I make?",
-      "awayPlaceholder": "Went quiet for two hours instead of asking.",
-      "flexLabel": "Where did flexibility show up?",
-      "flexValueHelp": "How did this value show up in what you did today? Optional — a sentence is plenty.",
-      "flexPlaceholder": "Noticed the sulk, came back, asked the question.",
-      "nextLabel": "What Toward Move do I want to try next time?",
-      "nextPlaceholder": "Ask within five minutes, before the story sets."
+      "flexValueHelp": "How did this value show up in what you did today? Optional — a sentence is plenty."
     }
   },
   "episodes": {
@@ -170,7 +141,6 @@
   "values": {
     "title": "My Values",
     "meta": "Four areas · nothing ranked",
-    "intro": "How you want to act — not goals and not rules. Nothing here is scored, and none of it is required. Add one, edit it, or archive it whenever it stops being true.",
     "viewActive": "Active",
     "viewArchived": "Archived · {count}",
     "newValue": "+ New value",
@@ -189,7 +159,7 @@
       "title": "Start with one area that matters to you right now. You can add the others whenever you want.",
       "body": "One sentence is enough. You're describing how you want to act in that part of your life — there's no right number and no order.",
       "vaultPrompt": "Not sure what counts as a value?",
-      "vaultLink": "Read the Vault card →"
+      "vaultLink": "Read the Library card →"
     },
     "archived": {
       "intro": "Archived values stay out of pickers and out of every count. Nothing was lost — bring one back if it becomes true again.",
@@ -278,11 +248,7 @@
     },
     "loop": {
       "title": "The loop",
-      "eyebrow": "Reference · nothing to fill in",
-      "intro": "The whole hexaflex folds into five operations you can run in your head, with no app involved. This page exists to be re-read until the sequence is yours. Write the episode later, in <episodes>Episodes</episodes>.",
-      "trap": "Trap:",
-      "closingLabel": "If you only remember one thing",
-      "closing": "The hooks don't have to go away first. Notice, drop the rope, pick the direction, take one small step."
+      "eyebrow": "Reference · nothing to fill in"
     },
     "vault": {
       "orientToValues": {
@@ -462,43 +428,6 @@
       "leisure": {
         "label": "Leisure",
         "hint": "Rest, play, hobbies, time that doesn't have to earn anything."
-      }
-    },
-    "loop": {
-      "1": {
-        "name": "Notice",
-        "question": "What's happening right now?",
-        "help": "Register the thought, feeling, urge, body state or behaviour without reacting to it. This is the doorway to everything else — you cannot choose what you haven't seen.",
-        "example": "“Jaw tight. Thought: they don't respect my time. Urge: fire off a reply.”",
-        "trap": "Turning noticing into analysis. You're taking inventory, not writing a report."
-      },
-      "2": {
-        "name": "Open",
-        "question": "Can this be here without a fight?",
-        "help": "Not liking it, not wanting it — just dropping the rope for a moment so your hands are free. Willingness is a stance toward the experience, not a technique for removing it.",
-        "example": "“The anger can sit in my chest while I keep typing.”",
-        "trap": "Opening up in order to make the feeling go. That's avoidance wearing acceptance's clothes."
-      },
-      "3": {
-        "name": "Orient",
-        "question": "What matters here?",
-        "help": "Not what you feel like, not how to make this stop. Which quality of action do you want to show in this specific moment? Values are directions, so there's always one available.",
-        "example": "“I want to be someone who stays clear under pressure.”",
-        "trap": "Reaching for a grand life value when a small local one would do."
-      },
-      "4": {
-        "name": "Choose",
-        "question": "Away or Toward?",
-        "help": "Both are real options. The criterion is workability — working toward what, at what price — not morality. Noticing that you chose an Away Move helps you examine it; its consequences may be unchanged.",
-        "example": "Leaving the thread feels great for ten minutes and costs three days of dread.",
-        "trap": "Making the choice a verdict on your character. It's a direction, logged and moved on from."
-      },
-      "5": {
-        "name": "Act",
-        "question": "What's the smallest useful step?",
-        "help": "Choose a step you can manage. Reducing what you ask of yourself, stopping, or asking for help are available options. Then there is something that happened, not only an intention.",
-        "example": "“Reply with one clarifying question, nothing else.”",
-        "trap": "Waiting to feel ready. Readiness is a side effect of acting, not a prerequisite."
       }
     },
     "pillars": {

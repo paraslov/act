@@ -88,47 +88,32 @@ function useSavedFlash() {
 }
 
 function MorningField({
-  accent,
   className,
-  fieldKey,
   hint,
   label,
   onChange,
-  placeholder,
   rows = 2,
   value,
 }: {
-  accent: string;
   className?: string;
-  fieldKey: string;
-  hint: string;
+  hint?: string;
   label: string;
   onChange: (value: string) => void;
-  placeholder: string;
   rows?: number;
   value: string;
 }) {
   return (
     <label className={cn("block", className)}>
-      <span className="mb-1.5 flex items-center gap-2">
-        <span
-          className={cn(
-            "font-mono text-[10.5px] tracking-[0.16em] uppercase",
-            accent,
-          )}
-        >
-          {fieldKey}
+      <span className="mb-1.5 block text-[13.5px] font-medium">{label}</span>
+      {hint ? (
+        <span className="mb-2 block text-[12.5px] leading-[1.45] text-muted-foreground">
+          {hint}
         </span>
-        <span className="text-[13.5px] font-medium">{label}</span>
-      </span>
-      <span className="mb-2 block text-[12.5px] leading-[1.45] text-muted-foreground">
-        {hint}
-      </span>
+      ) : null}
       <textarea
         rows={rows}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder}
         className={cn(
           fieldClassName,
           "focus-visible:border-toward focus-visible:ring-toward/20",
@@ -151,6 +136,7 @@ function MorningCard({
   values: PersonalValue[];
 }) {
   const t = useTranslations("today.morning");
+  const q = useTranslations("actV2.ui.today");
   const [form, setForm] = useState<DayMorning>(initial);
   // The link is held beside the text draft, never inside it — the action takes
   // it as its own field and `null` is the explicit "no value" it needs.
@@ -170,15 +156,12 @@ function MorningCard({
       <div className="px-6 pt-5">
         <div className="flex items-baseline justify-between gap-3">
           <h2 className="text-base font-semibold tracking-[-0.01em]">
-            {t("heading")}
+            {q("morningTitle")}
           </h2>
           <span className="font-mono text-[10.5px] text-muted-foreground">
             {t("time")}
           </span>
         </div>
-        <p className="mt-1.5 text-[13px] text-muted-foreground">
-          {t("subtitle")}
-        </p>
       </div>
 
       <form
@@ -203,31 +186,19 @@ function MorningCard({
         }}
       >
         <MorningField
-          accent="text-toward"
-          fieldKey={t("openKey")}
-          label={t("openLabel")}
-          hint={t("openHint")}
-          placeholder={t("openPlaceholder")}
+          label={q("morningValues")}
           value={form.open ?? ""}
           onChange={(value) => setField("open", value)}
         />
         <MorningField
-          accent="text-aware"
-          fieldKey={t("awareKey")}
-          label={t("awareLabel")}
-          hint={t("awareHint")}
-          placeholder={t("awarePlaceholder")}
+          label={q("morningAttention")}
           value={form.aware ?? ""}
           onChange={(value) => setField("aware", value)}
         />
         <div className="flex flex-wrap items-start gap-4 border-t pt-4">
           <MorningField
-            accent="text-away"
             className="min-w-0 grow basis-[290px]"
-            fieldKey={t("engagedKey")}
-            label={t("engagedLabel")}
-            hint={t("engagedHint")}
-            placeholder={t("engagedPlaceholder")}
+            label={q("morningSupport")}
             rows={3}
             value={form.engaged ?? ""}
             onChange={(value) => setField("engaged", value)}
@@ -246,21 +217,13 @@ function MorningCard({
         </div>
 
         <label htmlFor="morning-toward" className="block border-t pt-4">
-          <span className="mb-2 flex flex-wrap items-center gap-2">
-            <span className="font-mono text-[10.5px] tracking-[0.16em] text-toward uppercase">
-              {t("towardKey")}
-            </span>
-            <span className="text-[13.5px] font-medium">
-              {valueId ? t("towardValueLabel") : t("towardLabel")}
-            </span>
+          <span className="mb-2 block text-[13.5px] font-medium">
+            {q("morningStep")}
           </span>
           <Input
             id="morning-toward"
             value={form.toward ?? ""}
             onChange={(event) => setField("toward", event.target.value)}
-            placeholder={
-              valueId ? t("towardValuePlaceholder") : t("towardPlaceholder")
-            }
             className="h-auto rounded-input bg-[oklch(0.985_0.002_85)] py-2.5 shadow-none focus-visible:border-toward focus-visible:ring-toward/20 dark:bg-background/35"
           />
         </label>
@@ -330,13 +293,11 @@ function EveningField({
   help,
   label,
   onChange,
-  placeholder,
   value,
 }: {
   help?: string;
   label: string;
   onChange: (value: string) => void;
-  placeholder: string;
   value: string;
 }) {
   return (
@@ -351,7 +312,6 @@ function EveningField({
         rows={2}
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        placeholder={placeholder}
         className={cn(
           fieldClassName,
           "focus-visible:border-away focus-visible:ring-away/20",
@@ -425,6 +385,7 @@ function EveningCard({
   morning: DayMorning;
 }) {
   const t = useTranslations("today.evening");
+  const q = useTranslations("actV2.ui.today");
   const [form, setForm] = useState<DayEvening>(initial);
   const [saveError, setSaveError] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -438,7 +399,7 @@ function EveningCard({
     <section className="rounded-card border bg-card px-[22px] py-5 text-card-foreground shadow-sm">
       <div className="mb-3 flex items-baseline justify-between gap-3">
         <h2 className="text-base font-semibold tracking-[-0.01em]">
-          {t("heading")}
+          {q("eveningTitle")}
         </h2>
         <span className="font-mono text-[10.5px] text-muted-foreground">
           {t("time")}
@@ -472,27 +433,23 @@ function EveningCard({
         }}
       >
         <EveningField
-          label={t("hookLabel")}
-          placeholder={t("hookPlaceholder")}
+          label={q("eveningSituation")}
           value={form.hook ?? ""}
           onChange={(value) => setField("hook", value)}
         />
         <EveningField
-          label={t("awayLabel")}
-          placeholder={t("awayPlaceholder")}
+          label={q("eveningConsequences")}
           value={form.away ?? ""}
           onChange={(value) => setField("away", value)}
         />
         <EveningField
-          label={t("flexLabel")}
+          label={q("eveningValues")}
           help={morning.valueSnapshot ? t("flexValueHelp") : undefined}
-          placeholder={t("flexPlaceholder")}
           value={form.flex ?? ""}
           onChange={(value) => setField("flex", value)}
         />
         <EveningField
-          label={t("nextLabel")}
-          placeholder={t("nextPlaceholder")}
+          label={q("eveningNext")}
           value={form.next ?? ""}
           onChange={(value) => setField("next", value)}
         />
@@ -524,6 +481,7 @@ export function TodayView({
   values,
 }: TodayViewProps) {
   const t = useTranslations("today");
+  const q = useTranslations("actV2.ui.today");
   // The evening reads the morning as it was last *saved*, so a successful save
   // updates it in place — the server prop only seeds it.
   const [savedMorning, setSavedMorning] = useState<DayMorning>(morning);
@@ -539,7 +497,7 @@ export function TodayView({
         </span>
       </header>
       <p className="mb-[22px] max-w-[62ch] text-[14.5px] text-foreground/70">
-        {t("intro")}
+        {q("intro")}
       </p>
 
       <section className="mb-[26px] rounded-xl border-[1.5px] border-alert bg-alert-tint px-[18px] py-4">

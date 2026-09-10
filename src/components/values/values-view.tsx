@@ -328,6 +328,7 @@ function ArchivedList({
 
 export function ValuesView({ values }: ValuesViewProps) {
   const t = useTranslations("values");
+  const v2 = useTranslations("actV2.ui.values");
   const router = useRouter();
   const [view, setView] = useState<"active" | "archived">("active");
   const [editor, setEditor] = useState<ValueEditorTarget | null>(null);
@@ -392,7 +393,7 @@ export function ValuesView({ values }: ValuesViewProps) {
         </span>
       </header>
       <p className="mb-[18px] max-w-[64ch] text-[14.5px] leading-[1.55] text-foreground/70">
-        {t("intro")}
+        {v2("intro")}
       </p>
 
       <div className="mb-[18px] flex flex-wrap items-center gap-2.5">

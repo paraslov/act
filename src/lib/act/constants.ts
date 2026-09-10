@@ -81,14 +81,6 @@ export const BANDS = [
   "21–00",
 ] as const;
 
-export const LOOP_REF = [
-  { n: "1", ...en.act.loop["1"] },
-  { n: "2", ...en.act.loop["2"] },
-  { n: "3", ...en.act.loop["3"] },
-  { n: "4", ...en.act.loop["4"] },
-  { n: "5", ...en.act.loop["5"] },
-] as const;
-
 /** The Open / Aware / Engaged macro-process cards. */
 export const FLEX_PILLARS = [
   { key: "Open", color: "oklch(0.55 0.13 55)", ...en.act.pillars.Open },

@@ -6,6 +6,7 @@ import {
   FLEX_MYTHS,
   FLEX_PILLARS,
 } from "@/lib/act/constants";
+import { vaultHref } from "@/lib/reference/vault";
 import { cn } from "@/lib/utils";
 
 const pillarColors = {
@@ -162,9 +163,12 @@ export async function FlexibilityView() {
         </p>
         <div className="flex flex-col gap-2.5">
           {AXES.map((axis) => (
-            <div
+            // The canonical explanation of each question lives on the app-checks
+            // card; the System Map reflection prompts point at the same anchors.
+            <Link
               key={axis.id}
-              className="flex items-baseline gap-3.5 border-b border-border/50 pb-2.5 max-[560px]:flex-col max-[560px]:gap-1"
+              href={`${vaultHref("app-checks")}#${axis.id}`}
+              className="flex items-baseline gap-3.5 rounded-md border-b border-border/50 pb-2.5 hover:bg-accent max-[560px]:flex-col max-[560px]:gap-1 focus-visible:outline-2 focus-visible:outline-ring"
             >
               <span className="w-[140px] shrink-0 font-mono text-[10.5px] tracking-[0.12em] text-toward uppercase">
                 {act(`axes.${axis.id}.label`)}
@@ -172,7 +176,7 @@ export async function FlexibilityView() {
               <span className="min-w-0 flex-1 text-sm leading-[1.55] text-foreground/85">
                 {act(`axes.${axis.id}.prompt`)}
               </span>
-            </div>
+            </Link>
           ))}
         </div>
         <p className="mt-3.5 max-w-[74ch] text-[12.5px] leading-[1.6] text-muted-foreground">

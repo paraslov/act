@@ -215,6 +215,13 @@ export function VaultView({
                 </ul>
               </div>
             ) : null}
+            {card.contentType === "practice" ? (
+              // 7.5/T20: a practice is brief, stoppable and adaptable, and a
+              // feeling need not pass on any timetable for it to be useful.
+              <p className="rounded-input border border-dashed p-3 text-[12.5px] leading-[1.55] text-muted-foreground">
+                {t("practice.noReliefRequired")} {t("practice.notFit")}
+              </p>
+            ) : null}
             <div className="flex flex-wrap gap-x-4 gap-y-1.5 border-t pt-[13px]">
               <h3 className={`${microLabel} basis-[118px] pt-[3px]`}>
                 {t("library.sources")}
