@@ -13,7 +13,12 @@ import {
 import { requireCurrentUser } from "@/auth/session";
 import { getPool } from "@/lib/db/client";
 import { getDayEntry, upsertDayEntry } from "@/lib/db/day-entries";
-import { createEpisode, getEpisodesForDay } from "@/lib/db/episodes";
+import {
+  clarifyEpisode,
+  createEpisode,
+  getEpisodesForDay,
+  listEpisodeActivity,
+} from "@/lib/db/episodes";
 import {
   createPersonalValue,
   getPersonalValue,
@@ -35,8 +40,8 @@ const episodeInput = {
   band: 2,
   dir: "away" as const,
   hook: "A difficult conversation",
-  state: "none" as const,
-  skill: "none" as const,
+  states: [],
+  skills: [],
   value: "My own words",
   move: "Ask for time",
 };
@@ -258,4 +263,100 @@ describe("personal values through real user-scoped repositories", () => {
       expect(saved.morning).toEqual({ toward: "My action" });
     },
   );
+
+  it("round-trips minimal and completed episodes without fabricating answers", async () => {
+    const note = await createEpisode({ day, hook: "Just a thought" });
+    expect(note).toMatchObject({
+      dir: "unknown",
+      behaviorStatus: "not-described",
+      hookType: null,
+      states: [],
+      skills: [],
+      state: null,
+      skill: null,
+      checks: {},
+      schemaVersion: 2,
+      eventTimezone: null,
+      value: "",
+      move: "",
+      workable: "",
+    });
+    const action = await createEpisode({
+      day,
+      move: "Stopped work",
+      dir: "mixed",
+      behaviorStatus: "acted",
+      states: ["fusion", "avoidance"],
+      skills: ["notice", "commit"],
+      checks: { awareness: null, openness: 0 },
+      immediateOutcome: "Had a break",
+      laterConsequences: "",
+      consequenceStatus: "observed",
+    });
+    expect(
+      (await getEpisodesForDay(day)).find((e) => e.id === action.id),
+    ).toEqual(action);
+    expect(action.checks).toEqual({ awareness: null, openness: 0 });
+    expect(await listEpisodeActivity()).toEqual(
+      expect.arrayContaining([
+        {
+          day,
+          dir: "unknown",
+          behaviorStatus: "not-described",
+          schemaVersion: 2,
+        },
+        { day, dir: "mixed", behaviorStatus: "acted", schemaVersion: 2 },
+      ]),
+    );
+  });
+
+  it("clarifies an owned legacy row once, preserving the original and value snapshot", async () => {
+    const value = await createPersonalValue(valueInput);
+    const row = await createEpisode({
+      day,
+      hook: "A legacy moment",
+      valueId: value.id,
+    });
+    await admin.query(
+      `UPDATE episodes SET schema_version = 1, dir = 'toward', state = 'none', skill = 'commit',
+      states = ARRAY['none'], skills = ARRAY['commit'], checks = '{"awareness":0,"action":2}', move = '—' WHERE id = $1`,
+      [row.id],
+    );
+    const original = (
+      await admin.query(
+        "SELECT to_jsonb(e) - 'legacy_snapshot' AS entry FROM episodes e WHERE id = $1",
+        [row.id],
+      )
+    ).rows[0].entry;
+    await updatePersonalValue(value.id, { ...valueInput, title: "New title" });
+    const input = {
+      id: row.id,
+      dir: "mixed" as const,
+      behaviorStatus: "acted" as const,
+      move: "Rested",
+      checks: { awareness: null, openness: 0 as const },
+    };
+    signIn(users[1]);
+    await expect(clarifyEpisode(input)).rejects.toThrow("unavailable");
+    signIn(users[0]);
+    const clarified = await clarifyEpisode(input);
+    expect(clarified).toMatchObject({
+      id: row.id,
+      dir: "mixed",
+      behaviorStatus: "acted",
+      move: "Rested",
+      schemaVersion: 2,
+      states: ["none"],
+      skills: ["commit"],
+      createdAt: row.createdAt,
+      valueSnapshot: row.valueSnapshot,
+      legacySnapshot: original,
+      eventTimezone: null,
+      checks: input.checks,
+    });
+    expect(clarified.updatedAt >= row.updatedAt).toBe(true);
+    expect(await getEpisodesForDay(day)).toHaveLength(1);
+    await expect(clarifyEpisode(input)).rejects.toThrow("already clarified");
+    expect((await getEpisodesForDay(day))[0].legacySnapshot).toEqual(original);
+  });
 });

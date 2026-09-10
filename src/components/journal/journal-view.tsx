@@ -3,6 +3,10 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useTransition } from "react";
+import {
+  EpisodeBadge,
+  EpisodeDetails,
+} from "@/components/episodes/episode-details";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
 import { BANDS, DOMAINS } from "@/lib/act/constants";
 import {
@@ -13,10 +17,11 @@ import {
 } from "@/lib/act/date";
 import {
   bandShape,
-  checksTotal,
   dayCounts,
   hasMorningEntry,
+  isCompletedAction,
   topStatusEffect,
+  towardAwaySplit,
 } from "@/lib/act/derive";
 import type {
   DayEntry,
@@ -52,25 +57,16 @@ function hasEvening(entry: DayEntry | undefined): boolean {
 
 function Marker({
   episode,
-  crowded,
   selected,
   onSelect,
   title,
 }: {
   episode: Episode;
-  crowded: number;
   selected: boolean;
   onSelect: () => void;
   title: string;
 }) {
-  const size =
-    crowded >= 4
-      ? 8
-      : crowded === 3
-        ? 11
-        : crowded === 2
-          ? 12 + episode.weight * 2
-          : 10 + episode.weight * 6;
+  const size = 12;
 
   return (
     <button
@@ -81,13 +77,11 @@ function Marker({
       className={cn(
         "block shrink-0 cursor-pointer border-[1.5px] p-0 transition-[transform,background-color] hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring",
         episode.dir === "toward" ? "rounded-[3px]" : "rounded-full",
-        episode.dir === "toward"
-          ? selected
-            ? "bg-toward"
-            : "bg-toward-muted"
-          : selected
+        isCompletedAction(episode) && episode.dir === "toward"
+          ? "bg-toward"
+          : isCompletedAction(episode) && episode.dir === "away"
             ? "bg-away"
-            : "bg-away-muted",
+            : "border-dashed bg-muted",
         selected ? "border-foreground" : "border-transparent",
       )}
       style={{ width: size, height: size }}
@@ -105,6 +99,7 @@ function DayStrip({
   onSelect: (episode: Episode) => void;
 }) {
   const t = useTranslations("journal");
+  const v2 = useTranslations("actV2.ui");
 
   return (
     <div className="relative">
@@ -121,12 +116,11 @@ function DayStrip({
             <Marker
               key={episode.id}
               episode={episode}
-              crowded={inBand.length}
               selected={episode.id === selectedEpisodeId}
               onSelect={() => onSelect(episode)}
               title={t("markerTitle", {
                 band,
-                direction: t(episode.dir),
+                direction: `${v2(`behaviorStatus.${episode.behaviorStatus}`)} · ${v2(`direction.${episode.dir}.label`)}`,
                 hook: episode.hook,
               })}
             />
@@ -139,7 +133,10 @@ function DayStrip({
             >
               <div className="flex h-10 shrink-0 items-end justify-center gap-0.5">
                 {inBand
-                  .filter((episode) => episode.dir === "toward")
+                  .filter(
+                    (episode) =>
+                      isCompletedAction(episode) && episode.dir === "toward",
+                  )
                   .map(marker)}
               </div>
               <div className="flex h-[15px] shrink-0 items-center">
@@ -151,7 +148,12 @@ function DayStrip({
                 />
               </div>
               <div className="flex h-[41px] shrink-0 items-start justify-center gap-0.5 pt-px">
-                {inBand.filter((episode) => episode.dir === "away").map(marker)}
+                {inBand
+                  .filter(
+                    (episode) =>
+                      !isCompletedAction(episode) || episode.dir !== "toward",
+                  )
+                  .map(marker)}
               </div>
             </div>
           );
@@ -183,60 +185,9 @@ function DayStrip({
 }
 
 function SelectedEpisodeCard({ episode }: { episode: Episode }) {
-  const act = useTranslations("act");
-  const t = useTranslations("journal");
-
   return (
-    <div
-      className={cn(
-        "mt-4 rounded-[11px] border px-4 py-3.5",
-        episode.dir === "toward"
-          ? "border-toward-border bg-toward-tint"
-          : "border-away-border bg-away-tint",
-      )}
-    >
-      <div className="mb-1.5 flex flex-wrap items-center gap-[9px]">
-        <span
-          className={cn(
-            "font-mono text-[9.5px] tracking-[0.16em] uppercase",
-            episode.dir === "toward" ? "text-toward" : "text-away",
-          )}
-        >
-          {t(episode.dir)}
-        </span>
-        <span className="font-mono text-[10.5px] text-muted-foreground">
-          {BANDS[episode.band]}
-        </span>
-        <span className="rounded-chip border bg-muted/70 px-2 py-[3px] text-[11.5px] text-foreground/75">
-          {act(`hookTypes.${episode.hookType}.label`)}
-        </span>
-        <span
-          className={cn(
-            "rounded-chip border px-2 py-[3px] text-[11.5px]",
-            episode.state === "none"
-              ? "bg-muted/70 text-muted-foreground"
-              : "border-away-border bg-away-tint text-away",
-          )}
-        >
-          {act(`states.${episode.state}.label`)}
-        </span>
-        <span
-          className={cn(
-            "rounded-chip border px-2 py-[3px] text-[11.5px]",
-            episode.skill === "none"
-              ? "bg-muted/70 text-muted-foreground"
-              : "border-toward-border bg-toward-tint text-toward",
-          )}
-        >
-          {act(`skills.${episode.skill}.label`)}
-        </span>
-      </div>
-      <p className="mb-1 font-serif text-[19px] leading-[1.35] tracking-[-0.01em]">
-        {episode.hook}
-      </p>
-      <p className="text-[13.5px] leading-[1.55] text-foreground/80">
-        {episode.move || t("notWritten")}
-      </p>
+    <div className="mt-4 rounded-input border p-4">
+      <EpisodeDetails episode={episode} />
     </div>
   );
 }
@@ -361,7 +312,7 @@ export function JournalView({
     weekDays.includes(episode.day),
   );
   const weekToward = weekEpisodes.filter(
-    (episode) => episode.dir === "toward",
+    (episode) => isCompletedAction(episode) && episode.dir === "toward",
   ).length;
   const dayEpisodes = episodesByDay.get(selectedDay) ?? [];
   const selectedEpisode =
@@ -452,9 +403,10 @@ export function JournalView({
               const dayEpisodes = episodesByDay.get(day) ?? [];
               const entry = entriesByDay.get(day);
               const toward = dayEpisodes.filter(
-                (episode) => episode.dir === "toward",
+                (episode) =>
+                  isCompletedAction(episode) && episode.dir === "toward",
               ).length;
-              const away = dayEpisodes.length - toward;
+              const away = towardAwaySplit(dayEpisodes).away;
               const hasNotes = hasMorning(entry) || hasEvening(entry);
               const empty = dayEpisodes.length === 0 && !hasNotes;
               return (
@@ -479,7 +431,13 @@ export function JournalView({
                           key={episode.id}
                           className={cn(
                             "size-1.5 rounded-[2px]",
-                            episode.dir === "toward" ? "bg-toward" : "bg-away",
+                            isCompletedAction(episode) &&
+                              episode.dir === "toward"
+                              ? "bg-toward"
+                              : isCompletedAction(episode) &&
+                                  episode.dir === "away"
+                                ? "bg-away"
+                                : "border border-dashed bg-muted",
                           )}
                         />
                       ))}
@@ -508,7 +466,7 @@ export function JournalView({
                 {weekEpisodes.length
                   ? t("weekSummary", {
                       toward: weekToward,
-                      away: weekEpisodes.length - weekToward,
+                      away: towardAwaySplit(weekEpisodes).away,
                     })
                   : t("nothingLogged")}
               </span>
@@ -526,9 +484,10 @@ export function JournalView({
                   const dayEpisodes = episodesByDay.get(day) ?? [];
                   const entry = entriesByDay.get(day);
                   const toward = dayEpisodes.filter(
-                    (episode) => episode.dir === "toward",
+                    (episode) =>
+                      isCompletedAction(episode) && episode.dir === "toward",
                   ).length;
-                  const away = dayEpisodes.length - toward;
+                  const away = towardAwaySplit(dayEpisodes).away;
                   const morningLogged = hasMorning(entry);
                   const eveningLogged = hasEvening(entry);
                   const hasData =
@@ -568,7 +527,7 @@ export function JournalView({
                                 ? "bg-muted"
                                 : cell.hasAway
                                   ? "bg-away"
-                                  : "bg-toward",
+                                  : "bg-muted-foreground/40",
                             )}
                             style={{
                               height: cell.count
@@ -673,9 +632,7 @@ export function JournalView({
                     className={cn(
                       "block w-full cursor-pointer rounded-[11px] border px-[15px] py-[13px] text-left hover:border-foreground/25",
                       episode.id === selectedEpisodeId
-                        ? episode.dir === "toward"
-                          ? "border-toward-border bg-toward-tint"
-                          : "border-away-border bg-away-tint"
+                        ? "border-foreground/50 bg-muted"
                         : "bg-card",
                     )}
                   >
@@ -683,42 +640,7 @@ export function JournalView({
                       <span className="font-mono text-[10.5px] text-muted-foreground">
                         {BANDS[episode.band]}
                       </span>
-                      <span
-                        className={cn(
-                          "rounded-[5px] px-[7px] py-0.5 font-mono text-[9.5px] tracking-[0.14em] uppercase",
-                          episode.dir === "toward"
-                            ? "bg-toward-tint text-toward"
-                            : "bg-away-tint text-away",
-                        )}
-                      >
-                        {t(episode.dir)}
-                      </span>
-                      <span className="rounded-chip border bg-muted/70 px-2 py-[3px] text-[11.5px] text-foreground/75">
-                        {act(`hookTypes.${episode.hookType}.label`)}
-                      </span>
-                      <span
-                        className={cn(
-                          "rounded-chip border px-2 py-[3px] text-[11.5px]",
-                          episode.state === "none"
-                            ? "bg-muted/70 text-muted-foreground"
-                            : "border-away-border bg-away-tint text-away",
-                        )}
-                      >
-                        {act(`states.${episode.state}.label`)}
-                      </span>
-                      <span
-                        className={cn(
-                          "rounded-chip border px-2 py-[3px] text-[11.5px]",
-                          episode.skill === "none"
-                            ? "bg-muted/70 text-muted-foreground"
-                            : "border-toward-border bg-toward-tint text-toward",
-                        )}
-                      >
-                        {act(`skills.${episode.skill}.label`)}
-                      </span>
-                      <span className="ml-auto font-mono text-[10.5px] text-muted-foreground">
-                        {t("score", { score: checksTotal(episode.checks) })}
-                      </span>
+                      <EpisodeBadge episode={episode} />
                     </span>
                     <span className="block font-serif text-[17px] leading-[1.35]">
                       {episode.hook}

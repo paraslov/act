@@ -7,7 +7,6 @@ import {
   AXES,
   type AxisKey,
   BANDS,
-  HOOK_GROUPS,
   HOOK_TYPES,
   type HookType,
   SKILLS,
@@ -15,13 +14,13 @@ import {
   STATES,
   type StateId,
 } from "@/lib/act/constants";
-import { daysBetween, shiftId, todayId } from "@/lib/act/date";
+import { daysBetween, todayId } from "@/lib/act/date";
 import type {
-  Checks,
   DayMorning,
   Episode,
   EpisodeActivity,
   EpisodeFilters,
+  EpisodePeriod,
 } from "@/lib/act/types";
 
 /**
@@ -45,27 +44,82 @@ export function normalizeText(value: string | null | undefined): string {
     .toLowerCase();
 }
 
-/** Sum of the five flexibility-check axes, 0–10. */
-export function checksTotal(checks: Checks | null | undefined): number {
-  if (!checks) return 0;
-  return AXES.reduce((sum, axis) => sum + (checks[axis.id] ?? 0), 0);
+/** Only explicitly completed, clarified entries contribute to action counts. */
+export function isCompletedAction(
+  episode: Pick<EpisodeActivity, "behaviorStatus" | "schemaVersion">,
+): boolean {
+  return episode.schemaVersion === 2 && episode.behaviorStatus === "acted";
 }
 
-export type DirCounts = { toward: number; away: number; total: number };
-
-/** Toward/away/total counts for a single day. */
+export type DirCounts = {
+  toward: number;
+  away: number;
+  mixed: number;
+  unknown: number;
+  planned: number;
+  notDescribed: number;
+  completed: number;
+  total: number;
+};
 export function dayCounts(episodes: Episode[], day: string): DirCounts {
   return splitCounts(episodes.filter((e) => e.day === day));
 }
-
-/** Toward/away/total counts over the whole list. */
 export function towardAwaySplit(episodes: Episode[]): DirCounts {
   return splitCounts(episodes);
 }
+export function splitCounts(list: Episode[]): DirCounts {
+  const counts: DirCounts = {
+    toward: 0,
+    away: 0,
+    mixed: 0,
+    unknown: 0,
+    planned: 0,
+    notDescribed: 0,
+    completed: 0,
+    total: list.length,
+  };
+  for (const episode of list) {
+    if (isCompletedAction(episode)) {
+      counts[episode.dir]++;
+      counts.completed++;
+    } else if (
+      episode.schemaVersion === 2 &&
+      episode.behaviorStatus === "planned"
+    )
+      counts.planned++;
+    else counts.notDescribed++;
+  }
+  return counts;
+}
 
-function splitCounts(list: Episode[]): DirCounts {
-  const toward = list.filter((e) => e.dir === "toward").length;
-  return { toward, away: list.length - toward, total: list.length };
+export function inPeriod(
+  episode: Pick<EpisodeActivity, "day">,
+  period: EpisodePeriod,
+): boolean {
+  return (
+    (!period.start || episode.day >= period.start) &&
+    (!period.end || episode.day <= period.end)
+  );
+}
+export function returningToPractice(
+  episodes: readonly EpisodeActivity[],
+  period: EpisodePeriod,
+): number {
+  return new Set(episodes.filter((e) => inPeriod(e, period)).map((e) => e.day))
+    .size;
+}
+
+export function bossTestCells(episodes: Episode[], period: EpisodePeriod) {
+  return episodes
+    .filter((e) => inPeriod(e, period))
+    .sort((a, b) => -byNewest(a, b))
+    .map(({ id, day, behaviorStatus, dir, schemaVersion }) => ({
+      id,
+      day,
+      behaviorStatus,
+      dir,
+      isLegacy: schemaVersion === 1,
+    }));
 }
 
 // --- Filtering (Episodes view) --------------------------------------------
@@ -88,14 +142,14 @@ export function matchesFilters(
   if (
     filters.state &&
     filters.state !== "all" &&
-    episode.state !== filters.state
+    !episode.states.includes(filters.state)
   ) {
     return false;
   }
   if (
     filters.skill &&
     filters.skill !== "all" &&
-    episode.skill !== filters.skill
+    !episode.skills.includes(filters.skill)
   ) {
     return false;
   }
@@ -147,7 +201,7 @@ export function bandShape(episodes: Episode[]): BandShapeCell[] {
     return {
       index,
       count: inBand.length,
-      hasAway: inBand.some((e) => e.dir === "away"),
+      hasAway: inBand.some((e) => isCompletedAction(e) && e.dir === "away"),
     };
   });
 }
@@ -173,7 +227,7 @@ export function topStatusEffect(episodes: Episode[]): StateId | null {
   let best: StateId | null = null;
   let bestCount = 0;
   for (const state of STATES) {
-    const count = episodes.filter((e) => e.state === state.id).length;
+    const count = episodes.filter((e) => e.states.includes(state.id)).length;
     if (count > bestCount) {
       best = state.id;
       bestCount = count;
@@ -194,7 +248,7 @@ export type StatusTally = {
 export function statusEffectTallies(episodes: Episode[]): StatusTally[] {
   const total = episodes.length;
   return STATES.map((state) => {
-    const count = episodes.filter((e) => e.state === state.id).length;
+    const count = episodes.filter((e) => e.states.includes(state.id)).length;
     return {
       id: state.id,
       label: state.label,
@@ -216,7 +270,7 @@ export type SkillTally = {
 export function skillTallies(episodes: Episode[]): SkillTally[] {
   const total = episodes.length;
   return SKILLS.map((skill) => {
-    const count = episodes.filter((e) => e.skill === skill.id).length;
+    const count = episodes.filter((e) => e.skills.includes(skill.id)).length;
     return {
       id: skill.id,
       label: skill.label,
@@ -226,20 +280,10 @@ export function skillTallies(episodes: Episode[]): SkillTally[] {
   });
 }
 
-/** Labels of skills not used at all in the set. */
-export function unusedSkills(episodes: Episode[]): string[] {
-  return skillTallies(episodes)
-    .filter((s) => s.count === 0)
-    .map((s) => s.label);
+/** Named skills only; absence is descriptive, never a recommendation. */
+export function skillsNamed(episodes: Episode[]): SkillTally[] {
+  return skillTallies(episodes).filter((skill) => skill.count > 0);
 }
-
-export type HookTally = {
-  id: string;
-  label: string;
-  type: string;
-  count: number;
-  share: number;
-};
 
 export type HookTypeTally = {
   id: HookType;
@@ -257,35 +301,23 @@ export function hookTypeTallies(episodes: Episode[]): HookTypeTally[] {
   }).sort((a, b) => b.count - a.count);
 }
 
-/** Recurring-hook groups with at least one match, sorted most-frequent first. */
-export function hookGroupTallies(episodes: Episode[]): HookTally[] {
-  const total = episodes.length;
-  return HOOK_GROUPS.map((group) => {
-    const count = episodes.filter((e) =>
-      group.match.some((needle) =>
-        normalizeText(e.hook).includes(normalizeText(needle)),
-      ),
-    ).length;
-    return {
-      id: group.id,
-      label: group.label,
-      type: group.type,
-      count,
-      share: share(count, total),
+export type AxisAverage = { mean: number | null; n: number };
+/** Explicit answers only; legacy zeroes cannot be distinguished from defaults. */
+export function axisAverages(
+  episodes: Episode[],
+): Record<AxisKey, AxisAverage> {
+  const result = {} as Record<AxisKey, AxisAverage>;
+  for (const { id } of AXES) {
+    const answers = episodes
+      .filter((e) => e.schemaVersion === 2)
+      .map((e) => e.checks[id])
+      .filter((value): value is 0 | 1 | 2 => value != null);
+    result[id] = {
+      mean: answers.length
+        ? answers.reduce<number>((a, b) => a + b, 0) / answers.length
+        : null,
+      n: answers.length,
     };
-  })
-    .filter((h) => h.count > 0)
-    .sort((a, b) => b.count - a.count);
-}
-
-// --- Radar (recent 5 vs previous 5) ---------------------------------------
-
-/** Average score (0–2) per axis across a set of episodes. */
-export function axisAverages(episodes: Episode[]): Record<AxisKey, number> {
-  const result = {} as Record<AxisKey, number>;
-  for (const axis of AXES) {
-    const sum = episodes.reduce((acc, e) => acc + (e.checks[axis.id] ?? 0), 0);
-    result[axis.id] = episodes.length ? sum / episodes.length : 0;
   }
   return result;
 }
@@ -293,55 +325,54 @@ export function axisAverages(episodes: Episode[]): Record<AxisKey, number> {
 /** Newest-first order by day then creation time. */
 function byNewest(a: Episode, b: Episode): number {
   if (a.day !== b.day) return a.day < b.day ? 1 : -1;
-  return a.createdAt < b.createdAt ? 1 : a.createdAt > b.createdAt ? -1 : 0;
+  return a.createdAt < b.createdAt
+    ? 1
+    : a.createdAt > b.createdAt
+      ? -1
+      : b.id.localeCompare(a.id);
 }
 
 export type RadarAxis = {
   axis: AxisKey;
   label: string;
-  recent: number; // 0–2
-  previous: number; // 0–2
-  delta: number; // recent − previous
+  recent: number | null;
+  previous: number | null;
+  delta: number | null;
+  recentN: number;
+  previousN: number;
+  recentRange: EpisodePeriod | null;
+  previousRange: EpisodePeriod | null;
 };
-
-/**
- * Compares the average axis scores of the most recent five episodes against the
- * five before them.
- */
-export function radarComparison(episodes: Episode[]): RadarAxis[] {
-  const sorted = [...episodes].sort(byNewest);
-  const recent = axisAverages(sorted.slice(0, 5));
-  const previous = axisAverages(sorted.slice(5, 10));
-  return AXES.map((axis) => ({
-    axis: axis.id,
-    label: axis.label,
-    recent: recent[axis.id],
-    previous: previous[axis.id],
-    delta: recent[axis.id] - previous[axis.id],
-  }));
+function dateRange(episodes: Episode[]): EpisodePeriod | null {
+  return episodes.length
+    ? { start: episodes[episodes.length - 1].day, end: episodes[0].day }
+    : null;
 }
-
-// --- Streak & day number ---------------------------------------------------
-
-/**
- * Consecutive days ending at `today` that each hold at least one toward move.
- * The current day gets grace: if `today` has no toward move yet, counting starts
- * from the day before, so an unfinished today does not zero an existing streak.
- */
-export function towardStreak(
-  episodes: readonly EpisodeActivity[],
-  today: string = todayId(),
-): number {
-  const towardDays = new Set(
-    episodes.filter((e) => e.dir === "toward").map((e) => e.day),
-  );
-  let cursor = towardDays.has(today) ? today : shiftId(today, -1);
-  let streak = 0;
-  while (towardDays.has(cursor)) {
-    streak += 1;
-    cursor = shiftId(cursor, -1);
-  }
-  return streak;
+export function radarComparison(episodes: Episode[]): RadarAxis[] {
+  const sorted = episodes.filter((e) => e.schemaVersion === 2).sort(byNewest);
+  const latest = sorted.slice(0, 5);
+  const preceding = sorted.slice(5, 10);
+  const recent = axisAverages(latest);
+  const previous = axisAverages(preceding);
+  return AXES.map(({ id, label }) => {
+    // Conservative product rule, not a significance test: two full groups of
+    // five entries, with at least three explicit answers per axis in each group.
+    const comparable =
+      sorted.length >= 10 && recent[id].n >= 3 && previous[id].n >= 3;
+    const mean = recent[id].mean;
+    const baseline = comparable ? previous[id].mean : null;
+    return {
+      axis: id,
+      label,
+      recent: mean,
+      previous: baseline,
+      delta: mean !== null && baseline !== null ? mean - baseline : null,
+      recentN: recent[id].n,
+      previousN: previous[id].n,
+      recentRange: dateRange(latest),
+      previousRange: comparable ? dateRange(preceding) : null,
+    };
+  });
 }
 
 /**

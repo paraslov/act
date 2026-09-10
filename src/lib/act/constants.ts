@@ -76,52 +76,6 @@ export const BANDS = [
   "21–00",
 ] as const;
 
-/**
- * Static matchers used to group recurring hooks on the Progress view. A hook is
- * counted in a group when its text contains any of the group's `match` substrings
- * (case/diacritic-insensitive). This stays a static list for v1 (Known gap).
- */
-export const HOOK_GROUPS = [
-  {
-    id: "0",
-    match: ["can't handle", "incompetent", "не справля", "некомпетент"],
-    type: "thought",
-    ...en.act.hookGroups["0"],
-  },
-  {
-    id: "1",
-    match: ["laptop", "close the laptop", "ноутбук"],
-    type: "urge",
-    ...en.act.hookGroups["1"],
-  },
-  {
-    id: "2",
-    match: [
-      "ruined",
-      "Too late",
-      "Not worth starting",
-      "испортил",
-      "слишком поздно",
-      "нет смысла начинать",
-    ],
-    type: "thought",
-    ...en.act.hookGroups["2"],
-  },
-  {
-    id: "3",
-    match: ["listening", "не слушает", "не слушают"],
-    type: "thought",
-    ...en.act.hookGroups["3"],
-  },
-  {
-    id: "4",
-    match: ["anger", "злость", "злости", "злостью", "разозлил", "разозлила"],
-    type: "feeling",
-    ...en.act.hookGroups["4"],
-  },
-] as const;
-
-/** The five-step, read-only practice loop shown on the reference page. */
 export const LOOP_REF = [
   { n: "1", ...en.act.loop["1"] },
   { n: "2", ...en.act.loop["2"] },

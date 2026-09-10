@@ -1,9 +1,11 @@
 import { getLocale, getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
+import { BossTestGrid } from "@/components/progress/boss-test-grid";
 import { AXES, BANDS } from "@/lib/act/constants";
 import { formatDayLabel } from "@/lib/act/date";
 import {
   bandBreakdown,
-  hookGroupTallies,
+  bossTestCells,
   hookTypeTallies,
   radarComparison,
   skillTallies,
@@ -11,504 +13,345 @@ import {
   towardAwaySplit,
 } from "@/lib/act/derive";
 import type { Episode } from "@/lib/act/types";
+import { SKILL_CARD_IDS, STATE_CARD_IDS } from "@/lib/reference/library";
 import { cn } from "@/lib/utils";
 
-const RADAR_CX = 150;
-const RADAR_CY = 110;
-const RADAR_RADIUS = 80;
-
-function percent(value: number): number {
-  return Math.round(value * 100);
-}
-
-function scaledWidth(count: number, max: number): string {
-  return `${(count / Math.max(1, max)) * 100}%`;
-}
-
-function radarPoint(index: number, radius: number): [number, number] {
-  const angle = -Math.PI / 2 + (index * Math.PI * 2) / AXES.length;
-  return [
-    RADAR_CX + Math.cos(angle) * radius,
-    RADAR_CY + Math.sin(angle) * radius,
-  ];
-}
-
-function radarPolygon(values: number[], radius = RADAR_RADIUS): string {
-  return values
-    .map((value, index) => {
-      const [x, y] = radarPoint(index, radius * (value / 2));
-      return `${x.toFixed(1)},${y.toFixed(1)}`;
-    })
-    .join(" ");
-}
-
-async function Radar({
-  episodes,
+function Card({
   title,
   description,
+  children,
 }: {
-  episodes: Episode[];
   title: string;
   description: string;
-}) {
-  const act = await getTranslations("act");
-  const comparison = radarComparison(episodes);
-  const rings = [1, 0.66, 0.33];
-
-  return (
-    <svg
-      width="420"
-      height="224"
-      viewBox="-60 0 420 224"
-      role="img"
-      aria-labelledby="flexibility-radar-title flexibility-radar-description"
-      className="h-auto w-full max-w-[420px] shrink-0"
-    >
-      <title id="flexibility-radar-title">{title}</title>
-      <desc id="flexibility-radar-description">{description}</desc>
-      {rings.map((factor) => (
-        <polygon
-          key={factor}
-          points={AXES.map((_, index) =>
-            radarPoint(index, RADAR_RADIUS * factor)
-              .map((coordinate) => coordinate.toFixed(1))
-              .join(","),
-          ).join(" ")}
-          fill="none"
-          className="stroke-border"
-          strokeWidth="1"
-        />
-      ))}
-      <polygon
-        points={radarPolygon(comparison.map((axis) => axis.previous))}
-        fill="none"
-        className="stroke-muted-foreground/50"
-        strokeWidth="1.5"
-        strokeDasharray="3 3"
-      />
-      <polygon
-        points={radarPolygon(comparison.map((axis) => axis.recent))}
-        fill="var(--toward)"
-        fillOpacity="0.14"
-        stroke="var(--toward)"
-        strokeWidth="2"
-      />
-      {AXES.map((axis, index) => {
-        const [x, y] = radarPoint(index, RADAR_RADIUS + 12);
-        const cosine = Math.cos(
-          -Math.PI / 2 + (index * Math.PI * 2) / AXES.length,
-        );
-        return (
-          <text
-            key={axis.id}
-            x={x}
-            y={y + 3.5}
-            textAnchor={
-              Math.abs(cosine) < 0.2 ? "middle" : cosine > 0 ? "start" : "end"
-            }
-            className="fill-muted-foreground font-mono text-[9.5px] tracking-[0.08em]"
-          >
-            {act(`axes.${axis.id}.label`).toUpperCase()}
-          </text>
-        );
-      })}
-    </svg>
-  );
-}
-
-function Card({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className?: string;
+  children: ReactNode;
 }) {
   return (
-    <section
-      className={cn(
-        "rounded-card border bg-card px-6 py-[22px] text-card-foreground",
-        className,
-      )}
-    >
+    <section className="min-w-0 grow basis-[400px] rounded-card border bg-card px-6 py-[22px]">
+      <h2 className="text-base font-semibold">{title}</h2>
+      <p className="mt-1 mb-4 text-[13px] text-muted-foreground">
+        {description}
+      </p>
       {children}
     </section>
   );
 }
-
-function CardHeading({
-  title,
-  description,
-}: {
-  title: string;
-  description: string;
-}) {
+function Absence({ children }: { children: ReactNode }) {
   return (
-    <header>
-      <h2 className="text-base font-semibold tracking-[-0.01em]">{title}</h2>
-      <p className="mt-1 mb-4 text-[13px] leading-[1.5] text-muted-foreground">
-        {description}
-      </p>
-    </header>
+    <div className="rounded-input border border-dashed p-3 font-mono text-[10px] text-muted-foreground uppercase">
+      {children}
+    </div>
   );
 }
-
-function signedDelta(value: number, formatter: Intl.NumberFormat): string {
-  if (Math.abs(value) < 0.05) return `±${formatter.format(0)}`;
-  return `${value > 0 ? "+" : "−"}${formatter.format(Math.abs(value))}`;
-}
-
-function chronological(episodes: Episode[]): Episode[] {
-  return [...episodes].sort((a, b) => {
-    if (a.day !== b.day) return a.day < b.day ? -1 : 1;
-    if (a.createdAt !== b.createdAt) return a.createdAt < b.createdAt ? -1 : 1;
-    return a.id.localeCompare(b.id);
-  });
+function point(index: number, value: number) {
+  const angle = -Math.PI / 2 + (index * Math.PI * 2) / AXES.length;
+  return [
+    150 + (Math.cos(angle) * 75 * value) / 2,
+    110 + (Math.sin(angle) * 75 * value) / 2,
+  ];
 }
 
 export async function ProgressView({ episodes }: { episodes: Episode[] }) {
-  const t = await getTranslations("progress");
+  const t = await getTranslations("actV2.ui");
+  const checks = await getTranslations("actV2.checks");
+  const cards = await getTranslations("actV2.cards");
+  const old = await getTranslations("progress");
   const act = await getTranslations("act");
   const locale = await getLocale();
-  const numberFormat = new Intl.NumberFormat(locale, {
-    minimumFractionDigits: 1,
-    maximumFractionDigits: 1,
-  });
+  const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
   const split = towardAwaySplit(episodes);
-  const towardPercent = percent(split.toward / Math.max(1, split.total));
-  const awayPercent = split.total ? 100 - towardPercent : 0;
+  const radar = radarComparison(episodes);
   const bands = bandBreakdown(episodes);
   const maxBand = Math.max(1, ...bands.map((band) => band.total));
-  const riskiest = [...bands].sort(
-    (a, b) => b.away - a.away || b.total - a.total || a.index - b.index,
-  )[0];
-  const radar = radarComparison(episodes);
+  const days = episodes.map((episode) => episode.day).sort();
+  const period = { start: days[0], end: days[days.length - 1] };
+  const range = days.length
+    ? t("observations.dateRange", {
+        start: formatDayLabel(period.start, locale),
+        end: formatDayLabel(period.end, locale),
+      })
+    : "—";
   const states = statusEffectTallies(episodes);
-  const maxState = Math.max(1, ...states.map((state) => state.count));
-  const hookTypes = hookTypeTallies(episodes);
-  const maxHookType = Math.max(1, ...hookTypes.map((hook) => hook.count));
-  const hooks = hookGroupTallies(episodes);
-  const maxHook = Math.max(1, ...hooks.map((hook) => hook.count));
   const skills = skillTallies(episodes);
-  const maxSkill = Math.max(1, ...skills.map((skill) => skill.count));
-  const untouched = skills
-    .filter((skill) => skill.count === 0)
-    .map((skill) => act(`skills.${skill.id}.label`));
-  const bossCells = chronological(episodes);
-
+  const hookTypes = hookTypeTallies(episodes);
+  const hasLegacy = episodes.some((e) => e.schemaVersion === 1);
+  const allRecent = radar.every((axis) => axis.recent !== null);
+  const allPrevious = radar.every((axis) => axis.previous !== null);
+  const rangeText = (range: { start?: string; end?: string } | null) =>
+    range?.start && range.end
+      ? t("observations.dateRange", {
+          start: formatDayLabel(range.start, locale),
+          end: formatDayLabel(range.end, locale),
+        })
+      : "—";
   return (
-    <div>
-      <h1 className="font-serif text-[34px] leading-[1.1] tracking-[-0.02em]">
-        {t("title")}
-      </h1>
-      <p className="mt-2 mb-[22px] max-w-[66ch] text-[14.5px] text-foreground/70">
-        {t.rich("intro", { em: (chunks) => <em>{chunks}</em> })}
+    <div className="max-w-[920px]">
+      <h1 className="font-serif text-[34px]">{old("title")}</h1>
+      <p className="mt-2 mb-5 max-w-[66ch] text-sm text-foreground/70">
+        {t("observations.intro")}
       </p>
-
-      <div className="grid grid-cols-1 items-start gap-5 min-[1240px]:grid-cols-2">
-        <Card>
-          <CardHeading
-            title={t("split.title")}
-            description={t("split.description", { count: split.total })}
-          />
-          <div className="mb-3 flex h-4 overflow-hidden rounded-full bg-muted">
-            <span
-              className="block h-full bg-toward"
-              style={{ width: `${towardPercent}%` }}
-            />
-            <span
-              className="block h-full bg-away"
-              style={{ width: `${awayPercent}%` }}
-            />
-          </div>
-          <div className="flex flex-wrap gap-[22px]">
-            <div>
-              <p className="font-serif text-[30px] leading-none text-toward">
-                {split.toward}
-              </p>
-              <p className="mt-1 font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
-                {t("split.toward", {
-                  percent: towardPercent,
-                })}
-              </p>
-            </div>
-            <div>
-              <p className="font-serif text-[30px] leading-none text-away">
-                {split.away}
-              </p>
-              <p className="mt-1 font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
-                {t("split.away", {
-                  percent: awayPercent,
-                })}
-              </p>
-            </div>
-            <div>
-              <p className="font-serif text-[30px] leading-none">
-                {split.total ? BANDS[riskiest.index] : "—"}
-              </p>
-              <p className="mt-1 font-mono text-[10px] tracking-[0.14em] text-muted-foreground uppercase">
-                {t("split.riskiest")}
-              </p>
-            </div>
-          </div>
-          <div className="mt-[18px] border-t pt-4">
-            <p className="mb-2.5 text-[13px] font-medium">
-              {t("split.byTime")}
-            </p>
-            <div className="flex h-[70px] items-end gap-[5px]">
-              {bands.map((band) => (
-                <span
-                  key={band.index}
-                  title={t("split.bandTitle", {
-                    band: BANDS[band.index],
-                    toward: band.toward,
-                    away: band.away,
-                  })}
-                  className="flex h-[70px] min-w-0 flex-1 flex-col justify-end gap-0.5"
+      <p className="mb-4 font-mono text-xs text-muted-foreground">
+        {t("observations.period")}: {range} ·{" "}
+        {t("observations.records", { count: split.total })}
+      </p>
+      {!episodes.length && <Absence>{t("observations.empty")}</Absence>}
+      {hasLegacy && (
+        <div className="mb-4">
+          <Absence>
+            {t("legacy.notice")} {t("legacy.excluded")}
+          </Absence>
+        </div>
+      )}
+      <div className="flex flex-wrap items-start gap-5">
+        <Card
+          title={old("split.title")}
+          description={t("observations.completedActions", {
+            count: split.completed,
+          })}
+        >
+          <div className="flex flex-wrap gap-4">
+            {(["toward", "away", "mixed", "unknown"] as const).map((dir) => (
+              <div key={dir}>
+                <p
+                  className={cn(
+                    "font-serif text-[30px]",
+                    dir === "toward" && "text-toward",
+                    dir === "away" && "text-away",
+                  )}
                 >
-                  <span
-                    className="block rounded-t-[3px] bg-away"
-                    style={{ height: `${(band.away / maxBand) * 62}px` }}
-                  />
-                  <span
-                    className="block rounded-b-[3px] bg-toward"
-                    style={{ height: `${(band.toward / maxBand) * 62}px` }}
-                  />
-                </span>
-              ))}
-            </div>
-            <div className="mt-[5px] flex gap-[5px]">
-              {BANDS.map((band) => (
+                  {split[dir]}
+                </p>
+                <p className="text-xs">{t(`direction.${dir}.label`)}</p>
+              </div>
+            ))}
+          </div>
+          <p className="mt-4 border-t pt-3 text-xs text-muted-foreground">
+            {t("observations.notesAndPlans")}
+          </p>
+          <p className="mt-2 text-xs">
+            {t("behaviorStatus.planned")}: {split.planned}
+            <br />
+            {t("behaviorStatus.not-described")}: {split.notDescribed}
+          </p>
+        </Card>
+        <Card
+          title={t("observations.byTime")}
+          description={t("observations.byTimeHelp")}
+        >
+          <div className="flex h-[105px] items-end gap-2">
+            {bands.map((band) => (
+              <div
+                key={band.index}
+                className="flex min-w-0 flex-1 flex-col items-center justify-end gap-1"
+              >
+                <span className="font-mono text-xs">{band.total}</span>
                 <span
-                  key={band}
-                  className="min-w-0 flex-1 text-center font-mono text-[9px] text-muted-foreground"
-                >
-                  {band.slice(0, 2)}
+                  className="block w-full rounded-t-sm bg-muted-foreground/50"
+                  style={{ height: `${(band.total / maxBand) * 62}px` }}
+                />
+                <span className="font-mono text-[9px]">
+                  {BANDS[band.index]}
                 </span>
-              ))}
-            </div>
+              </div>
+            ))}
           </div>
         </Card>
-
-        <Card>
-          <CardHeading
-            title={t("radar.title")}
-            description={t("radar.description")}
-          />
-          <div className="flex flex-wrap items-center gap-5">
-            <Radar
-              episodes={episodes}
-              title={t("radar.imageTitle")}
-              description={t("radar.imageDescription")}
-            />
-            <div className="flex min-w-[170px] flex-1 flex-col gap-2.5">
-              {radar.map((axis) => (
-                <div key={axis.axis}>
-                  <div className="mb-1 flex justify-between gap-3 text-[12.5px]">
-                    <span className="text-foreground/80">
-                      {act(`axes.${axis.axis}.label`)}
-                    </span>
-                    <span className="font-mono text-muted-foreground">
-                      {numberFormat.format(axis.recent)}{" "}
-                      <span
-                        className={cn(
-                          axis.delta > 0.05 && "text-toward",
-                          axis.delta < -0.05 && "text-away",
-                        )}
-                      >
-                        {signedDelta(axis.delta, numberFormat)}
-                      </span>
-                    </span>
-                  </div>
-                  <span className="block h-1.5 overflow-hidden rounded-full bg-muted">
-                    <span
-                      className="block h-full rounded-full bg-toward"
+        <section className="w-full rounded-card bg-inverse px-6 py-[22px] text-inverse-foreground">
+          <h2 className="font-mono text-[10px] uppercase">
+            {t("rpg.bossTest.label")} · {range}
+          </h2>
+          <p className="my-3 font-serif text-[22px]">
+            {t("rpg.bossTest.prompt")}
+          </p>
+          <p className="text-sm">
+            {t("rpg.bossTest.summary", {
+              total: split.total,
+              toward: split.toward,
+            })}
+          </p>
+          {!episodes.length && (
+            <p className="mt-4 border border-dashed border-white/40 p-3 text-sm">
+              {t("rpg.bossTest.empty")}
+            </p>
+          )}
+          <BossTestGrid cells={bossTestCells(episodes, period)} />
+          <p className="mt-3 text-xs leading-relaxed text-inverse-muted">
+            {t("rpg.bossTest.caption")}
+          </p>
+        </section>
+        <Card
+          title={t("observations.reflectionTitle")}
+          description={t("observations.comparisonHelp")}
+        >
+          <svg
+            role="img"
+            aria-label={t("observations.reflectionTitle")}
+            viewBox="0 0 300 230"
+            className="mx-auto w-full max-w-[360px]"
+          >
+            {[1, 2].map((level) => (
+              <polygon
+                key={level}
+                points={AXES.map((_, i) => point(i, level).join(",")).join(" ")}
+                fill="none"
+                className="stroke-border"
+              />
+            ))}
+            {allPrevious && (
+              <polygon
+                points={radar
+                  .map((axis, i) => point(i, axis.previous as number).join(","))
+                  .join(" ")}
+                fill="none"
+                className="stroke-muted-foreground"
+                strokeDasharray="3 3"
+              />
+            )}
+            {allRecent && (
+              <polygon
+                points={radar
+                  .map((axis, i) => point(i, axis.recent as number).join(","))
+                  .join(" ")}
+                fill="none"
+                className="stroke-foreground"
+              />
+            )}
+            {radar.map((axis, i) => {
+              const [x, y] = point(i, 2.55);
+              const actual =
+                axis.recent === null ? null : point(i, axis.recent);
+              return (
+                <g key={axis.axis}>
+                  {actual && (
+                    <circle
+                      cx={actual[0]}
+                      cy={actual[1]}
+                      r="3"
+                      className="fill-foreground"
+                    />
+                  )}
+                  <text
+                    x={x}
+                    y={y}
+                    textAnchor="middle"
+                    className="fill-muted-foreground font-mono text-[9px]"
+                  >
+                    {checks(`${axis.axis}.title`)}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+          <div className="space-y-4">
+            {radar.map((axis) => (
+              <div key={axis.axis}>
+                <p className="flex justify-between gap-2 text-sm">
+                  <span>{checks(`${axis.axis}.title`)}</span>
+                  <span className="font-mono">
+                    {axis.recent === null ? "—" : number.format(axis.recent)}
+                  </span>
+                </p>
+                <p className="my-1 text-xs text-muted-foreground">
+                  {t("observations.recent")}: {rangeText(axis.recentRange)} ·{" "}
+                  {t("observations.sampleSize", { count: axis.recentN })}
+                </p>
+                {axis.recent === null ? (
+                  <Absence>{t("observations.noResponses")}</Absence>
+                ) : (
+                  <div className="h-1.5 rounded bg-muted">
+                    <div
+                      className="h-full rounded bg-foreground/60"
                       style={{ width: `${(axis.recent / 2) * 100}%` }}
                     />
-                  </span>
-                </div>
-              ))}
-            </div>
+                  </div>
+                )}
+                {axis.delta === null ? (
+                  <div className="mt-2">
+                    <Absence>{t("observations.insufficient")}</Absence>
+                  </div>
+                ) : (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    {t("observations.previous")}:{" "}
+                    {number.format(axis.previous as number)} ·{" "}
+                    {rangeText(axis.previousRange)} ·{" "}
+                    {t("observations.sampleSize", { count: axis.previousN })} ·
+                    Δ {number.format(axis.delta)}
+                  </p>
+                )}
+              </div>
+            ))}
           </div>
         </Card>
-
-        <div className="flex flex-col gap-5">
-          <Card>
-            <CardHeading
-              title={t("hookTypes.title")}
-              description={t("hookTypes.description")}
-            />
-            <div className="flex flex-col gap-3">
-              {hookTypes.map((hook) => (
-                <div
-                  key={hook.id}
-                  className="border-b pb-3 last:border-0 last:pb-0"
-                >
-                  <div className="mb-[5px] flex items-baseline justify-between gap-2.5">
-                    <span
-                      className={cn(
-                        "text-sm font-medium",
-                        hook.count === 0 && "text-muted-foreground",
-                      )}
-                    >
-                      {act(`hookTypes.${hook.id}.label`)}
-                    </span>
-                    <span className="shrink-0 font-mono text-xs text-muted-foreground">
-                      {t("countShare", {
-                        count: hook.count,
-                        percent: percent(hook.share),
-                      })}
-                    </span>
-                  </div>
-                  <span className="block h-[7px] overflow-hidden rounded-full bg-muted">
-                    <span
-                      className="block h-full rounded-full bg-away"
-                      style={{ width: scaledWidth(hook.count, maxHookType) }}
-                    />
-                  </span>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card>
-            <CardHeading
-              title={t("status.title")}
-              description={t("status.description")}
-            />
-            <div className="flex flex-col gap-3">
+        <div className="flex min-w-0 grow basis-[400px] flex-col gap-5">
+          <Card
+            title={t("rpg.statusEffects.label")}
+            description={t("rpg.statusEffects.help")}
+          >
+            <p className="mb-3 text-xs text-muted-foreground">
+              {t("observations.records", { count: episodes.length })} ·{" "}
+              {t("observations.multipleSelectionHelp")}
+            </p>
+            <ul className="space-y-3">
               {states.map((state) => (
-                <div
+                <li
                   key={state.id}
-                  className="border-b pb-3 last:border-0 last:pb-0"
+                  className="flex flex-wrap justify-between gap-2 text-sm"
                 >
-                  <div className="mb-[5px] flex items-baseline justify-between gap-2.5">
-                    <span
-                      className={cn(
-                        "text-sm font-medium",
-                        state.count === 0 && "text-muted-foreground",
-                      )}
-                    >
-                      {act(`states.${state.id}.label`)}
-                    </span>
-                    <span className="shrink-0 font-mono text-xs text-muted-foreground">
-                      {t("countShare", {
-                        count: state.count,
-                        percent: percent(state.share),
-                      })}
-                    </span>
-                  </div>
-                  <span className="mb-[7px] block h-[7px] overflow-hidden rounded-full bg-muted">
-                    <span
-                      className={cn(
-                        "block h-full rounded-full",
-                        state.count ? "bg-away" : "bg-muted-foreground/20",
-                      )}
-                      style={{ width: scaledWidth(state.count, maxState) }}
-                    />
+                  <span>
+                    {cards(
+                      `${STATE_CARD_IDS[state.id as keyof typeof STATE_CARD_IDS]}.title`,
+                    )}
                   </span>
-                  <p className="text-[12.5px] leading-[1.55] text-muted-foreground">
-                    {act(`states.${state.id}.description`)}
-                  </p>
-                </div>
+                  <span className="font-mono text-xs">
+                    {state.count} / {episodes.length}
+                  </span>
+                </li>
               ))}
-            </div>
+            </ul>
           </Card>
-        </div>
-
-        <div className="flex flex-col gap-5">
-          <Card>
-            <CardHeading
-              title={t("hooks.title")}
-              description={t("hooks.description")}
-            />
-            <div className="flex flex-col gap-3">
-              {hooks.map((hook) => (
-                <div key={hook.id} className="flex items-center gap-3">
-                  <span className="w-[30px] shrink-0 font-mono text-[15px] text-foreground/80">
-                    {t("count", { count: hook.count })}
-                  </span>
-                  <div className="min-w-0 flex-1">
-                    <p className="mb-[5px] text-[13.5px] text-foreground/85">
-                      {act(`hookGroups.${hook.id}.label`)}
-                    </p>
-                    <span className="block h-[7px] overflow-hidden rounded-full bg-muted">
-                      <span
-                        className="block h-full rounded-full bg-away"
-                        style={{ width: scaledWidth(hook.count, maxHook) }}
-                      />
-                    </span>
-                  </div>
-                  <span className="shrink-0 font-mono text-[10px] tracking-[0.1em] text-muted-foreground uppercase">
-                    {act(`hookTypes.${hook.type}.label`)}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </Card>
-
-          <Card>
-            <CardHeading
-              title={t("skills.title")}
-              description={t("skills.description")}
-            />
-            <div className="flex flex-col gap-[11px]">
+          <Card
+            title={t("observations.skills")}
+            description={t("observations.multipleSelectionHelp")}
+          >
+            <ul className="space-y-3">
               {skills.map((skill) => (
-                <div key={skill.id} className="flex items-center gap-3">
-                  <span className="w-[150px] shrink-0 text-[13.5px] text-foreground/85">
-                    {act(`skills.${skill.id}.label`)}
-                  </span>
-                  <span className="block h-[9px] flex-1 overflow-hidden rounded-full bg-muted">
-                    <span
-                      className={cn(
-                        "block h-full rounded-full",
-                        skill.count ? "bg-toward" : "bg-muted-foreground/20",
+                <li key={skill.id} className="space-y-1 text-sm">
+                  <div className="flex flex-wrap justify-between gap-2">
+                    <span>
+                      {cards(
+                        `${SKILL_CARD_IDS[skill.id as keyof typeof SKILL_CARD_IDS]}.title`,
                       )}
-                      style={{ width: scaledWidth(skill.count, maxSkill) }}
-                    />
-                  </span>
-                  <span className="w-[26px] shrink-0 text-right font-mono text-xs text-muted-foreground">
-                    {skill.count}
-                  </span>
-                </div>
-              ))}
-            </div>
-            <p className="mt-3.5 border-t pt-3 text-[12.5px] leading-[1.5] text-muted-foreground">
-              {untouched.length
-                ? t("skills.untouched", { skills: untouched.join(", ") })
-                : t("skills.allUsed")}
-            </p>
-          </Card>
-
-          <section className="rounded-card bg-inverse px-6 py-[22px] text-inverse-foreground">
-            <p className="mb-2.5 font-mono text-[10px] tracking-[0.16em] text-inverse-muted uppercase">
-              {t("boss.eyebrow")}
-            </p>
-            <p className="mb-[18px] font-serif text-[21px] leading-[1.3] tracking-[-0.01em]">
-              {t("boss.summary", {
-                total: split.total,
-                toward: split.toward,
-              })}
-            </p>
-            <div className="mb-4 flex flex-wrap gap-1">
-              {bossCells.map((episode) => (
-                <span
-                  key={episode.id}
-                  title={t("boss.cellTitle", {
-                    day: formatDayLabel(episode.day, locale),
-                    band: BANDS[episode.band],
-                    direction: t(`direction.${episode.dir}`),
-                  })}
-                  className={cn(
-                    "size-[26px] rounded-chip border border-white/10",
-                    episode.dir === "toward" ? "bg-toward" : "bg-white/15",
+                    </span>
+                    <span className="font-mono text-xs">
+                      {skill.count || "—"}
+                    </span>
+                  </div>
+                  {skill.count === 0 && (
+                    <div className="border-t border-dashed" />
                   )}
-                />
+                </li>
               ))}
-            </div>
-            <p className="text-[13px] leading-[1.6] text-inverse-muted">
-              {t("boss.caption")}
-            </p>
-          </section>
+            </ul>
+            {skills.some((skill) => skill.count === 0) && (
+              <p className="mt-3 text-xs text-muted-foreground">
+                {t("observations.unrecordedSkills")}
+              </p>
+            )}
+          </Card>
+          <Card
+            title={old("hookTypes.title")}
+            description={old("hookTypes.description")}
+          >
+            <ul className="space-y-2">
+              {hookTypes.map((hook) => (
+                <li key={hook.id} className="flex justify-between text-sm">
+                  <span>{act(`hookTypes.${hook.id}.label`)}</span>
+                  <span>
+                    {hook.count} / {episodes.length}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </Card>
         </div>
       </div>
     </div>

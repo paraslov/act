@@ -10,6 +10,7 @@ import {
   useState,
   useTransition,
 } from "react";
+import { EpisodeDetails } from "@/components/episodes/episode-details";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,7 +22,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  AXES,
   BANDS,
   DOMAINS,
   type DomainId,
@@ -33,7 +33,7 @@ import {
   type StateId,
 } from "@/lib/act/constants";
 import { formatDayLabel } from "@/lib/act/date";
-import { checksTotal, filterEpisodes } from "@/lib/act/derive";
+import { filterEpisodes } from "@/lib/act/derive";
 import type { Episode, EpisodeDir } from "@/lib/act/types";
 import { cn } from "@/lib/utils";
 
@@ -49,7 +49,7 @@ type ViewFilters = {
   q: string;
 };
 
-const directionValues = ["all", "toward", "away"] as const;
+const directionValues = ["all", "toward", "away", "mixed", "unknown"] as const;
 
 /**
  * How long typing rests before the search term is written to the URL. The list
@@ -120,9 +120,10 @@ function DirectionPicker({
   onChange: (value: DirectionFilter) => void;
 }) {
   const t = useTranslations("episodes.filters");
+  const directionCopy = useTranslations("actV2.ui.direction");
 
   return (
-    <fieldset className="flex gap-1 rounded-[9px] bg-muted/80 p-[3px]">
+    <fieldset className="flex flex-wrap gap-1 rounded-[9px] bg-muted/80 p-[3px]">
       <legend className="sr-only">{t("directionLabel")}</legend>
       {directionValues.map((direction) => (
         <button
@@ -136,7 +137,7 @@ function DirectionPicker({
               "bg-card text-foreground shadow-[0_1px_2px_rgba(0,0,0,0.08)]",
           )}
         >
-          {t(direction)}
+          {direction === "all" ? t("all") : directionCopy(`${direction}.label`)}
         </button>
       ))}
     </fieldset>
@@ -314,136 +315,16 @@ function FilterBar({
 }
 
 function EpisodeCard({ episode }: { episode: Episode }) {
-  const t = useTranslations("episodes.card");
-  const act = useTranslations("act");
   const locale = useLocale();
-  const directionLabel = episode.dir === "toward" ? t("toward") : t("away");
-  const moveLabel = episode.dir === "toward" ? t("towardMove") : t("awayMove");
-  // Historical display reads the stored snapshot, so editing or archiving the
-  // value leaves this episode as it was written.
-  const snapshot = episode.valueSnapshot ?? null;
-  // The typed words and a linked value can both be present. Only drop the
-  // free-text chip when it adds nothing beside the snapshot: the empty-field
-  // placeholder, or the same title over again.
-  const freeText = episode.value.trim();
-  const showFreeText =
-    Boolean(freeText) &&
-    (!snapshot || (freeText !== "—" && freeText !== snapshot.title));
-
   return (
-    <article className="rounded-card border bg-card px-5 py-[18px] text-card-foreground">
-      <div className="mb-2.5 flex flex-wrap items-center justify-between gap-3">
-        <div className="flex flex-wrap items-center gap-[9px]">
-          <span className="font-mono text-[11px] text-muted-foreground">
-            {formatDayLabel(episode.day, locale)}
-          </span>
-          <span className="font-mono text-[11px] text-muted-foreground/75">
-            {BANDS[episode.band]}
-          </span>
-          <span
-            className={cn(
-              "rounded-[5px] px-[7px] py-[3px] font-mono text-[10px] tracking-[0.12em] uppercase",
-              episode.dir === "toward"
-                ? "bg-toward-tint text-toward"
-                : "bg-away-tint text-away",
-            )}
-          >
-            {directionLabel}
-          </span>
-        </div>
-        <span className="font-mono text-[11.5px] text-muted-foreground">
-          {t("score", { score: checksTotal(episode.checks) })}
-        </span>
-      </div>
-
-      <p className="font-serif text-[19px] leading-[1.35] tracking-[-0.01em]">
-        {episode.hook}
+    <article
+      id={`episode-${episode.id}`}
+      className="rounded-card border bg-card px-5 py-[18px] text-card-foreground"
+    >
+      <p className="mb-3 font-mono text-xs text-muted-foreground">
+        {formatDayLabel(episode.day, locale)} · {BANDS[episode.band]}
       </p>
-      {episode.situation ? (
-        <p className="mt-[3px] mb-3 text-[13px] text-muted-foreground">
-          {episode.situation}
-        </p>
-      ) : (
-        <div className="mb-3" />
-      )}
-
-      <div className="mb-3 flex flex-wrap gap-2">
-        <span className="rounded-chip border bg-muted/70 px-[9px] py-1 text-xs text-foreground/75">
-          {act(`hookTypes.${episode.hookType}.label`)}
-        </span>
-        <span
-          className={cn(
-            "rounded-chip border px-[9px] py-1 text-xs",
-            episode.state === "none"
-              ? "bg-muted/70 text-muted-foreground"
-              : "border-away-border bg-away-tint text-away",
-          )}
-        >
-          {act(`states.${episode.state}.label`)}
-        </span>
-        <span
-          className={cn(
-            "rounded-chip border px-[9px] py-1 text-xs",
-            episode.skill === "none"
-              ? "bg-muted/70 text-muted-foreground"
-              : "border-toward-border bg-toward-tint text-toward",
-          )}
-        >
-          {act(`skills.${episode.skill}.label`)}
-        </span>
-        {showFreeText ? (
-          <span className="rounded-chip border bg-muted/70 px-[9px] py-1 text-xs text-foreground/75">
-            {freeText}
-          </span>
-        ) : null}
-        {snapshot ? (
-          <span className="flex items-center gap-[7px] rounded-chip border bg-card px-[9px] py-1 text-xs text-foreground/75">
-            <span className="font-mono text-[9px] tracking-[0.12em] text-muted-foreground uppercase">
-              {t("linkedValue")}
-            </span>
-            {snapshot.title}
-          </span>
-        ) : null}
-      </div>
-
-      <div className="mb-2.5 flex items-center gap-[5px]">
-        {AXES.map((axis) => {
-          const value = episode.checks[axis.id] ?? 0;
-          return (
-            <span
-              key={axis.id}
-              title={act(`axes.${axis.id}.label`)}
-              className="block h-[5px] flex-1 overflow-hidden rounded-full bg-muted"
-            >
-              <span
-                className={cn(
-                  "block h-full rounded-full",
-                  episode.dir === "toward" ? "bg-toward" : "bg-away",
-                )}
-                style={{ width: `${(value / 2) * 100}%` }}
-              />
-            </span>
-          );
-        })}
-      </div>
-
-      <p className="text-[13.5px] leading-[1.55] text-foreground/85">
-        <span
-          className={cn(
-            "mr-2 font-mono text-[10px] tracking-[0.14em] uppercase",
-            episode.dir === "toward" ? "text-toward" : "text-away",
-          )}
-        >
-          {moveLabel}
-        </span>
-        {episode.move}
-      </p>
-      <p className="mt-1.5 text-[13px] leading-[1.55] text-muted-foreground">
-        <span className="mr-2 font-mono text-[10px] tracking-[0.14em] uppercase">
-          {t("workable")}
-        </span>
-        {episode.workable}
-      </p>
+      <EpisodeDetails episode={episode} />
     </article>
   );
 }

@@ -159,7 +159,7 @@
     },
     "counts": "{toward} · {away}",
     "daySummary": "{toward} toward · {away} away",
-    "stripHint": "Above the line: toward moves. Below: away moves — sized by how much the day bent around them. Click a marker.",
+    "stripHint": "Each marker is an entry. Color identifies completed Toward or Away actions; other entries use a neutral outline. Select a marker to read it.",
     "markerTitle": "{band} · {direction} · {hook}",
     "toward": "Toward",
     "away": "Away",

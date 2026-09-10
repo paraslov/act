@@ -1,45 +1,117 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Episode, PersonalValueSnapshot } from "@/lib/act/types";
-import { createEpisode } from "@/lib/db/episodes";
-import { createEpisodeAction } from "./episodes";
+import { clarifyEpisode, createEpisode } from "@/lib/db/episodes";
+import { clarifyEpisodeAction, createEpisodeAction } from "./episodes";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
-vi.mock("@/lib/db/episodes", () => ({ createEpisode: vi.fn() }));
+vi.mock("@/lib/db/episodes", () => ({
+  createEpisode: vi.fn(),
+  clarifyEpisode: vi.fn(),
+}));
 
-describe("createEpisodeAction optional status and skill", () => {
-  beforeEach(() => vi.clearAllMocks());
-
-  it("persists absence when both fields are omitted", async () => {
-    await createEpisodeAction({ hook: "A moment from today" });
+describe("createEpisodeAction integrity", () => {
+  beforeEach(() => vi.resetAllMocks());
+  it("saves a hook-only entry without inventing facts", async () => {
+    await createEpisodeAction({ hook: "A moment" });
     expect(createEpisode).toHaveBeenCalledWith(
-      expect.objectContaining({ state: "none", skill: "none" }),
+      expect.objectContaining({
+        dir: "unknown",
+        behaviorStatus: "not-described",
+        hookType: null,
+        checks: {},
+        states: [],
+        skills: [],
+        value: "",
+        move: "",
+        workable: "",
+        consequenceStatus: "unknown",
+        immediateOutcome: "",
+        laterConsequences: "",
+      }),
     );
   });
-
-  it.each([
-    ["none", "none"],
-    ["none", "defuse"],
-    ["fusion", "none"],
-    ["fusion", "defuse"],
-  ] as const)(
-    "persists status %s and skill %s independently",
-    async (state, skill) => {
-      await createEpisodeAction({ hook: "A moment from today", state, skill });
-      expect(createEpisode).toHaveBeenCalledWith(
-        expect.objectContaining({ state, skill }),
-      );
+  it.each([{ situation: "A conversation" }, { move: "Rested" }])(
+    "accepts any one descriptive field: %j",
+    async (input) => {
+      await createEpisodeAction(input);
+      expect(createEpisode).toHaveBeenCalledOnce();
     },
   );
-
-  it("still rejects unknown choices before persistence", async () => {
-    await expect(
-      createEpisodeAction({
-        hook: "A moment from today",
-        // @ts-expect-error Invalid input can arrive from clients at runtime.
-        state: "invalid",
+  it.each([
+    {},
+    { hook: "  ", situation: "\n", move: " " },
+    { value: "Care" },
+    { checks: { awareness: 2 as const } },
+    { hook: "Thought", behaviorStatus: "acted" as const },
+    { hook: "Thought", behaviorStatus: "acted" as const, move: "  " },
+  ])(
+    "rejects empty descriptions or unconfirmed action text: %j",
+    async (input) => {
+      await expect(createEpisodeAction(input)).rejects.toThrow();
+      expect(createEpisode).not.toHaveBeenCalled();
+    },
+  );
+  it("preserves explicit zeros and nulls, multi-selections and independent direction", async () => {
+    await createEpisodeAction({
+      move: "Stopped work",
+      behaviorStatus: "acted",
+      dir: "mixed",
+      states: ["fusion", "avoidance"],
+      skills: ["notice", "commit"],
+      checks: { awareness: 0, action: null },
+    });
+    expect(createEpisode).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dir: "mixed",
+        checks: { awareness: 0, action: null },
+        states: ["fusion", "avoidance"],
+        skills: ["notice", "commit"],
       }),
-    ).rejects.toThrow();
-    expect(createEpisode).not.toHaveBeenCalled();
+    );
+  });
+  it.each([
+    { states: ["unknown"] },
+    { states: ["none-noticed"] },
+    { skills: ["unknown"] },
+    { skills: ["no-skill"] },
+  ])("preserves explicit absence: %j", async (input) => {
+    await createEpisodeAction({ hook: "A moment", ...input } as Parameters<
+      typeof createEpisodeAction
+    >[0]);
+    expect(createEpisode).toHaveBeenCalledWith(expect.objectContaining(input));
+  });
+  it.each([
+    { states: ["unknown", "fusion"] },
+    { states: ["none-noticed", "unknown"] },
+    { skills: ["no-skill", "commit"] },
+    { skills: ["unknown", "no-skill"] },
+    { states: ["none"] },
+    { skills: ["none"] },
+    { skills: ["notice", "notice"] },
+    { states: ["invalid"] },
+    { dir: "invalid" },
+    { day: "2026-02-30" },
+    { checks: { awareness: 3 } },
+    { state: "none" },
+  ])(
+    "rejects conflicting, legacy or invalid inputs before persistence: %j",
+    async (input) => {
+      await expect(
+        createEpisodeAction({ hook: "A moment", ...input } as Parameters<
+          typeof createEpisodeAction
+        >[0]),
+      ).rejects.toThrow();
+      expect(createEpisode).not.toHaveBeenCalled();
+    },
+  );
+  it("does not infer Toward from a selected skill", async () => {
+    await createEpisodeAction({ hook: "A plan", skills: ["commit"] });
+    expect(createEpisode).toHaveBeenCalledWith(
+      expect.objectContaining({
+        dir: "unknown",
+        behaviorStatus: "not-described",
+      }),
+    );
   });
 });
 
@@ -64,6 +136,18 @@ describe("createEpisodeAction linked values", () => {
         band: 2,
         dir,
         weight: 1,
+        behaviorStatus: "not-described",
+        schemaVersion: 2,
+        states: [],
+        skills: [],
+        consequenceStatus: "unknown",
+        immediateOutcome: "",
+        laterConsequences: "",
+        intendedFunction: "",
+        nextExperiment: "",
+        interpretation: "",
+        eventTimezone: null,
+        legacySnapshot: null,
         hook: "A difficult conversation",
         hookType: "thought",
         situation: "",
@@ -123,5 +207,27 @@ describe("createEpisodeAction linked values", () => {
     await expect(
       createEpisodeAction({ hook: "A moment", valueId }),
     ).rejects.toBe(error);
+  });
+});
+
+describe("legacy clarification action", () => {
+  beforeEach(() => vi.resetAllMocks());
+  const input = {
+    id: "b30b4967-71aa-48d1-95b9-aaab76e826ae",
+    dir: "unknown" as const,
+    behaviorStatus: "not-described" as const,
+    move: "",
+    checks: { awareness: null },
+  };
+  it("updates the existing entry instead of creating another one", async () => {
+    await clarifyEpisodeAction(input);
+    expect(clarifyEpisode).toHaveBeenCalledWith(input);
+    expect(createEpisode).not.toHaveBeenCalled();
+  });
+  it("requires action text for explicit completion", async () => {
+    await expect(
+      clarifyEpisodeAction({ ...input, behaviorStatus: "acted" }),
+    ).rejects.toThrow();
+    expect(clarifyEpisode).not.toHaveBeenCalled();
   });
 });

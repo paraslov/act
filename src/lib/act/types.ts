@@ -6,7 +6,12 @@ import type {
   StateId,
 } from "@/lib/act/constants";
 
-export type EpisodeDir = "toward" | "away";
+export type EpisodeDir = "toward" | "away" | "mixed" | "unknown";
+export type BehaviorStatus = "acted" | "planned" | "not-described";
+export type ConsequenceStatus = "observed" | "expected" | "unknown";
+export type PatternSelection = StateId | "unknown" | "none-noticed";
+export type SkillSelection = SkillId | "unknown" | "no-skill";
+export type EpisodePeriod = { start?: string; end?: string };
 
 /**
  * One personal value, shaped like a row of `personal_values` with camelCase keys.
@@ -36,8 +41,8 @@ export type PersonalValueSnapshot = {
   domains: DomainId[];
 };
 
-/** The five flexibility-check axes, each scored 0, 1 or 2. */
-export type Checks = Partial<Record<AxisKey, 0 | 1 | 2>>;
+/** The five flexibility-check axes, each optionally answered 0, 1 or 2; null means unrated. */
+export type Checks = Partial<Record<AxisKey, 0 | 1 | 2 | null>>;
 
 /**
  * One logged episode, shaped like a row of the `episodes` table with camelCase
@@ -49,12 +54,25 @@ export type Episode = {
   day: string; // YYYY-MM-DD
   band: number; // 0..7 index into BANDS
   dir: EpisodeDir;
+  behaviorStatus: BehaviorStatus;
+  consequenceStatus: ConsequenceStatus;
+  immediateOutcome: string;
+  laterConsequences: string;
+  intendedFunction: string;
+  nextExperiment: string;
+  interpretation: string;
+  schemaVersion: 1 | 2;
+  states: PatternSelection[];
+  skills: SkillSelection[];
+  eventTimezone: string | null;
+  /** Original row frozen on explicit clarification, never rewritten afterward. */
+  legacySnapshot: Record<string, unknown> | null;
   weight: number; // 1..3
   hook: string;
-  hookType: HookType;
+  hookType: HookType | null;
   situation: string;
-  state: StateId;
-  skill: SkillId;
+  state: StateId | null;
+  skill: SkillId | null;
   value: string;
   move: string;
   workable: string;
@@ -66,8 +84,11 @@ export type Episode = {
   updatedAt: string;
 };
 
-/** Minimal episode projection used by shell-level count and streak derivations. */
-export type EpisodeActivity = Pick<Episode, "day" | "dir">;
+/** Minimal episode projection used by shell-level recording summaries. */
+export type EpisodeActivity = Pick<
+  Episode,
+  "day" | "dir" | "behaviorStatus" | "schemaVersion"
+>;
 
 export type DayMorning = {
   open?: string;

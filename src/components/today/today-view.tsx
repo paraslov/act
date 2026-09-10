@@ -10,12 +10,13 @@ import {
   useTransition,
 } from "react";
 import { saveEveningAction, saveMorningAction } from "@/actions/day";
+import { EpisodeBadge } from "@/components/episodes/episode-details";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ValuePicker } from "@/components/values/value-picker";
 import { bandLabel, DOMAINS } from "@/lib/act/constants";
-import { hasMorningEntry } from "@/lib/act/derive";
+import { hasMorningEntry, towardAwaySplit } from "@/lib/act/derive";
 import type {
   DayEvening,
   DayMorning,
@@ -284,8 +285,7 @@ function MorningCard({
 
 function TodaySoFar({ day, episodes }: { day: string; episodes: Episode[] }) {
   const t = useTranslations("today.soFar");
-  const toward = episodes.filter((episode) => episode.dir === "toward").length;
-  const away = episodes.length - toward;
+  const { toward, away } = towardAwaySplit(episodes);
 
   return (
     <section className="rounded-card bg-inverse px-[22px] pt-[22px] pb-5 text-inverse-foreground shadow-sm">
@@ -302,12 +302,10 @@ function TodaySoFar({ day, episodes }: { day: string; episodes: Episode[] }) {
               key={episode.id}
               className={cn(
                 "rounded-chip border border-white/20 px-2 py-1 font-mono text-[10px] tracking-[0.1em] uppercase",
-                episode.dir === "toward"
-                  ? "text-[oklch(0.85_0.06_158)]"
-                  : "text-[oklch(0.85_0.06_55)]",
+                "text-inverse-foreground",
               )}
             >
-              {bandLabel(episode.band)} {t(episode.dir)}
+              {bandLabel(episode.band)} <EpisodeBadge episode={episode} />
             </span>
           ))}
         </div>

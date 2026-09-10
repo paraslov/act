@@ -3,7 +3,7 @@ import { requireCurrentUser } from "@/auth/session";
 import { AppSidebar } from "@/components/app-sidebar";
 import { NewEpisodeDialogProvider } from "@/components/episodes/new-episode-dialog";
 import { todayId } from "@/lib/act/date";
-import { towardStreak } from "@/lib/act/derive";
+import { returningToPractice } from "@/lib/act/derive";
 import { listMorningValueSelections } from "@/lib/db/day-entries";
 import { listEpisodeActivity } from "@/lib/db/episodes";
 import { listPersonalValues } from "@/lib/db/personal-values";
@@ -26,7 +26,7 @@ export default async function ProtectedLayout({
       <AppSidebar
         user={user}
         episodeCount={episodes.length}
-        streak={towardStreak(episodes, today)}
+        daysRecorded={returningToPractice(episodes, { end: today })}
       />
       <NewEpisodeDialogProvider
         today={today}

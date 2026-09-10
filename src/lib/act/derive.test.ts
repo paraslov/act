@@ -3,21 +3,20 @@ import {
   axisAverages,
   bandBreakdown,
   bandShape,
-  checksTotal,
+  bossTestCells,
   dayCounts,
   dayNumber,
   filterEpisodes,
   hasMorningEntry,
-  hookGroupTallies,
   hookTypeTallies,
   normalizeText,
   radarComparison,
+  returningToPractice,
+  skillsNamed,
   skillTallies,
   statusEffectTallies,
   topStatusEffect,
   towardAwaySplit,
-  towardStreak,
-  unusedSkills,
 } from "./derive";
 import type {
   Checks,
@@ -79,6 +78,20 @@ function ep(overrides: Partial<Episode> = {}): Episode {
     band: 6,
     dir: "toward" as EpisodeDir,
     weight: 1,
+    behaviorStatus: "acted",
+    schemaVersion: 2,
+    consequenceStatus: "unknown",
+    immediateOutcome: "",
+    laterConsequences: "",
+    intendedFunction: "",
+    nextExperiment: "",
+    interpretation: "",
+    states:
+      overrides.state === "none" ? ["none"] : [overrides.state ?? "fusion"],
+    skills:
+      overrides.skill === "none" ? ["none"] : [overrides.skill ?? "notice"],
+    eventTimezone: null,
+    legacySnapshot: null,
     hook: "",
     hookType: "thought",
     situation: "",
@@ -102,21 +115,6 @@ describe("normalizeText", () => {
   });
 });
 
-describe("checksTotal", () => {
-  it("sums the five axes to a 0–10 total", () => {
-    const checks: Checks = {
-      awareness: 2,
-      openness: 1,
-      choice: 2,
-      values: 1,
-      action: 2,
-    };
-    expect(checksTotal(checks)).toBe(8);
-    expect(checksTotal({})).toBe(0);
-    expect(checksTotal(null)).toBe(0);
-  });
-});
-
 describe("counts", () => {
   it("splits toward/away for a day and overall", () => {
     const eps = [
@@ -124,12 +122,16 @@ describe("counts", () => {
       ep({ day: "2026-09-01", dir: "away" }),
       ep({ day: "2026-08-31", dir: "toward" }),
     ];
-    expect(dayCounts(eps, "2026-09-01")).toEqual({
+    expect(dayCounts(eps, "2026-09-01")).toMatchObject({
       toward: 1,
       away: 1,
       total: 2,
     });
-    expect(towardAwaySplit(eps)).toEqual({ toward: 2, away: 1, total: 3 });
+    expect(towardAwaySplit(eps)).toMatchObject({
+      toward: 2,
+      away: 1,
+      total: 3,
+    });
   });
 });
 
@@ -269,7 +271,12 @@ describe("band shape & breakdown", () => {
     expect(shape[0]).toEqual({ index: 0, count: 0, hasAway: false });
 
     const breakdown = bandBreakdown(eps);
-    expect(breakdown[6]).toEqual({ index: 6, toward: 1, away: 1, total: 2 });
+    expect(breakdown[6]).toMatchObject({
+      index: 6,
+      toward: 1,
+      away: 1,
+      total: 2,
+    });
   });
 });
 
@@ -281,7 +288,7 @@ describe("tallies", () => {
       true,
     );
     expect(skillTallies([empty]).every((item) => item.count === 0)).toBe(true);
-    expect(unusedSkills([empty])).toHaveLength(6);
+    expect(skillsNamed([empty])).toHaveLength(0);
 
     const episodes = [empty, ep()];
     expect(statusEffectTallies(episodes)[0]).toMatchObject({
@@ -323,25 +330,10 @@ describe("tallies", () => {
       "commit",
     ]);
     expect(tallies[0]).toMatchObject({ id: "notice", count: 2 });
-    expect(unusedSkills(eps)).toEqual([
-      "Accept / Make room",
-      "Anchor / Return",
-      "Orient to values",
-      "Committed Action",
+    expect(skillsNamed(eps).map((skill) => skill.id)).toEqual([
+      "notice",
+      "defuse",
     ]);
-  });
-
-  it("counts recurring hook groups with matches only", () => {
-    const hookEps = [
-      ep({ hook: "Urge to close the laptop when it gets boring" }),
-      ep({ hook: "Flash of anger at the review comment" }),
-      ep({ hook: "Something unrelated" }),
-    ];
-    const groups = hookGroupTallies(hookEps);
-    expect(groups.every((g) => g.count > 0)).toBe(true);
-    expect(groups.map((g) => g.label)).toContain(
-      "Urge to shut the laptop when it gets boring",
-    );
   });
 
   it("counts saved hook types independently of text and includes unused types", () => {
@@ -409,55 +401,11 @@ describe("radar comparison", () => {
       ep({ checks: { awareness: 2 } }),
       ep({ checks: { awareness: 0 } }),
     ];
-    expect(axisAverages(eps).awareness).toBe(1);
+    expect(axisAverages(eps).awareness).toEqual({ mean: 1, n: 2 });
   });
 });
 
-describe("streak & day number", () => {
-  it("counts consecutive toward days back from today", () => {
-    const eps = [
-      ep({ day: "2026-09-03", dir: "toward" }),
-      ep({ day: "2026-09-02", dir: "toward" }),
-      ep({ day: "2026-09-01", dir: "away" }),
-    ];
-    expect(towardStreak(eps, "2026-09-03")).toBe(2);
-  });
-
-  it("gives the current day grace when it has no toward move yet", () => {
-    const eps = [
-      ep({ day: "2026-09-02", dir: "toward" }),
-      ep({ day: "2026-09-01", dir: "toward" }),
-    ];
-    // Today (09-03) not logged yet — streak counts from 09-02.
-    expect(towardStreak(eps, "2026-09-03")).toBe(2);
-  });
-
-  it("keeps that grace when today only has away moves", () => {
-    const eps = [
-      ep({ day: "2026-09-03", dir: "away" }),
-      ep({ day: "2026-09-02", dir: "toward" }),
-      ep({ day: "2026-09-01", dir: "toward" }),
-    ];
-    expect(towardStreak(eps, "2026-09-03")).toBe(2);
-  });
-
-  it("counts a day once even when it has several toward moves", () => {
-    const eps = [
-      ep({ day: "2026-09-03", dir: "toward" }),
-      ep({ day: "2026-09-03", dir: "toward" }),
-      ep({ day: "2026-09-02", dir: "toward" }),
-    ];
-    expect(towardStreak(eps, "2026-09-03")).toBe(2);
-  });
-
-  it("breaks the streak on a gap", () => {
-    const eps = [
-      ep({ day: "2026-09-03", dir: "toward" }),
-      ep({ day: "2026-09-01", dir: "toward" }),
-    ];
-    expect(towardStreak(eps, "2026-09-03")).toBe(1);
-  });
-
+describe("day number", () => {
   it("numbers the day from the earliest logged episode, inclusive", () => {
     const eps = [ep({ day: "2026-08-25" }), ep({ day: "2026-09-01" })];
     expect(dayNumber(eps, "2026-09-01")).toBe(8);
@@ -478,19 +426,147 @@ describe("Russian episode text", () => {
     ];
     expect(filterEpisodes(episodes, { text: "ВСЕ" })).toEqual([episodes[0]]);
   });
+});
 
-  it("groups Russian and English hooks together without translating saved text", () => {
+describe("Phase 1 missing-data integrity", () => {
+  it("distinguishes zero, null, omitted answers and unclarified legacy defaults", () => {
     const episodes = [
-      ep({ hook: "Я не справляюсь" }),
-      ep({ hook: "I can't handle this" }),
-      ep({ hook: "Хочется закрыть ноутбук" }),
+      ep({ checks: { awareness: 2, openness: 0 } }),
+      ep({ checks: { awareness: null } }),
+      ep({ checks: {} }),
+      ep({ schemaVersion: 1, checks: { awareness: 0, action: 2 } }),
+    ];
+    expect(axisAverages(episodes)).toEqual({
+      awareness: { mean: 2, n: 1 },
+      openness: { mean: 0, n: 1 },
+      choice: { mean: null, n: 0 },
+      values: { mean: null, n: 0 },
+      action: { mean: null, n: 0 },
+    });
+    expect(axisAverages([]).awareness).toEqual({ mean: null, n: 0 });
+  });
+  it("does not invent a comparison from two episodes", () => {
+    const rows = radarComparison([
+      ep({ day: "2026-09-01", checks: { awareness: 2 } }),
+      ep({ day: "2026-09-05", checks: { awareness: 1 } }),
+    ]);
+    expect(rows[0]).toMatchObject({
+      recent: 1.5,
+      previous: null,
+      delta: null,
+      recentN: 2,
+      recentRange: { start: "2026-09-01", end: "2026-09-05" },
+      previousRange: null,
+    });
+    expect(rows.every((row) => row.delta === null)).toBe(true);
+  });
+  it("requires ten eligible records and three answers per axis in each group", () => {
+    const episodes = Array.from({ length: 10 }, (_, i) =>
+      ep({
+        day: `2026-09-${String(i + 1).padStart(2, "0")}`,
+        checks: {
+          awareness: i % 5 < 3 ? (i < 5 ? 0 : 2) : null,
+          openness: i % 5 < 2 ? 1 : null,
+        },
+      }),
+    );
+    expect(radarComparison(episodes)[0]).toMatchObject({
+      recentN: 3,
+      previousN: 3,
+      delta: 2,
+    });
+    expect(radarComparison(episodes)[1].delta).toBeNull();
+    expect(radarComparison(episodes.slice(1))[0].delta).toBeNull();
+    expect(
+      radarComparison([...episodes.slice(1), ep({ schemaVersion: 1 })])[0]
+        .delta,
+    ).toBeNull();
+    expect(radarComparison([...episodes].reverse())).toEqual(
+      radarComparison(episodes),
+    );
+  });
+  it("counts only completed actions by four explicit directions, with notes and plans separate", () => {
+    const episodes = [
+      ep({ dir: "toward" }),
+      ep({ dir: "away" }),
+      ep({ dir: "mixed" }),
+      ep({ dir: "unknown" }),
+      ep({ behaviorStatus: "planned", dir: "toward" }),
+      ep({ behaviorStatus: "not-described", dir: "toward" }),
+      ep({ schemaVersion: 1, dir: "toward" }),
+    ];
+    expect(towardAwaySplit(episodes)).toEqual({
+      toward: 1,
+      away: 1,
+      mixed: 1,
+      unknown: 1,
+      planned: 1,
+      notDescribed: 2,
+      completed: 4,
+      total: 7,
+    });
+    expect(bandBreakdown(episodes)[6].total).toBe(7);
+    expect(
+      bandShape([ep({ behaviorStatus: "planned", dir: "away" })])[6].hasAway,
+    ).toBe(false);
+  });
+  it("preserves all six Boss test treatments and legacy entries in chronological period order", () => {
+    const episodes = [
+      ep({ dir: "toward" }),
+      ep({ dir: "away" }),
+      ep({ dir: "mixed" }),
+      ep({ dir: "unknown" }),
+      ep({ behaviorStatus: "planned" }),
+      ep({ behaviorStatus: "not-described" }),
+      ep({ schemaVersion: 1 }),
+      ep({ day: "2026-08-01" }),
+    ];
+    const cells = bossTestCells(episodes, {
+      start: "2026-09-01",
+      end: "2026-09-30",
+    });
+    expect(cells).toHaveLength(7);
+    expect(cells.filter((cell) => cell.isLegacy)).toHaveLength(1);
+    expect(
+      new Set(
+        cells
+          .filter((cell) => !cell.isLegacy)
+          .map((cell) =>
+            cell.behaviorStatus === "acted" ? cell.dir : cell.behaviorStatus,
+          ),
+      ).size,
+    ).toBe(6);
+    expect(bossTestCells([...episodes].reverse(), {})).toEqual(
+      bossTestCells(episodes, {}),
+    );
+    expect(bossTestCells(episodes, { start: "2027-01-01" })).toEqual([]);
+  });
+  it("counts recorded days across gaps and statuses, within inclusive period boundaries", () => {
+    const episodes = [
+      ep({ day: "2026-09-01", behaviorStatus: "not-described" }),
+      ep({ day: "2026-09-03", dir: "away" }),
+      ep({ day: "2026-09-03" }),
+      ep({ day: "2026-08-01" }),
     ];
     expect(
-      hookGroupTallies(episodes).map(({ id, count }) => ({ id, count })),
-    ).toEqual([
-      { id: "0", count: 2 },
-      { id: "1", count: 1 },
-    ]);
-    expect(episodes[0].hook).toBe("Я не справляюсь");
+      returningToPractice(episodes, { start: "2026-09-01", end: "2026-09-30" }),
+    ).toBe(2);
+    expect(returningToPractice(episodes, { end: "2026-09-01" })).toBe(2);
+    expect(returningToPractice([], {})).toBe(0);
+  });
+  it("uses every explicitly selected pattern and skill, never words in a hook", () => {
+    const episode = ep({
+      hook: "anger laptop",
+      states: ["fusion", "avoidance"],
+      skills: ["notice", "defuse"],
+    });
+    expect(
+      filterEpisodes([episode], { state: "avoidance", skill: "defuse" }),
+    ).toEqual([episode]);
+    expect(
+      statusEffectTallies([episode]).filter((s) => s.count === 1),
+    ).toHaveLength(2);
+    expect(skillsNamed([episode])).toHaveLength(2);
+    expect(skillsNamed([ep({ skills: ["unknown"] })])).toEqual([]);
   });
 });

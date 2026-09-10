@@ -95,11 +95,11 @@ function NavLinks({
 export function AppSidebar({
   user,
   episodeCount,
-  streak,
+  daysRecorded,
 }: {
   user: CurrentUser;
   episodeCount: number;
-  streak: number;
+  daysRecorded: number;
 }) {
   const t = useTranslations();
 
@@ -152,16 +152,13 @@ export function AppSidebar({
 
       <div className="order-4 mx-2 mt-4.5 hidden rounded-[10px] border bg-page p-3 min-[900px]:block">
         <p className="mb-1.5 font-mono text-[10px] tracking-[0.14em] text-muted-foreground/80 uppercase">
-          {t("nav.streak")}
+          {t("actV2.ui.observations.returningTitle")}
         </p>
         <p className="font-serif text-[28px] leading-none tracking-[-0.02em]">
-          {streak}{" "}
-          <span className="font-sans text-[13px] tracking-normal text-muted-foreground">
-            {t("nav.days", { count: streak })}
-          </span>
+          {t("actV2.ui.observations.daysRecorded", { count: daysRecorded })}
         </p>
         <p className="mt-1.5 text-[11.5px] leading-[1.45] text-muted-foreground">
-          {t("nav.streakUnit")}
+          {t("actV2.ui.observations.returningHelp")}
         </p>
       </div>
 
