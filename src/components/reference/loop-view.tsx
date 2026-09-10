@@ -5,6 +5,7 @@ import { LOOP_REF } from "@/lib/act/constants";
 export async function LoopView() {
   const t = await getTranslations("reference.loop");
   const act = await getTranslations("act.loop");
+  const v2 = await getTranslations("actV2.ui");
 
   return (
     <div className="max-w-[900px]">
@@ -69,6 +70,12 @@ export async function LoopView() {
           {t("closing")}
         </p>
       </section>
+
+      {/* The boundary statement belongs where practices are described, not on
+          every card. See also the Library footer and Flexibility reference. */}
+      <p className="mt-4 max-w-[72ch] text-[12.5px] leading-[1.6] text-muted-foreground">
+        {v2("practice.notFit")} {v2("help.boundaries")}
+      </p>
     </div>
   );
 }

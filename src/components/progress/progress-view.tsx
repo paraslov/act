@@ -85,7 +85,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
       : "—";
   return (
     <div className="max-w-[920px]">
-      <h1 className="font-serif text-[34px]">{old("title")}</h1>
+      <h1 className="font-serif text-[34px]">{t("nav.observations")}</h1>
       <p className="mt-2 mb-5 max-w-[66ch] text-sm text-foreground/70">
         {t("observations.intro")}
       </p>
@@ -338,7 +338,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
             )}
           </Card>
           <Card
-            title={old("hookTypes.title")}
+            title={t("episode.experience")}
             description={old("hookTypes.description")}
           >
             <ul className="space-y-2">

@@ -84,17 +84,42 @@ describe("message catalogs", () => {
   }
 
   it.each([
-    [0, "дней", "эпизодов"],
-    [1, "день", "эпизод"],
-    [2, "дня", "эпизода"],
-    [5, "дней", "эпизодов"],
-    [11, "дней", "эпизодов"],
-    [21, "день", "эпизод"],
-    [22, "дня", "эпизода"],
-    [25, "дней", "эпизодов"],
+    [0, "дней с записями", "эпизодов"],
+    [1, "день с записью", "эпизод"],
+    [2, "дня с записями", "эпизода"],
+    [5, "дней с записями", "эпизодов"],
+    [11, "дней с записями", "эпизодов"],
+    [21, "день с записью", "эпизод"],
+    [22, "дня с записями", "эпизода"],
+    [25, "дней с записями", "эпизодов"],
   ])("uses Russian plural forms for %i", (count, days, episodes) => {
     const t = createTranslator({ locale: "ru", messages: ru });
-    expect(t("nav.days", { count })).toBe(days);
+    expect(t("actV2.ui.observations.daysRecorded", { count })).toBe(
+      `${count} ${days}`,
+    );
     expect(t("journal.episodeCount", { count })).toBe(`${count} ${episodes}`);
+  });
+
+  // Phase 2 sweep (A03, A07, A08, A11, A12, A14): these claims were removed
+  // from the rendered catalogs, so a reintroduced one fails here rather than
+  // reaching a screen. Card text lives under actV2 and is checked separately.
+  it.each([
+    ["a /10 or 10/10 total", /\d+\s*\/\s*10\b|\{score\}\/10/],
+    ["an evidence letter grade", /\((?:a|b|c|a\/b|b\/c)\)/i],
+    ["a riskiest window", /riskiest|самое рискованное|рискован/i],
+    ["a streak headline", /\bstreak\b|серия подряд/i],
+    [
+      "a ninety-second urge claim",
+      /90 seconds|ninety seconds|90 секунд|девяносто секунд/i,
+    ],
+  ])("keeps %s out of both catalogs", (_label, pattern) => {
+    for (const [locale, messages] of Object.entries({ en, ru })) {
+      for (const [key, value] of Object.entries(flatten(messages))) {
+        // actV2 ships verbatim from the reviewed audit package; it names a
+        // broken streak only to describe it as a pitfall.
+        if (key.startsWith("actV2.")) continue;
+        expect(value, `${locale}.${key}`).not.toMatch(pattern);
+      }
+    }
   });
 });

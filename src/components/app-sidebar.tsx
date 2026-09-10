@@ -138,15 +138,15 @@ export function AppSidebar({
         className="order-3 mx-2 mt-5 hidden border-t pt-4.5 text-left min-[900px]:block"
       >
         <span className="mb-2 block font-mono text-[10px] tracking-[0.16em] text-muted-foreground/80 uppercase">
-          {t("nav.masterStat")}
+          {t("actV2.ui.rpg.masterStat.label")}
         </span>
+        {/* The retained Master stat label, with no number: psychological
+            flexibility orients the practice, it is not a total to raise. */}
         <span className="block font-serif text-[19px] leading-[1.2] tracking-[-0.01em] text-foreground">
-          {t("nav.masterStatLine1")}
-          <br />
-          {t("nav.masterStatLine2")}
+          {t("actV2.ui.nav.flexibility")}
         </span>
         <span className="mt-2 block text-xs leading-4.5 text-muted-foreground">
-          {t("nav.masterStatDescription")}
+          {t("actV2.ui.rpg.masterStat.help")}
         </span>
       </Link>
 

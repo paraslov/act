@@ -182,7 +182,6 @@ export async function SystemMapView() {
       </section>
       <p className={styles.evidence}>
         {t.rich("evidence", {
-          strong: (chunks) => <strong>{chunks}</strong>,
           vault: (chunks) => <Link href="/reference/vault">{chunks}</Link>,
         })}
       </p>

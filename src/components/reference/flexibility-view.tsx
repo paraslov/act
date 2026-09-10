@@ -13,6 +13,7 @@ const pillarColors = {
 export async function FlexibilityView() {
   const t = await getTranslations("reference.flexibility");
   const act = await getTranslations("act");
+  const v2 = await getTranslations("actV2.ui");
 
   return (
     <div className="max-w-[900px]">
@@ -171,10 +172,10 @@ export async function FlexibilityView() {
           ))}
         </div>
         <p className="mt-3.5 max-w-[74ch] text-[12.5px] leading-[1.6] text-muted-foreground">
-          {t.rich("evidence", {
-            a: (chunks) => <strong>{chunks}</strong>,
-            c: (chunks) => <strong>{chunks}</strong>,
-          })}
+          {t("evidence")}
+        </p>
+        <p className="mt-2.5 max-w-[74ch] text-[12.5px] leading-[1.6] text-muted-foreground">
+          {v2("help.boundaries")}
         </p>
       </section>
     </div>

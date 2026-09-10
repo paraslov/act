@@ -15,19 +15,12 @@
     "journal": "Journal",
     "values": "Values",
     "episodes": "Episodes",
-    "progress": "Progress",
+    "progress": "Observations",
     "flexibility": "Flexibility",
     "loop": "The loop",
-    "vault": "Vault",
+    "vault": "Library",
     "practice": "Practice",
-    "masterStat": "Master stat",
-    "masterStatLine1": "Psychological",
-    "masterStatLine2": "Flexibility",
-    "masterStatDescription": "Everything else here is a way to train it. Read the page →",
-    "streak": "Streak",
-    "days": "{count, plural, one {day} other {days}}",
     "toggleTheme": "Toggle theme",
-    "streakUnit": "days with a Toward Move made while uncomfortable",
     "systemMap": "System map"
   },
   "placeholder": {
@@ -38,8 +31,8 @@
     "dayNumber": "day {number}",
     "intro": "Three intentions in the morning, a review in the evening. Episodes get written whenever you have a minute — they don't need to be filled mid-situation.",
     "alert": {
-      "label": "The only test that matters",
-      "question": "When the autopilot happens — did I notice it and make a workable Toward Move?"
+      "label": "A question worth returning to",
+      "question": "When autopilot takes over — do I notice it, and what can I choose next?"
     },
     "morning": {
       "heading": "Morning set-up",
@@ -123,16 +116,7 @@
       "clear": "Clear"
     },
     "emptyTitle": "No episodes match those filters.",
-    "emptyDescription": "Widen the direction or clear the search.",
-    "card": {
-      "toward": "Toward",
-      "away": "Away",
-      "score": "{score}/10",
-      "towardMove": "Toward move",
-      "awayMove": "Away move",
-      "workable": "Workable",
-      "linkedValue": "Value"
-    }
+    "emptyDescription": "Widen the direction or clear the search."
   },
   "journal": {
     "title": "Journal",
@@ -181,8 +165,6 @@
     },
     "episodesTitle": "Episodes this day",
     "episodeCount": "{count, plural, one {# episode} other {# episodes}}",
-    "score": "{score}/10",
-    "noEpisodes": "No episodes logged for this day.",
     "addEpisode": "Add an episode to this day"
   },
   "values": {
@@ -268,62 +250,21 @@
     }
   },
   "progress": {
-    "title": "Progress",
-    "intro": "Not less anxiety — those are pleasant side effects. What is tracked here: discomfort present <em>and</em> behaviour still going where you chose.",
     "split": {
-      "title": "Toward / Away",
-      "description": "Across {count, plural, one {# episode} other {# episodes}}. Away moves are data, not verdicts — they show where the price is being paid.",
-      "toward": "Toward · {percent}%",
-      "away": "Away · {percent}%",
-      "riskiest": "Riskiest window",
-      "byTime": "By time of day",
-      "bandTitle": "{band} — {toward} toward, {away} away"
+      "title": "Recorded directions"
     },
-    "radar": {
-      "title": "Flexibility shape",
-      "description": "Five axes averaged across your episodes. Recent set against the previous one — the shape matters, not the area.",
-      "imageTitle": "Flexibility shape",
-      "imageDescription": "Recent five episodes compared with the previous five across five axes."
-    },
-    "status": {
-      "title": "Status effects",
-      "description": "Which process keeps catching you, how often, and what the counter-move is."
-    },
-    "countShare": "{count}× · {percent}%",
     "hookTypes": {
-      "title": "Hooks",
-      "description": "What catches your attention: hook types you recorded, ranked by frequency with their share of all episodes."
-    },
-    "count": "{count}×",
-    "hooks": {
-      "title": "Hooks that keep catching you",
-      "description": "Named repeat offenders. Naming already loosens fusion a little."
-    },
-    "skills": {
-      "title": "Skills you actually reach for",
-      "description": "Six skills, not thirty techniques. A flat bar is a hint about next week — not a failure.",
-      "untouched": "Untouched this month: {skills}. Pick one and give it a week — two techniques, no more.",
-      "allUsed": "All six in circulation. Next week, deepen rather than broaden."
-    },
-    "boss": {
-      "eyebrow": "Boss test",
-      "summary": "Of {total} hard moments logged, you moved toward your values in {toward}.",
-      "cellTitle": "{day} {band} — {direction}",
-      "caption": "This is a self-observation heuristic, not a validated scale. Use it to spot patterns — never as evidence in a case against yourself."
-    },
-    "direction": {
-      "toward": "toward",
-      "away": "away"
+      "description": "The experience types you recorded, counted against every entry in this period. Situations you did not record are not included."
     }
   },
   "reference": {
     "flexibility": {
       "title": "Psychological flexibility",
       "eyebrow": "Master stat · reference",
-      "lead": "Every other number in this app is a proxy for this one. It is not a mood, a trait or a score you win — it is a capacity: how much room there is between a hook and what you do next, and whether that room gets used for something you actually care about.",
+      "lead": "This is not a mood, a trait or a score you win — it is a capacity: how much room there is between a hook and what you do next, and whether that room gets used for something you actually care about. Nothing in this app totals it into a number.",
       "definitionLabel": "The definition worth memorising",
       "definition": "Contacting the present moment fully — thoughts, feelings and sensations included — and, depending on what the situation affords, persisting in or changing behaviour in the service of chosen values.",
-      "definitionNote": "Both halves are load-bearing. Contact without direction is meditation; direction without contact is white-knuckling.",
+      "definitionNote": "Both halves are load-bearing. Attention and direction support one another, and a practice such as meditation can itself express a value.",
       "pillarsLabel": "Three pillars, six processes",
       "failsAs": "Fails as",
       "mythsTitle": "What it is not",
@@ -331,21 +272,19 @@
       "growthSubtitle": "Three rules, in order of how often they get broken.",
       "growthLinks": "The mechanics of each move live in <loop>The loop</loop>; the reps get recorded in <episodes>Episodes</episodes>.",
       "checkTitle": "How this app reads it",
-      "checkScale": "0–2 × 5 per episode",
+      "checkScale": "0–2 per question, or not rated",
       "checkIntro": "Five questions, asked about one concrete episode rather than about you. The shape across the five matters; the total does not.",
-      "evidence": "Evidence: the flexibility model itself is well supported <a>(a)</a>; this five-axis check is a personal heuristic <c>(c)</c>, not a validated instrument. Use it to spot patterns, never as evidence in a case against yourself."
+      "evidence": "The flexibility model is well established in the ACT literature; these five questions were written for this app and are not a validated instrument. Use them to notice patterns, never as evidence in a case against yourself."
     },
     "loop": {
       "title": "The loop",
       "eyebrow": "Reference · nothing to fill in",
-      "intro": "The whole hexaflex folds into five operations you run in your head — 30 to 90 seconds, no app involved. This page exists to be re-read until the sequence is yours. Write the episode later, in <episodes>Episodes</episodes>.",
+      "intro": "The whole hexaflex folds into five operations you can run in your head, with no app involved. This page exists to be re-read until the sequence is yours. Write the episode later, in <episodes>Episodes</episodes>.",
       "trap": "Trap:",
       "closingLabel": "If you only remember one thing",
       "closing": "The hooks don't have to go away first. Notice, drop the rope, pick the direction, take one small step."
     },
     "vault": {
-      "title": "Vault",
-      "intro": "Depth on demand. Open a card when you want to refresh the mechanics — none of this belongs in the daily surface.",
       "tabsLabel": "Reference topics",
       "coreMap": "Core map",
       "concepts": "Concepts",
@@ -357,7 +296,6 @@
       "inPractice": "In practice",
       "example": "Example",
       "deeper": "Deeper",
-      "legend": "Evidence tags: <a>(a)</a> well replicated · <b>(b)</b> plausible, mixed data · <c>(c)</c> speculative / for self-observation. Scored self-checks in this app are personal heuristics (c), not diagnostic instruments.",
       "orientToValues": {
         "distinctions": {
           "domain": {
@@ -386,7 +324,7 @@
             "goal": "Have the review conversation this week"
           },
           "work_education": {
-            "value": "Finish dull things without needing them to be interesting",
+            "value": "Work attentively and responsibly",
             "goal": "File the tax paperwork by Friday"
           },
           "personal_growth_health": {
@@ -411,7 +349,7 @@
     },
     "systemMap": {
       "title": "System map",
-      "eyebrow": "Every node opens its Vault card",
+      "eyebrow": "Every node opens its Library card",
       "lead": "One tree for the whole system. Flexibility sits at the top; everything under it is either what is happening (Model), what you can do about it (Skills), or how you would know it worked (Metrics). Theory lives in the basement — known, not carried around daily.",
       "northStar": "North star · master stat",
       "definition": "Contact the present fully — and keep or change behaviour in the service of chosen values.",
@@ -425,49 +363,16 @@
       "hookTypes": "thought · feeling · urge · memory",
       "away": "Away move",
       "toward": "Toward move",
-      "choiceDescription": "The hook doesn't have to leave first. Away buys short-term relief; toward is scored against workability — workable toward what. Both get logged in <episodes>Episodes</episodes>.",
+      "choiceDescription": "The hook doesn’t have to leave first. Each direction is read against workability — workable toward what, at what price. Both get logged in <episodes>Episodes</episodes>.",
       "operations": "The five operations · <loop>the loop</loop>",
       "basement": "Theoretical basement",
       "basementDescription": "Worth knowing once, not carrying around daily. It explains where fusion, shoulds and self-stories get their force.",
-      "evidence": "Evidence: flexibility as a construct <strong>(a/b)</strong>; the six processes as separate causal mechanisms <strong>(b)</strong> — they overlap empirically. Choice Point and the 0–2 checks are teaching devices and personal heuristics <strong>(c)</strong>. Full notes in the <vault>Vault</vault>."
+      "evidence": "Background: flexibility as a construct and the six processes are described across the ACT literature, and the processes overlap empirically rather than acting as separate mechanisms. Choice Point and the 0–2 checks are teaching devices and personal heuristics written for this app. Full notes in the <vault>Library</vault>."
     }
   },
   "episodeModal": {
-    "title": "New episode",
-    "subtitle": "Written after the fact. Under a minute.",
-    "close": "Close",
-    "whenLabel": "When did it happen?",
-    "hookLabel": "Hook — what caught you",
-    "hookPlaceholder": "“They think I'm incompetent”",
-    "directionLabel": "Which way did the behaviour go?",
-    "away": "AWAY",
-    "toward": "TOWARD",
-    "awaySummary": "Relief now, narrower life later",
-    "towardSummary": "Uncomfortable, but workable",
-    "unpickedNote": "Neither is the moral option. Pick the one the behaviour actually went.",
-    "towardNote": "Toward logged. Note the discomfort didn't have to drop first — that's the whole test.",
-    "awayNote": "Away logged without a verdict. The useful question is “toward what was it working?”, not “was that bad?”",
-    "scaleLabel": "A tipping scale showing Away and Toward around the choice point",
-    "choicePoint": "CHOICE POINT",
-    "statusLabel": "Status effect — where you got stuck",
-    "skillLabel": "Skill you reached for",
-    "valueLabel": "Value in play — who you wanted to be",
-    "valueHelp": "Write it in your own words for this moment.",
-    "valuePlaceholder": "Honest, even when it's awkward",
     "valuePickerLabel": "Or link one of your values",
-    "valueNoteToward": "Linking a value is optional and changes no count. The free-text field stays yours for wording that only fits today.",
-    "valueNoteAway": "A value can sit beside an away move. Amber isn't a penalty — naming what mattered is how you see what the move cost you.",
-    "towardMoveLabel": "Toward Move you made",
-    "towardMovePlaceholder": "Asked one clarifying question instead of leaving",
-    "awayMoveLabel": "Away Move you made",
-    "awayMovePlaceholder": "Went quiet instead of asking",
-    "workableLabel": "What turned out workable",
-    "workablePlaceholder": "Naming the story out loud dropped its grip",
-    "flexibilityTitle": "Flexibility check",
-    "flexibilityHint": "0–2 each. 10/10 is not the goal — the pattern over weeks is.",
-    "save": "Save episode",
-    "saving": "Saving…",
-    "saveError": "The episode couldn't be saved. Please try again."
+    "saving": "Saving…"
   },
   "locale": {
     "label": "Language",
@@ -593,23 +498,6 @@
         "hint": "Rest, play, hobbies, time that doesn't have to earn anything."
       }
     },
-    "hookGroups": {
-      "0": {
-        "label": "“They'll see I can't handle it” — the competence story"
-      },
-      "1": {
-        "label": "Urge to shut the laptop when it gets boring"
-      },
-      "2": {
-        "label": "“Already ruined it, might as well” — all-or-nothing"
-      },
-      "3": {
-        "label": "“She's not even listening to me”"
-      },
-      "4": {
-        "label": "Flash of anger at public criticism"
-      }
-    },
     "loop": {
       "1": {
         "name": "Notice",
@@ -635,14 +523,14 @@
       "4": {
         "name": "Choose",
         "question": "Away or Toward?",
-        "help": "Both are real options. The criterion is workability — working toward what, at what price — not morality. An away move you chose consciously already costs less than one you slid into.",
+        "help": "Both are real options. The criterion is workability — working toward what, at what price — not morality. Noticing that you chose an Away Move helps you examine it; its consequences may be unchanged.",
         "example": "Leaving the thread feels great for ten minutes and costs three days of dread.",
         "trap": "Making the choice a verdict on your character. It's a direction, logged and moved on from."
       },
       "5": {
         "name": "Act",
         "question": "What's the smallest useful step?",
-        "help": "Small enough that discomfort doesn't get a veto. One sentence, one call, one minute. Then it's done and there's evidence, rather than intention.",
+        "help": "Choose a step you can manage. Reducing what you ask of yourself, stopping, or asking for help are available options. Then there is something that happened, not only an intention.",
         "example": "“Reply with one clarifying question, nothing else.”",
         "trap": "Waiting to feel ready. Readiness is a side effect of acting, not a prerequisite."
       }
@@ -665,7 +553,7 @@
       "Engaged": {
         "name": "Engaged",
         "processes": "Values · Committed action",
-        "body": "A direction stays in sight and behaviour moves that way in small, repeatable steps, with the discomfort still aboard rather than dropped off first.",
+        "body": "A direction stays in sight and behaviour moves that way in small, repeatable steps. Discomfort may or may not be present; it does not have to leave first, and it does not have to be there.",
         "fail": "Drift — the direction goes out of view, so every option looks equally fine — or the frozen and impulsive extremes.",
         "ask": "What would the person I want to be do in the next sixty seconds?",
         "mapAsk": "What would the person I want to be do next?"
@@ -674,7 +562,7 @@
     "myths": {
       "0": {
         "title": "Not calm.",
-        "body": "Flexibility is measured while uncomfortable. A day with no anxiety and no chosen action scores nothing here."
+        "body": "Flexibility matters in difficult, ordinary and pleasant situations alike. A calm day with a chosen action belongs here as much as a hard one."
       },
       "1": {
         "title": "Not positive thinking.",
@@ -692,15 +580,15 @@
     "growth": {
       "1": {
         "title": "Reps, not insight",
-        "body": "Understanding the model changes nothing on its own. The capacity grows only through repeated contact with the choice point while the discomfort is present."
+        "body": "Understanding the model changes nothing on its own. The capacity grows through repeated contact with the choice point — in difficult moments and ordinary ones alike."
       },
       "2": {
         "title": "Small and frequent beats large and rare",
-        "body": "Twelve minutes of the run counts. The learning is “discomfort has no veto”, and it arrives through many small proofs rather than one heroic one."
+        "body": "Twelve minutes of the run counts. Choose a step you can manage: reducing what you ask of yourself, stopping, or asking for help are options too. Learning arrives through many small steps rather than one heroic effort."
       },
       "3": {
         "title": "Write it down afterwards",
-        "body": "The episode log is the feedback channel. Without it the same loop repeats invisibly. Two rough lines in the evening is enough."
+        "body": "The episode log is one route to feedback; talking it through and plain observation are others. If you use it, two rough lines in the evening is enough."
       }
     },
     "vault": {
@@ -754,7 +642,7 @@
           "short": "The observer perspective from which you notice thoughts, feelings and roles without collapsing yourself into their content.",
           "practice": "“I notice anxiety” rather than “I'm an anxious person.” It separates you from your self-stories.",
           "example": "Catching “I'm a failure” mid-sentence and stepping half a pace back from it — the story is still there, you're just not inside it.",
-          "deep": "The most theoretically contested process even inside ACT; frequently conflated with present-moment contact."
+          "deep": "Often conflated with present-moment contact, and described in different ways across ACT writing. The practical point is the perspective you notice from, not the content you notice."
         }
       },
       "Skills": {
@@ -767,7 +655,7 @@
         },
         "1": {
           "t": "Defuse",
-          "short": "Turn “this is true” into “this is a thought my mind is producing right now.”",
+          "short": "Move from “this is true” to “my mind is producing this thought right now.” The thought may or may not be accurate; either way its presence does not require obedience.",
           "practice": "Buttons: “I'm having the thought that…”, Name the Story, “thanks, mind”. The aim isn't a weaker thought — it's a looser grip.",
           "example": "“Ah — the unfairness story again.” Same thought, much less steering.",
           "deep": "If you defuse in order to make the thought disappear, it has become experiential avoidance wearing a skill's clothes. Target: thought → thought, not thought → truth."
@@ -776,7 +664,7 @@
           "t": "Accept / Make room",
           "short": "Give inner experience room so you're not spending everything on the fight and not handing it the wheel.",
           "practice": "Making Room, Expansion, Willingness, Urge Surfing — the urge as a wave: rise, peak, fall.",
-          "example": "Sitting through a craving for 90 seconds and letting it crest without acting on it.",
+          "example": "Staying with a craving for a while and observing it without acting on it. How long it lasts and how it changes vary.",
           "deep": "Pain + struggle → suffering is a therapeutic metaphor: a large share of suffering is manufactured by the struggle against the original discomfort."
         },
         "3": {
@@ -791,7 +679,7 @@
           "short": "Answer “what matters here / who do I want to be?” — not “what do I feel like?” and not “how do I get rid of this feeling?” A value is a direction you can move in right now, so it can never be finished, failed, or scored.",
           "practice": "One question is enough in the moment: <em>if this mattered to me, what would the next minute look like?</em> Four words get mixed up here, and telling them apart is most of the skill.",
           "example": "The goal can be missed and the value still held: if the call slips to Thursday, the honest sentence is still available on Thursday.",
-          "deep": "In ACT terms values work as verbal motivators: they make behaviour reinforcing in the moment rather than only when a result lands. That’s why “away” and a value can appear in the same episode — the direction describes the move, not your worth. Evidence for values work as a component is plausible but mixed (b): most of the tested effect sits in committed action."
+          "deep": "In ACT terms values work as verbal motivators: they make behaviour reinforcing in the moment rather than only when a result lands. That’s why an Away Move and a value can appear in the same episode — the direction describes the move, not your worth. Component research has not established how much any single process contributes, so nothing here ranks them."
         },
         "5": {
           "t": "Committed Action",

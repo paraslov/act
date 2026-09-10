@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { LIB, type VaultCategory } from "@/lib/act/constants";
+import { resolveLibraryCard, SOURCES } from "@/lib/reference/library";
 import {
   resolveVaultSelection,
   VAULT_CATEGORIES,
@@ -34,6 +35,7 @@ const tabKeys: Record<VaultCategory, string> = {
 export function VaultView() {
   const t = useTranslations("reference.vault");
   const act = useTranslations("act.vault");
+  const v2 = useTranslations("actV2.ui");
   const router = useRouter();
   const searchParams = useSearchParams();
   const requestedCard = searchParams.get("card");
@@ -68,10 +70,10 @@ export function VaultView() {
   return (
     <div className="max-w-[900px]">
       <h1 className="font-serif text-[34px] leading-[1.1] tracking-[-0.02em]">
-        {t("title")}
+        {v2("nav.library")}
       </h1>
       <p className="mt-2 mb-5 max-w-[66ch] text-[14.5px] leading-[1.6] text-foreground/70">
-        {t("intro")}
+        {v2("library.intro")}
       </p>
 
       <Tabs
@@ -101,6 +103,10 @@ export function VaultView() {
             <div className="flex flex-col gap-[9px]">
               {LIB[category].map((card, index) => {
                 const title = act(`${category}.${index}.t`);
+                // Content type and named sources replace the (a)/(b)/(c)
+                // evidence grades: a source identifies the underlying idea, it
+                // does not grade how well anything works.
+                const entry = resolveLibraryCard(card.id);
                 const isOpen = openCard === card.id;
                 const isValuesCard = card.id === "orient-to-values";
                 const panelId = `vault-panel-${card.id}`;
@@ -131,9 +137,11 @@ export function VaultView() {
                           <span className="font-serif text-xl tracking-[-0.01em]">
                             {title}
                           </span>
-                          <span className="rounded-[5px] border border-border/70 px-1.5 py-0.5 font-mono text-[10px] tracking-[0.12em] text-muted-foreground uppercase">
-                            {card.ev}
-                          </span>
+                          {entry ? (
+                            <span className="rounded-[5px] border border-border/70 px-1.5 py-0.5 font-mono text-[10px] tracking-[0.12em] text-muted-foreground uppercase">
+                              {v2(`contentTypes.${entry.contentType}`)}
+                            </span>
+                          ) : null}
                         </span>
                         <span
                           aria-hidden="true"
@@ -174,6 +182,27 @@ export function VaultView() {
                           </div>
                         ))}
                         {isValuesCard ? <OrientToValuesFooter /> : null}
+                        {entry ? (
+                          <div className="border-t pt-3.5">
+                            <h3 className="mb-1 font-mono text-[10px] tracking-[0.16em] text-muted-foreground uppercase">
+                              {v2("library.sources")}
+                            </h3>
+                            <ul className="flex flex-col gap-1">
+                              {entry.sourceIds.map((sourceId) => (
+                                <li key={sourceId}>
+                                  <a
+                                    className="text-sm underline underline-offset-2"
+                                    href={SOURCES[sourceId].url}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                  >
+                                    {SOURCES[sourceId].title} ↗
+                                  </a>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : null}
                       </div>
                     ) : null}
                   </section>
@@ -185,11 +214,10 @@ export function VaultView() {
       </Tabs>
 
       <p className="mt-[18px] max-w-[72ch] text-[12.5px] leading-[1.6] text-muted-foreground">
-        {t.rich("legend", {
-          a: (chunks) => <strong>{chunks}</strong>,
-          b: (chunks) => <strong>{chunks}</strong>,
-          c: (chunks) => <strong>{chunks}</strong>,
-        })}
+        {v2("library.sourceNote")}
+      </p>
+      <p className="mt-2.5 max-w-[72ch] text-[12.5px] leading-[1.6] text-muted-foreground">
+        {v2("help.boundaries")}
       </p>
     </div>
   );

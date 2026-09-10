@@ -269,6 +269,7 @@ export function JournalView({
 }: JournalViewProps) {
   const t = useTranslations("journal");
   const act = useTranslations("act");
+  const v2 = useTranslations("actV2.ui");
   const locale = useLocale();
   const pathname = usePathname();
   const router = useRouter();
@@ -563,7 +564,7 @@ export function JournalView({
               </span>
             </div>
             <p className="mb-[18px] text-[13px] text-muted-foreground">
-              {t("stripHint")}
+              {t("stripHint")} {v2("journal.markersHelp")}
             </p>
             <DayStrip
               episodes={dayEpisodes}
@@ -653,7 +654,7 @@ export function JournalView({
               </div>
             ) : (
               <p className="text-[13.5px] text-muted-foreground">
-                {t("noEpisodes")}
+                {v2("journal.emptyDay")}
               </p>
             )}
             <NewEpisodeTrigger
