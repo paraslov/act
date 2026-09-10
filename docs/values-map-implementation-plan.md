@@ -1,5 +1,8 @@
 # Implementation Plan: Personal Values Map
 
+> Historical implementation plan. For ACT v2, the [current specification](./act-audit-2026-09-09/02-spec.md) and [product clarification](./act-audit-2026-09-09/08-product-decisions.md) supersede scoped copy, calculations, and map targets below. Preserve Master stat, Status effects, and Boss test. Older “verbatim” requirements apply only to unaffected copy; the completed checklists describe the earlier version.
+
+
 Derived from [`values-map-feature-spec.md`](./values-map-feature-spec.md), the **design handoff** in [`design/design_handoff_personal_values_map/`](./design/design_handoff_personal_values_map/) ([`README.md`](./design/design_handoff_personal_values_map/README.md) + 8 `.dc.html` artboard files), and the current working tree (branch `main`, on top of commit `579073e`). Every path below was verified against the code that exists today.
 
 ## Design source

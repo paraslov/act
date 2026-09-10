@@ -1,5 +1,8 @@
 # Build ACT Practice app from the design
 
+> Historical implementation plan. For ACT v2, the [current specification](./act-audit-2026-09-09/02-spec.md) and [product clarification](./act-audit-2026-09-09/08-product-decisions.md) supersede scoped copy, calculations, and map targets below. Preserve Master stat, Status effects, and Boss test. Older “verbatim” requirements apply only to unaffected copy; the completed checklists describe the earlier version.
+
+
 ## Implementation steps — checklist
 
 **Phase 1 — Core practice loop (MVP)**

@@ -1,0 +1,489 @@
+{
+  "sources": {
+    "acbs-processes": {
+      "title": "ACBS: The Six Core Processes of ACT",
+      "url": "https://contextualscience.org/six_core_processes_act"
+    },
+    "acbs-about": {
+      "title": "ACBS: About ACT",
+      "url": "https://contextualscience.org/about_act"
+    },
+    "harris-choice-point": {
+      "title": "Russ Harris: Choice Point 2.0 overview",
+      "url": "https://www.actmindfully.com.au/wp-content/uploads/2018/06/Choice_Point_2.0_A_Brief_Overview_-_Russ_Harris_April_2017.pdf"
+    },
+    "harris-functional-analysis": {
+      "title": "Russ Harris: Using Choice Point for Functional Analysis",
+      "url": "https://www.actmindfully.com.au/wp-content/uploads/2018/06/Using-The-Choice-Point-2-For-Functional-Analysis-Motivation-Acceptance.pdf"
+    },
+    "harris-three-groups": {
+      "title": "Russ Harris: ACT Made Simple, chapter 1",
+      "url": "https://www.actmindfully.com.au/wp-content/uploads/2019/05/Chapter-1-of-2nd-edition-ACT-MAde-Simple.pdf"
+    },
+    "acbs-contextualism": {
+      "title": "ACBS: Functional Contextualism",
+      "url": "https://contextualscience.org/functional_contextualism"
+    },
+    "acbs-rft": {
+      "title": "ACBS: RFT Basics",
+      "url": "https://contextualscience.org/rft_basics_what_rft"
+    },
+    "acbs-compact": {
+      "title": "CompACT: Developer Materials",
+      "url": "https://contextualscience.org/comprehensive_assessment_acceptance_commitment_therapy_processes_compact"
+    },
+    "who-self-help": {
+      "title": "WHO: Doing What Matters in Times of Stress",
+      "url": "https://www.who.int/publications/i/item/9789240003927"
+    },
+    "harris-resources": {
+      "title": "Russ Harris: Worksheets and Practice Resources",
+      "url": "https://www.actmindfully.com.au/free-stuff/extra-bits-ebooks-worksheets-and-handouts/"
+    }
+  },
+  "categories": [
+    "core",
+    "processes",
+    "patterns",
+    "practices",
+    "theory",
+    "guides"
+  ],
+  "cards": [
+    {
+      "id": "psychological-flexibility",
+      "category": "core",
+      "contentType": "concept",
+      "relatedIds": ["open-aware-engaged", "workability", "choice-point"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "open-aware-engaged",
+      "category": "core",
+      "contentType": "concept",
+      "relatedIds": ["acceptance", "present-moment", "values"],
+      "sourceIds": ["harris-three-groups"]
+    },
+    {
+      "id": "choice-point",
+      "category": "core",
+      "contentType": "concept",
+      "relatedIds": ["toward-move", "away-move", "functional-analysis"],
+      "sourceIds": ["harris-choice-point"]
+    },
+    {
+      "id": "toward-move",
+      "category": "core",
+      "contentType": "concept",
+      "relatedIds": ["values", "committed-action", "workability"],
+      "sourceIds": ["harris-choice-point"]
+    },
+    {
+      "id": "away-move",
+      "category": "core",
+      "contentType": "concept",
+      "relatedIds": [
+        "experiential-avoidance",
+        "workability",
+        "returning-to-practice"
+      ],
+      "sourceIds": ["harris-choice-point"]
+    },
+    {
+      "id": "workability",
+      "category": "core",
+      "contentType": "concept",
+      "relatedIds": [
+        "functional-analysis",
+        "functional-contextualism",
+        "values-conflict"
+      ],
+      "sourceIds": ["harris-functional-analysis"]
+    },
+    {
+      "id": "acceptance",
+      "category": "processes",
+      "contentType": "model",
+      "relatedIds": [
+        "accept-make-room",
+        "willingness",
+        "experiential-avoidance"
+      ],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "cognitive-defusion",
+      "category": "processes",
+      "contentType": "model",
+      "relatedIds": ["cognitive-fusion", "defuse", "rule-governed-behaviour"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "present-moment",
+      "category": "processes",
+      "contentType": "model",
+      "relatedIds": ["notice", "anchor-return", "inflexible-attention"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "self-as-context",
+      "category": "processes",
+      "contentType": "model",
+      "relatedIds": ["self-as-content", "perspective-taking", "present-moment"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "values",
+      "category": "processes",
+      "contentType": "model",
+      "relatedIds": [
+        "orient-to-values",
+        "values-conflict",
+        "values-disconnection"
+      ],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "committed-action",
+      "category": "processes",
+      "contentType": "model",
+      "relatedIds": ["small-step", "workability", "inflexible-action"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "cognitive-fusion",
+      "category": "patterns",
+      "contentType": "concept",
+      "relatedIds": ["cognitive-defusion", "defuse", "rule-governed-behaviour"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "experiential-avoidance",
+      "category": "patterns",
+      "contentType": "concept",
+      "relatedIds": ["acceptance", "control-agenda", "functional-analysis"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "inflexible-attention",
+      "category": "patterns",
+      "contentType": "concept",
+      "relatedIds": ["present-moment", "notice", "anchor-return"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "self-as-content",
+      "category": "patterns",
+      "contentType": "concept",
+      "relatedIds": [
+        "self-as-context",
+        "perspective-taking",
+        "cognitive-fusion"
+      ],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "values-disconnection",
+      "category": "patterns",
+      "contentType": "concept",
+      "relatedIds": ["values", "orient-to-values", "values-conflict"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "inflexible-action",
+      "category": "patterns",
+      "contentType": "concept",
+      "relatedIds": ["committed-action", "small-step", "functional-analysis"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "notice",
+      "category": "practices",
+      "contentType": "practice",
+      "relatedIds": ["present-moment", "inflexible-attention", "choice-point"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "defuse",
+      "category": "practices",
+      "contentType": "practice",
+      "relatedIds": ["cognitive-defusion", "cognitive-fusion", "workability"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "accept-make-room",
+      "category": "practices",
+      "contentType": "practice",
+      "relatedIds": ["acceptance", "willingness", "practice-limits"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "anchor-return",
+      "category": "practices",
+      "contentType": "practice",
+      "relatedIds": ["present-moment", "notice", "practice-limits"],
+      "sourceIds": ["harris-resources"]
+    },
+    {
+      "id": "orient-to-values",
+      "category": "practices",
+      "contentType": "practice",
+      "relatedIds": ["values", "values-conflict", "small-step"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "perspective-taking",
+      "category": "practices",
+      "contentType": "practice",
+      "relatedIds": ["self-as-context", "self-as-content", "anchor-return"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "small-step",
+      "category": "practices",
+      "contentType": "practice",
+      "relatedIds": [
+        "committed-action",
+        "functional-analysis",
+        "returning-to-practice"
+      ],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "functional-contextualism",
+      "category": "theory",
+      "contentType": "theory",
+      "relatedIds": [
+        "functional-analysis",
+        "workability",
+        "relational-frame-theory"
+      ],
+      "sourceIds": ["acbs-contextualism"]
+    },
+    {
+      "id": "relational-frame-theory",
+      "category": "theory",
+      "contentType": "theory",
+      "relatedIds": ["rule-governed-behaviour", "cognitive-fusion", "values"],
+      "sourceIds": ["acbs-rft"]
+    },
+    {
+      "id": "rule-governed-behaviour",
+      "category": "theory",
+      "contentType": "theory",
+      "relatedIds": [
+        "relational-frame-theory",
+        "cognitive-fusion",
+        "workability"
+      ],
+      "sourceIds": ["acbs-rft"]
+    },
+    {
+      "id": "functional-analysis",
+      "category": "theory",
+      "contentType": "practice",
+      "relatedIds": ["workability", "small-step", "experiential-avoidance"],
+      "sourceIds": ["harris-functional-analysis"]
+    },
+    {
+      "id": "control-agenda",
+      "category": "theory",
+      "contentType": "concept",
+      "relatedIds": ["experiential-avoidance", "acceptance", "willingness"],
+      "sourceIds": ["harris-functional-analysis"]
+    },
+    {
+      "id": "willingness",
+      "category": "theory",
+      "contentType": "concept",
+      "relatedIds": ["acceptance", "small-step", "practice-limits"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "self-compassion",
+      "category": "guides",
+      "contentType": "practice",
+      "relatedIds": ["returning-to-practice", "values", "practice-limits"],
+      "sourceIds": ["who-self-help"]
+    },
+    {
+      "id": "values-conflict",
+      "category": "guides",
+      "contentType": "concept",
+      "relatedIds": ["values", "workability", "small-step"],
+      "sourceIds": ["acbs-processes"]
+    },
+    {
+      "id": "practice-limits",
+      "category": "guides",
+      "contentType": "app-guide",
+      "relatedIds": ["anchor-return", "willingness", "self-compassion"],
+      "sourceIds": ["who-self-help"]
+    },
+    {
+      "id": "app-checks",
+      "category": "guides",
+      "contentType": "app-guide",
+      "relatedIds": [
+        "psychological-flexibility",
+        "functional-analysis",
+        "returning-to-practice"
+      ],
+      "sourceIds": ["acbs-compact"]
+    },
+    {
+      "id": "returning-to-practice",
+      "category": "guides",
+      "contentType": "practice",
+      "relatedIds": ["self-compassion", "small-step", "app-checks"],
+      "sourceIds": ["acbs-about"]
+    }
+  ],
+  "systemMapMappings": [
+    {
+      "label": "Acceptance / process",
+      "oldCardId": "accept-make-room",
+      "cardId": "acceptance"
+    },
+    {
+      "label": "Defusion / process",
+      "oldCardId": "defuse",
+      "cardId": "cognitive-defusion"
+    },
+    {
+      "label": "Experiential avoidance",
+      "oldCardId": "experiential-avoidance",
+      "cardId": "experiential-avoidance"
+    },
+    {
+      "label": "Cognitive fusion",
+      "oldCardId": "cognitive-fusion",
+      "cardId": "cognitive-fusion"
+    },
+    {
+      "label": "Accept / practice",
+      "oldCardId": "accept-make-room",
+      "cardId": "accept-make-room"
+    },
+    {
+      "label": "Defuse / practice",
+      "oldCardId": "defuse",
+      "cardId": "defuse"
+    },
+    {
+      "label": "Contact with the present moment",
+      "oldCardId": "notice",
+      "cardId": "present-moment"
+    },
+    {
+      "label": "Self-as-context",
+      "oldCardId": "self-as-context",
+      "cardId": "self-as-context"
+    },
+    {
+      "label": "Autopilot / rehearsal / replay",
+      "oldCardId": "notice",
+      "cardId": "inflexible-attention"
+    },
+    {
+      "label": "Self-as-content",
+      "oldCardId": "self-as-context",
+      "cardId": "self-as-content"
+    },
+    {
+      "label": "Notice / practice",
+      "oldCardId": "notice",
+      "cardId": "notice"
+    },
+    {
+      "label": "Anchor / return",
+      "oldCardId": "anchor-return",
+      "cardId": "anchor-return"
+    },
+    {
+      "label": "Values / process",
+      "oldCardId": "orient-to-values",
+      "cardId": "values"
+    },
+    {
+      "label": "Committed action / process",
+      "oldCardId": "committed-action",
+      "cardId": "committed-action"
+    },
+    {
+      "label": "Disconnection from values",
+      "oldCardId": "orient-to-values",
+      "cardId": "values-disconnection"
+    },
+    {
+      "label": "Inaction / impulsive action",
+      "oldCardId": "workability",
+      "cardId": "inflexible-action"
+    },
+    {
+      "label": "Orient to values / practice",
+      "oldCardId": "orient-to-values",
+      "cardId": "orient-to-values"
+    },
+    {
+      "label": "Committed action / practice",
+      "oldCardId": "committed-action",
+      "cardId": "small-step"
+    },
+    {
+      "label": "Choice Point",
+      "oldCardId": "choice-point",
+      "cardId": "choice-point"
+    },
+    {
+      "label": "Away Move",
+      "oldCardId": "experiential-avoidance",
+      "cardId": "away-move"
+    },
+    {
+      "label": "Toward Move",
+      "oldCardId": "committed-action",
+      "cardId": "toward-move"
+    },
+    {
+      "label": "Functional contextualism",
+      "oldCardId": "functional-contextualism",
+      "cardId": "functional-contextualism"
+    },
+    {
+      "label": "RFT",
+      "oldCardId": "rft-rule-governed-behaviour",
+      "cardId": "relational-frame-theory"
+    },
+    {
+      "label": "Rule-governed behaviour",
+      "oldCardId": "rft-rule-governed-behaviour",
+      "cardId": "rule-governed-behaviour"
+    },
+    {
+      "label": "Workability",
+      "oldCardId": "workability",
+      "cardId": "workability"
+    }
+  ],
+  "aliases": {
+    "rft-rule-governed-behaviour": "rule-governed-behaviour"
+  },
+  "legacyTitleAliases": {
+    "Psychological Flexibility": "psychological-flexibility",
+    "Open / Aware / Engaged": "open-aware-engaged",
+    "Choice Point": "choice-point",
+    "Cognitive Fusion": "cognitive-fusion",
+    "Experiential Avoidance": "experiential-avoidance",
+    "Workability": "workability",
+    "Self-as-Context": "self-as-context",
+    "Notice": "notice",
+    "Defuse": "defuse",
+    "Accept / Make room": "accept-make-room",
+    "Anchor / Return": "anchor-return",
+    "Orient to values": "orient-to-values",
+    "Committed Action": "committed-action",
+    "Functional Contextualism": "functional-contextualism",
+    "RFT & rule-governed behaviour": "rule-governed-behaviour"
+  }
+}

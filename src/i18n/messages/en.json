@@ -837,5 +837,624 @@
       "rft": "RFT",
       "rules": "Rule-governed behaviour"
     }
+  },
+  "actV2": {
+    "cards": {
+      "psychological-flexibility": {
+        "title": "Psychological Flexibility",
+        "short": "Notice what is happening and persist in or change behavior in the service of what matters, taking the actual circumstances into account.",
+        "practice": "Ask: “What is happening now? What matters to me? What options are available?” Sometimes it helps to continue; sometimes to stop, rest, ask for support, or try a different approach.",
+        "example": "You planned a presentation, but after a sleepless night you shorten it and ask a colleague for help. Care for both quality and health takes a different form.",
+        "deep": "Flexibility does not require a particular mood. You can feel anxious and have more room to choose; you can enjoy yourself and also act flexibly. One episode does not describe the whole person. Exploring a concrete choice is more useful here than deciding whether you are “flexible enough”.",
+        "pitfall": "Turning flexibility into a demand to handle everything on your own.",
+        "reflection": "What options became visible that I had not noticed at first?"
+      },
+      "open-aware-engaged": {
+        "title": "Open, Aware, Engaged",
+        "short": "Three practical orientations: open up to experience, be present, and do what matters.",
+        "practice": "Choose one relevant question: “What am I struggling with internally?”, “Where is my attention?”, or “What quality do I want my next action to express?” You do not need to answer all three.",
+        "example": "On a walk, you notice enjoyment, listen to your companion, and put your phone away to make room for connection. A difficult emotion is not required.",
+        "deep": "Open brings together acceptance and defusion; Aware brings together present-moment contact and self-as-context; Engaged brings together values and committed action. This is a way to organize six interacting processes, not three independent abilities or consecutive levels of training.",
+        "pitfall": "Believing that you must completely accept an experience before you can act.",
+        "reflection": "Which orientation could support a useful choice right now?"
+      },
+      "choice-point": {
+        "title": "The Choice Point",
+        "short": "A way to explore where the available actions lead in a particular situation.",
+        "practice": "Name the situation, thoughts, and feelings, then consider several possible behaviors. Compare them with what matters to you. It is fine to be unsure or to see mixed consequences.",
+        "example": "You receive an unpleasant message. You could reply now, clarify its meaning, or arrange a time to return to the conversation. None of these actions has a permanent direction label.",
+        "deep": "This library uses the Choice Point meaning of Toward and Away: movement toward or away from a chosen valued direction. Feelings belong in the situation being explored, not on either behavioral branch. The Choice Point is a teaching tool developed by Bailey, Ciarrochi, and Harris, not a seventh ACT process. Different ACT tools may use similar terms differently.",
+        "pitfall": "Turning the choice into a test with a compulsory correct answer.",
+        "reflection": "What would help me understand the consequences of this choice?"
+      },
+      "toward-move": {
+        "title": "Toward Moves",
+        "short": "Actions that support a personally chosen valued direction in this situation.",
+        "practice": "Describe what you did and its connection to what mattered: “I did … to express …”. Consider consequences and constraints. Distinguish preparing or intending to act from an action that has already happened.",
+        "example": "You finish work on time to play with your child. Or you go to bed because caring for your health matters more tonight than another hour of work.",
+        "deep": "A Toward Move may feel pleasant, difficult, or emotionally neutral. Acting on a value does not guarantee the outcome you want: an honest conversation may not produce agreement. You can revise your interpretation later as consequences become clearer.",
+        "pitfall": "Treating any work, discipline, or pushing through fatigue as a Toward Move.",
+        "reflection": "What chosen quality did this action express?"
+      },
+      "away-move": {
+        "title": "Away Moves",
+        "short": "Actions that move away from a chosen valued direction or repeatedly get in its way in this situation.",
+        "practice": "Record what happened and what the action gave you immediately. Then note what followed. This is an opportunity to understand the choice without either excusing or condemning yourself.",
+        "example": "You care about trust, but promise something impossible to avoid the awkwardness of saying no. You feel relieved at first, then have to explain why you cannot deliver.",
+        "deep": "Away Moves can involve experiential avoidance, but are not limited to it. Trying to prove that you are right may also pull you away from a respectful conversation. Rest, leaving a conflict, or feeling relief do not by themselves make an action Away. Its direction may also be mixed or unclear.",
+        "pitfall": "Reading the label as “I am bad”, or treating every form of relief as suspicious.",
+        "reflection": "What understandable need was I trying to meet, and what other ways are available?"
+      },
+      "workability": {
+        "title": "Workability",
+        "short": "A practical question about what a behavior does in your life, in relation to what matters and at what cost.",
+        "practice": "Consider four things: the valued direction, the current conditions, the immediate outcome, and later consequences. Separate what you have observed from what you expect.",
+        "example": "Canceling a meeting when ill may support health. Repeatedly canceling wanted social contact only to escape awkwardness may narrow your relationships. Context matters.",
+        "deep": "Asking about workability does not mean ignoring facts. A thought may accurately point to danger, an obligation, or limited capacity. Take that information into account. You can acknowledge an accurate thought and still choose among different ways of responding to it.",
+        "pitfall": "Equating workability with immediate relief, productivity, or a justification for any means to an end.",
+        "reflection": "If this pattern continues, what possibilities might it preserve or reduce?"
+      },
+      "acceptance": {
+        "title": "Acceptance",
+        "short": "Willing contact with private experiences when doing so supports participation in a meaningful life.",
+        "practice": "Notice the experience and briefly try allowing it without fixing it. At the same time, choose a supportive action. You can adjust the demands of the situation and seek help.",
+        "example": "When asking for a raise, you allow your voice to shake a little and still make the request. If the conversation becomes abusive, you can end it.",
+        "deep": "Acceptance concerns your relationship with experience, not approval of what is happening. It does not require tolerating harm, refusing treatment, or keeping a feeling present. Relief is welcome if it occurs; it simply is not a required sign that the practice worked.",
+        "pitfall": "Enduring through force and criticizing yourself for resistance.",
+        "reflection": "Did this help me participate with more freedom to choose?"
+      },
+      "cognitive-defusion": {
+        "title": "Cognitive Defusion",
+        "short": "Notice a thought as a thought and loosen its automatic control over behavior.",
+        "practice": "Name the thought, then consider your available actions. Check relevant facts separately when needed. Your response does not have to follow the mind's first suggestion.",
+        "example": "“I will definitely mess this up” appears before a class. You notice the prediction, check the time, and go to try it, allowing yourself to learn gradually.",
+        "deep": "A thought may be accurate, inaccurate, or impossible to verify. Defusion does not settle its truth for you. It supports relating to the thought as information, an image, or a rule rather than automatically treating it as a command. A defusion exercise is one way to support this process.",
+        "pitfall": "Repeating a phrase until the thought disappears, or trying to convince yourself that every thought is false.",
+        "reflection": "Did the practice make more ways of responding available?"
+      },
+      "present-moment": {
+        "title": "Contact with the Present Moment",
+        "short": "Flexibly direct attention to internal and external events that matter for what you are doing now.",
+        "practice": "Notice one fact around you, one sensation, and the activity you are engaged in. Choose where to bring your attention. If the task is planning, attending to a plan can be appropriate.",
+        "example": "During a conversation, you notice that you are composing a reply and return to the other person's words. You can reflect on the conversation afterward.",
+        "deep": "Being present does not require continuous self-monitoring. Memories and plans are useful when you can engage with them and return to current activities. Attention will move; bringing it back is part of the practice.",
+        "pitfall": "Treating every distraction as failure or repeatedly checking whether you are “present enough”.",
+        "reflection": "What deserves my attention right now?"
+      },
+      "self-as-context": {
+        "title": "Self-as-Context",
+        "short": "A perspective from which you can notice experience without reducing yourself to one feeling, label, or story.",
+        "practice": "Notice: “This thought about me is here, and I can notice it”. Return to the situation and choose an action without first needing a final answer to “Who am I?”",
+        "example": "After a mistake, “I am hopeless” shows up. You acknowledge and repair the mistake without making it a complete description of yourself.",
+        "deep": "This practice supports a flexible perspective on experience. You do not need to believe in a separate observer inside you or withdraw from your sensations. The experiences remain yours; one description can become less restrictive of what you are able to do next.",
+        "pitfall": "Trying to disappear emotionally, detach from life, or achieve a special mystical state.",
+        "reflection": "What might I do if this label did not describe all of me?"
+      },
+      "values": {
+        "title": "Values",
+        "short": "Personally chosen qualities of action, such as acting attentively, honestly, caringly, or with curiosity.",
+        "practice": "Choose a life domain and complete: “In this area, I want to act …”. Give one example of a behavior that could express it. You may revise the wording or leave the question open for now.",
+        "example": "Relationships is a domain; being attentive is a value; arranging a meeting is a goal; listening to someone today is an action.",
+        "deep": "A value is an ongoing direction rather than a task to finish. You can express it in different ways within your actual possibilities. Enjoyment can matter too. Explore other people's expectations rather than automatically accepting or rejecting them: the question is whether you freely choose the direction.",
+        "pitfall": "Turning a value into “I must always be this kind of person”.",
+        "reflection": "If nobody evaluated this choice, what would still matter to me about it?"
+      },
+      "committed-action": {
+        "title": "Committed Action",
+        "short": "Build and revise concrete actions and patterns of behavior that serve chosen values.",
+        "practice": "Identify a manageable step, the conditions for trying it, and a way to review what happens. Afterward, decide whether to continue, reduce, change, or stop that particular approach.",
+        "example": "Learning matters to you. You spend ten minutes on a task, discover a gap in your knowledge, and ask for guidance rather than spending another hour struggling alone.",
+        "deep": "Both actual behavior and flexible planning matter. A small step can start a pattern, but it does not replace skills, resources, or support. Commitment is to a chosen direction; the route can change. Goals help organize action without becoming a measure of your worth.",
+        "pitfall": "Continuing an unworkable plan solely because you promised yourself you would.",
+        "reflection": "What did the attempt teach me about a manageable next step?"
+      },
+      "cognitive-fusion": {
+        "title": "Cognitive Fusion",
+        "short": "A thought or rule dominates behavior so strongly that other information and options become difficult to take into account.",
+        "practice": "Notice what the thought is directing you to do. Ask: “What other aspects of this situation matter?” If useful, try a brief defusion practice.",
+        "example": "“I must answer perfectly” leads to an hour of editing a simple email, although a clear response would be sufficient.",
+        "deep": "Fusion is not only about how strongly you believe a thought. You may doubt it yet still act under its control. Useful instructions also influence behavior; the concern is rigid following that gets in the way of responding to the situation.",
+        "pitfall": "Treating thinking as the enemy and looking for fusion in every thought.",
+        "reflection": "What am I doing under this thought's influence, and how well does it fit here?"
+      },
+      "experiential-avoidance": {
+        "title": "Experiential Avoidance",
+        "short": "Attempts to escape or change private experiences, particularly when these attempts become rigid and costly.",
+        "practice": "Name the experience you wanted to avoid, what you did, the immediate effect, and what you lost or preserved later.",
+        "example": "You avoid asking questions to escape awkwardness, and understand less and less about the task you are working on.",
+        "deep": "Distraction and relief can support recovery. Examine the function and consequences of a recurring strategy. Protecting yourself from actual danger concerns external conditions; it should not be replaced with a demand to accept internal discomfort.",
+        "pitfall": "Treating every wish to feel better as a problem.",
+        "reflection": "Does this approach expand my possibilities or gradually leave fewer options?"
+      },
+      "inflexible-attention": {
+        "title": "Inflexible Attention",
+        "short": "Attention gets stuck in habitual responding, replaying the past, or anticipating the future when something else needs attention now.",
+        "practice": "Notice: “I am replaying that conversation again”. Choose a small external point of attention, then return to one part of your current activity.",
+        "example": "You are having dinner with someone close to you while mentally arguing with a colleague. On noticing, you listen to the next sentence spoken at the table.",
+        "deep": "Automatic behavior saves effort, and thinking about the past and future can support learning and planning. The difficulty is losing the ability to shift when shifting would help. Not every distraction calls for an exercise.",
+        "pitfall": "Demanding that you live only in the present at all times.",
+        "reflection": "Am I choosing to think about this now, or being pulled back into it?"
+      },
+      "self-as-content": {
+        "title": "Self-as-Content: Stories About Yourself",
+        "short": "Descriptions of yourself, including roles, qualities, memories, and evaluations. They can help, but can also become rigid constraints.",
+        "practice": "Notice “I am the kind of person who …”. Add: “That is one description of me”. Look for a small action that is possible beyond the familiar story.",
+        "example": "“I always handle everything myself” prevents you from asking for help even when working together would be more useful.",
+        "deep": "You do not need to get rid of your identity, history, or sense of self. The difficulty is inflexible attachment to a description. Even a positive story such as “I never give up” can make rest and reconsideration harder.",
+        "pitfall": "Replacing an unwanted label with a compulsory positive label.",
+        "reflection": "What possibilities does this description close off today?"
+      },
+      "values-disconnection": {
+        "title": "Disconnection from Values",
+        "short": "It becomes difficult to identify or keep in view what you want your actions to stand for.",
+        "practice": "You do not need to find the meaning of your whole life. Choose a nearby situation and ask: “How do I want to treat myself or others here?” A small expression of care or curiosity can be a starting point.",
+        "example": "You complete tasks by inertia and stop noticing which support learning and which no longer serve a meaningful purpose.",
+        "deep": "Unclear values do not mean that you have none. Fatigue, external constraints, and conflicting expectations may make choosing difficult. Sleep, support, or fewer demands may need attention first. An empty values section is not a diagnosis.",
+        "pitfall": "Filling every life domain because an empty one feels like evidence that you have not done enough work on yourself.",
+        "reflection": "What quality of action feels even slightly meaningful here?"
+      },
+      "inflexible-action": {
+        "title": "Inaction, Impulsivity, and Rigid Persistence",
+        "short": "Behavior stops adapting to what matters and to the circumstances: starting, stopping, or changing approach becomes difficult.",
+        "practice": "Clarify the obstacle. Would a smaller step, a specific skill, a resource, an agreement, or a pause help? Choose one hypothesis that you can test.",
+        "example": "You reread a task for hours instead of starting. The completion criteria turn out to be unclear. Asking a question is more useful than applying more effort.",
+        "deep": "Similar-looking inaction can have different causes and functions. One behavior is not enough to conclude that someone is avoiding feelings or lacks motivation. Impulsive action also has no single mandatory corrective skill; context and available alternatives matter.",
+        "pitfall": "Explaining every difficulty as poor discipline.",
+        "reflection": "What is missing here: clarity, opportunity, support, or willingness to contact an experience?"
+      },
+      "notice": {
+        "title": "Notice What Is Happening",
+        "short": "Briefly name what is happening so that the next choice becomes clearer.",
+        "practice": "Look around. Notice one fact about the situation, one private experience, and an urge: “A question was asked. Tension is here. I want to interrupt”. Then choose what to attend to.",
+        "example": "“I am reading the message for the third time. Anxiety is here. I am looking for certainty that everything is fine.” That is enough; a lengthy analysis is not required.",
+        "deep": "You can also notice after the event. The label need not be precise: “something unpleasant” is a useful beginning. If focusing inward is overwhelming, use external facts: where you are, what you can see, and what you are doing.",
+        "pitfall": "Turning noticing into continuous self-monitoring.",
+        "reflection": "What did I notice, and what choice did that make possible?"
+      },
+      "defuse": {
+        "title": "Unhook from a Thought",
+        "short": "Create a little room between a thought appearing and acting under its direction.",
+        "practice": "Once, say silently: “I am noticing the thought that …”. Or name a familiar theme: “The demand for perfection is here again”. Consider the actual circumstances and choose an action. You do not need to repeat the phrase until you feel better.",
+        "example": "“I am noticing the thought that asking is embarrassing.” You check whether the information is needed and ask the question.",
+        "deep": "If that wording is irritating, you can simply label the event prediction, evaluation, or memory. The aim is to respond to thoughts more flexibly. Relevant facts and reasonable warnings still deserve attention.",
+        "pitfall": "Using the phrase to dismiss a real problem or argue with yourself.",
+        "reflection": "Can I choose a response even if the thought remains?"
+      },
+      "accept-make-room": {
+        "title": "Make Room for an Experience",
+        "short": "Briefly try allowing a private experience while staying in contact with your surroundings.",
+        "practice": "Choose an experience that feels manageable. Find a comfortable point of support, name what is present, and allow it to be as it is for a moment. Breathe normally. Then choose a small supportive action. Stop if the exercise becomes too much.",
+        "example": "You notice a lump in your throat before saying something important. You speak at an accessible pace instead of waiting for a perfectly steady voice.",
+        "deep": "This is an experiment in willingness, not endurance. Resistance can be present too. You do not need to intensify or maintain the experience, achieve relaxation, or decide whether you accepted it completely.",
+        "pitfall": "Making a hidden deal: “I will allow this only if it goes away quickly”.",
+        "reflection": "Was this manageable, and did it help me choose an action?"
+      },
+      "anchor-return": {
+        "title": "Find an Anchor and Re-engage",
+        "short": "Help attention reconnect with your surroundings and an available action.",
+        "practice": "Acknowledge what is happening internally. Notice a comfortable point of physical support or make a small movement, if accessible. Look at a few things around you. Return to one clear part of what you are doing. You may keep your eyes open and let your breathing stay natural.",
+        "example": "During a tense conversation, you notice the chair supporting you, look around the room, and ask the other person to repeat their last point.",
+        "deep": "The aim is renewed contact with yourself and your environment. Anxiety may remain. A particular set of sensations is not required; look for whether it becomes easier to orient and act. If attention to the body increases overwhelm, use an external object or sound.",
+        "pitfall": "Requiring complete calm before returning to life.",
+        "reflection": "What action was I able to return to?"
+      },
+      "orient-to-values": {
+        "title": "Orient to Values",
+        "short": "Choose a quality you would like your next action to express.",
+        "practice": "Name the life domain, then complete: “Here, I want to act …”. Check that it is a direction you choose, and think of one example. You do not need a complete values map first.",
+        "example": "“Curiosity matters in my work. I could ask how my colleague's solution works.” Or: “Play matters in my leisure time. I can draw without producing anything useful.”",
+        "deep": "A domain is where; a value is how; a goal is an achievable outcome; an action is a particular behavior. You can want a state such as calm while also asking how you would like to care for yourself if calm has not arrived.",
+        "pitfall": "Searching for the perfect wording instead of trying a small action.",
+        "reflection": "Does this feel like a direction I choose, or only something I am supposed to do?"
+      },
+      "perspective-taking": {
+        "title": "Take a Broader Perspective on Yourself",
+        "short": "See a current self-story as part of your experience, leaving room for other possibilities.",
+        "practice": "Name the story: “Right now, I am describing myself as …”. Remember that your experience has differed in another situation. Return attention to the room and ask what action is possible today, regardless of the label.",
+        "example": "“I never know how to say no.” You notice the generalization and try: “I cannot today; I could offer half an hour tomorrow”.",
+        "deep": "You do not have to prove an opposite identity to yourself. You can acknowledge difficulties without reducing yourself to them. This is perspective-taking, not an attempt to detach from your body or stop feeling.",
+        "pitfall": "Searching for a “real me” and losing contact with the actual situation.",
+        "reflection": "What became possible when the story felt less final?"
+      },
+      "small-step": {
+        "title": "A Workable Next Step",
+        "short": "Turn a chosen direction into an action you can try and then review.",
+        "practice": "Write: “When …, I will try … in the service of …”. Make the action specific. Identify one likely obstacle and an alternative. After trying it, note what happened and what you would change.",
+        "example": "“After lunch, I will spend ten minutes on a draft to support learning. If I do not understand the task, I will write one question.” Another useful step could be dropping an extra task and recovering.",
+        "deep": "Reducing the size of a task does not solve every barrier. Knowledge, money, suitable conditions, or help may be needed. An action can yield useful information without producing the hoped-for outcome. Choose the next step from that information rather than a rule to keep increasing demands.",
+        "pitfall": "Turning small steps into an endless obligation to be productive.",
+        "reflection": "What will I keep, and what will I change in the next attempt?"
+      },
+      "functional-contextualism": {
+        "title": "Functional Contextualism",
+        "short": "An approach to understanding behavior in relation to its context, history, and consequences.",
+        "practice": "Rather than explaining an action from its appearance alone, ask: “What came before? What did the person do? What changed afterward?” Treat your conclusions as hypotheses.",
+        "example": "Silence may be attentive listening, an attempt to conceal disagreement, or protection in an unsafe setting. The observation “stayed silent” is not enough to decide its function.",
+        "deep": "As a philosophy of science, functional contextualism aims at prediction and influence with precision, scope, and depth. The diary uses a limited practical implication: understand action in context. This is not permission to call anything convenient true, and it does not prohibit checking facts.",
+        "pitfall": "Replacing investigation with confident explanations of another person's motives.",
+        "reflection": "What conditions would change the meaning of this action?"
+      },
+      "relational-frame-theory": {
+        "title": "Relational Frame Theory (RFT)",
+        "short": "A behavioral account of language and cognition that examines how people learn to relate events and respond to those relations.",
+        "practice": "In everyday life, notice that words, comparisons, and predictions can change a situation's meaning before direct contact with it. You do not need to study the full theory to use this app.",
+        "example": "The word “exam” may bring tension even when you are only looking at a calendar. It is connected with evaluation, past setbacks, hopes, and other significant experiences.",
+        "deep": "RFT examines learned relational responding and how the functions of events can change through relations. It provides a theoretical basis for investigating language; it does not justify diagnosing an episode's mechanism from a single word or assuming that every metaphor-based exercise is effective.",
+        "pitfall": "Treating thoughts as empty words that should simply be ignored.",
+        "reflection": "What comparisons and rules make this situation particularly significant to me?"
+      },
+      "rule-governed-behaviour": {
+        "title": "Rule-Governed Behavior",
+        "short": "Behavior influenced by verbal instructions and descriptions of consequences, rather than only by direct experience.",
+        "practice": "Find a rule: “I must …” or “If …, then …”. Check whether it helps in the present conditions, what it is based on, and whether it allows exceptions.",
+        "example": "“Always reply immediately” may be useful while on call but interfere with recovery on a day off. You can refine the rule without abandoning responsibility.",
+        "deep": "Functional distinctions include following a rule for socially mediated consequences (pliance), following its description of how the world works (tracking), and verbal changes in the significance of consequences (augmenting). These concern functions. The word “must” alone cannot identify them, and several functions may operate together.",
+        "pitfall": "Treating all rules and social expectations as harmful.",
+        "reflection": "What might happen if I adapted this rule to the current situation?"
+      },
+      "functional-analysis": {
+        "title": "Explore the Function of an Action",
+        "short": "Examine the relationship between a situation, behavior, and consequences to guide a useful next experiment.",
+        "practice": "Record what came before, what showed up internally, what you did, what happened immediately, and what followed later. Mark what you are only assuming. Then choose a small change in conditions or behavior to try.",
+        "example": "Before a difficult call, you open the news. Tension briefly decreases and the call is postponed. Relief may be helping maintain the postponement. An alternative to test is preparing the first sentence and asking for support.",
+        "deep": "One entry can suggest a hypothesis, not establish a cause. Include external constraints, skills, fatigue, and available support. You can also examine a useful experience: what helped you act on a value, and how could those conditions be supported again?",
+        "pitfall": "Explaining everything as avoidance of feelings and missing practical barriers.",
+        "reflection": "What next experience could help me test my interpretation?"
+      },
+      "control-agenda": {
+        "title": "When Life Waits for Feelings to Change",
+        "short": "Sometimes “first get rid of this experience, then live” becomes a rule that repeatedly postpones meaningful action.",
+        "practice": "Pick one recurring coping strategy. What does it give you now? Does it help over time? What does it cost? If it is not helping, you can try another approach without blaming yourself for earlier attempts.",
+        "example": "You wait to feel completely confident before meeting someone and avoid starting conversations for months. A brief greeting may be possible without first achieving confidence.",
+        "deep": "Exploring unsuccessful control strategies is sometimes called creative hopelessness: the loss of confidence concerns a strategy, not your worth or hope for life. Emotion regulation, treatment, and relief can be useful. The question is whether control has become a compulsory condition for participating in life.",
+        "pitfall": "Dismissing every form of help that makes an experience easier.",
+        "reflection": "Is there one meaningful action that does not have to wait for an ideal internal state?"
+      },
+      "willingness": {
+        "title": "Willingness",
+        "short": "A freely chosen readiness to contact a manageable private experience in the service of an action that matters.",
+        "practice": "Ask: “What would make this worth trying? What is manageable for me? What support do I need?” You may clarify or revise your willingness.",
+        "example": "You are willing to experience some embarrassment while asking for an explanation, but you are not agreeing to remain in an abusive conversation.",
+        "deep": "Willingness is not wanting unpleasant experiences, an obligation to endure, or proof of courage. You can choose a smaller step, different conditions, or to leave an exercise for another time. The app should not require a willingness score before you are allowed to act.",
+        "pitfall": "Turning willingness into a competition in tolerating pain.",
+        "reflection": "Am I choosing this experience freely, with a sense of what it serves?"
+      },
+      "self-compassion": {
+        "title": "Respond to Yourself with Care",
+        "short": "Meet a difficulty without adding humiliation, and choose a useful form of care.",
+        "practice": "Acknowledge: “This is difficult for me”. Consider what you might say to someone in a similar position. Choose a concrete support: a pause, help, fewer demands, or repairing a mistake.",
+        "example": "After speaking sharply, you take responsibility and apologize instead of spending the evening trying to prove that you are a bad person.",
+        "deep": "Care does not erase consequences or responsibility. It can support returning to a valued direction without punishment. Here it is an additional support for practice, not an extra compulsory hexaflex process. You do not have to force yourself to feel warmth or self-love.",
+        "pitfall": "Making self-compassion another demand to feel the “right” thing.",
+        "reflection": "What would reduce unnecessary pressure and support a useful response now?"
+      },
+      "values-conflict": {
+        "title": "When Values Pull in Different Directions",
+        "short": "Several values may call for different actions, and your time and capacity may not allow you to express them all at once.",
+        "practice": "Name both directions, the constraints, and the possible cost of each option. Choose a priority for this situation and consider whether the other direction can be supported partly, later, or another way.",
+        "example": "You want to support a friend and recover after a demanding week. You might honestly offer a short conversation today and more time tomorrow.",
+        "deep": "A compromise is not necessarily a betrayal of a value. No single action can express everything that matters. Mixed is a valid interpretation, and decisions can be reviewed. Consider safety, resources, and commitments to others as well as the person you want to be.",
+        "pitfall": "Searching for an option with no loss, cost, or uncomfortable feelings for anyone.",
+        "reflection": "Which choice can I stand behind in the actual conditions, while acknowledging its cost?"
+      },
+      "practice-limits": {
+        "title": "The Limits of Self-Guided Practice",
+        "short": "Exercises should support orientation and participation in life. You may stop or adapt them.",
+        "practice": "Choose a manageable example. If remaining in contact with your surroundings becomes noticeably harder, stop the exercise, attend to your environment, and consider support. You do not need to intensify frightening memories on your own as a form of training.",
+        "example": "Paying attention to breathing feels unpleasant. You let breathing continue naturally and look at an object in the room instead. Changing the approach is allowed.",
+        "deep": "This app does not diagnose conditions or provide crisis care. In immediate danger, prioritize safety and urgent local support. If difficulties interfere with daily life or exercises repeatedly increase overwhelm, consider discussing suitable support with a qualified professional.",
+        "pitfall": "Continuing through severe overwhelm to prove that you can accept experience.",
+        "reflection": "What would help me stay safely connected with life right now?"
+      },
+      "app-checks": {
+        "title": "Understanding the Reflection Questions and Charts",
+        "short": "Optional, app-authored questions about particular episodes, not a personality test or a measure of treatment outcomes.",
+        "practice": "Respond only where you can reflect on the specific experience. Not rated is valid. Look at the circumstances associated with different answers and what you might try in a similar situation.",
+        "example": "You report less openness in a new, difficult situation than in earlier, easier episodes. This is a reason to explore conditions, not to conclude that your ability has deteriorated.",
+        "deep": "Responses depend on the situations selected, memory, and understanding of the questions. A chart does not contain your unrecorded life. How often you name a skill does not show its quality. These five questions are an editorial reflection framework for the app, not a validated ACT scale, and they do not produce a total score.",
+        "pitfall": "Recording only flattering episodes or trying to earn high ratings.",
+        "reflection": "What useful hypothesis could I test without judging myself as a whole?"
+      },
+      "returning-to-practice": {
+        "title": "Return After a Difficulty or a Gap",
+        "short": "Continue from where you are now without making up missed entries or punishing yourself.",
+        "practice": "Name what happened and what got in the way. Decide whether a note, support, repair, or one small next action would help. You do not have to reconstruct previous days.",
+        "example": "You have not opened the diary for a week. Instead of rebuilding the timeline, you record one episode today, or decide that talking with someone close to you would be more useful now.",
+        "deep": "Not using the app does not mean you were not practicing. Returning after an Away Move can be meaningful without erasing that move's consequences. You can acknowledge the cost, repair an agreement, and support yourself in trying a different approach.",
+        "pitfall": "Treating a broken streak as proof that everything is ruined.",
+        "reflection": "What would be a useful continuation now, without having to fix the whole history?"
+      }
+    },
+    "ui": {
+      "nav": {
+        "today": "Today",
+        "journal": "Journal",
+        "values": "Values",
+        "episodes": "Episodes",
+        "observations": "Observations",
+        "systemMap": "System Map",
+        "flexibility": "Psychological Flexibility",
+        "loop": "Practice Loop",
+        "library": "Library"
+      },
+      "common": {
+        "orientation": "Notice what is happening and choose actions guided by what matters, taking your circumstances and capacity into account.",
+        "optional": "Optional",
+        "save": "Save entry",
+        "cancel": "Cancel",
+        "edit": "Revisit entry",
+        "close": "Close",
+        "saved": "Entry saved. You can return to it when more becomes clear.",
+        "saveError": "The entry could not be saved. Your text is still here; please try again."
+      },
+      "map": {
+        "intro": "This map connects ACT processes, patterns that can narrow choice, and practices. Open a concept for an explanation, an example, and related topics.",
+        "processes": "ACT processes",
+        "patterns": "When choice narrows",
+        "practices": "Practices to explore",
+        "reflection": "Reflection prompts",
+        "foundations": "Theoretical foundations",
+        "choicePointNote": "A teaching tool, not a seventh process",
+        "open": "Open",
+        "aware": "Aware",
+        "engaged": "Engaged",
+        "openQuestion": "Can I make room for this experience while choosing what to do?",
+        "awareQuestion": "What am I noticing, and where would it help to place my attention?",
+        "engagedQuestion": "What matters here, and what action could express it?"
+      },
+      "today": {
+        "intro": "Set an intention, reflect on the day, or leave one brief note. You do not need to complete every field.",
+        "morningTitle": "Morning intentions",
+        "eveningTitle": "Evening reflection",
+        "morningValues": "What matters to me today?",
+        "morningAttention": "Where might I need to bring attention back?",
+        "morningSupport": "How can I support myself if things are difficult?",
+        "morningStep": "One possible step",
+        "eveningSituation": "What happened?",
+        "eveningConsequences": "What did I do, and what followed?",
+        "eveningValues": "Where did my actions express what mattered?",
+        "eveningNext": "What would I like to keep or change?"
+      },
+      "journal": {
+        "emptyDay": "There are no entries for this day. That does not tell us how you lived it.",
+        "markersHelp": "Markers show the event times recorded for this day. They do not measure the importance or intensity of an experience."
+      },
+      "values": {
+        "intro": "Values are qualities you choose to express through action. You can revise them, leave a domain empty, or return later. Nothing here is ranked.",
+        "domain": "Life domain",
+        "value": "Chosen quality of action",
+        "goal": "Achievable outcome",
+        "action": "A specific behavior",
+        "choiceHelp": "Examples are invitations, not instructions. What direction do you choose for yourself?"
+      },
+      "episode": {
+        "title": "Record an episode",
+        "brief": "Brief note",
+        "expand": "Explore this episode",
+        "collapse": "Return to brief note",
+        "intro": "Start with what happened. Interpretation can wait.",
+        "date": "When did it happen?",
+        "timezone": "Event time zone",
+        "situation": "What was happening?",
+        "experience": "What did I notice?",
+        "action": "What did I do?",
+        "intendedFunction": "What was I trying to achieve or avoid?",
+        "immediate": "What happened immediately afterward?",
+        "later": "What were the later consequences?",
+        "value": "What mattered in this situation?",
+        "direction": "How do I understand the action now?",
+        "patterns": "What may have narrowed choice?",
+        "skills": "What skills did I use, if any?",
+        "next": "What small experiment could help me learn what works?",
+        "noAction": "This entry describes an experience or intention so far. It is a useful note; a completed action has not been recorded.",
+        "directionHelp": "The same action can serve different functions. Consider the situation, its consequences, and what matters to you.",
+        "patternsHelp": "These are tentative descriptions, not diagnoses. You may choose several or leave this open.",
+        "emptyError": "Add something about the situation, your experience, or an action before saving.",
+        "actedError": "Describe the action, or keep this entry as a note or intention."
+      },
+      "direction": {
+        "toward": {
+          "label": "Toward",
+          "description": "This action supported a chosen direction in this situation."
+        },
+        "away": {
+          "label": "Away",
+          "description": "This action moved away from a chosen direction or got in its way."
+        },
+        "mixed": {
+          "label": "Mixed",
+          "description": "This action supported one important direction while making another harder."
+        },
+        "unknown": {
+          "label": "Not sure yet",
+          "description": "You can return to this later."
+        }
+      },
+      "behaviorStatus": {
+        "acted": "I took this action",
+        "planned": "This is an intention or plan",
+        "not-described": "No action described yet"
+      },
+      "consequenceStatus": {
+        "observed": "I observed this",
+        "expected": "I expect this",
+        "unknown": "Not known yet"
+      },
+      "experienceTypes": {
+        "thought": "Thought",
+        "feeling": "Feeling",
+        "urge": "Urge",
+        "memory": "Memory",
+        "sensation": "Bodily sensation",
+        "other": "Other / several"
+      },
+      "selection": {
+        "unknown": "I do not know",
+        "noneNoticed": "I did not notice any of these",
+        "noSkill": "No skill used"
+      },
+      "observations": {
+        "intro": "These are the entries you chose to record. They can help you explore habits and context, but they do not rate you or measure treatment outcomes.",
+        "period": "Selected period",
+        "empty": "There are no entries in this period.",
+        "records": "{count, plural, one {# entry} other {# entries}}",
+        "completedActions": "{count, plural, one {# completed action} other {# completed actions}}",
+        "directionCount": "{label}: {count}",
+        "notesAndPlans": "Notes and intentions are shown separately from completed actions.",
+        "byTime": "Entries by time of day",
+        "byTimeHelp": "These are record counts, not estimates of risk. Situations you did not record are not included.",
+        "reflectionTitle": "Your reflection responses",
+        "insufficient": "Not enough responses to compare yet. Keep noticing when it is useful to you.",
+        "noResponses": "No responses",
+        "sampleSize": "{count, plural, one {# response} other {# responses}}",
+        "dateRange": "{start}–{end}",
+        "recent": "Latest entries",
+        "previous": "Preceding entries",
+        "comparisonHelp": "Differences describe these responses only. Recorded situations, logging frequency, and your understanding of the questions may change.",
+        "patterns": "Status effects",
+        "skills": "Skills you named",
+        "unrecordedSkills": "These skills were not named in the selected entries. They may not have been needed, or you may not have recorded them.",
+        "multipleSelectionHelp": "An entry may include several selections, so percentages can add up to more than 100%.",
+        "returningTitle": "Returning to practice",
+        "daysRecorded": "{count, plural, one {# day with an entry} other {# days with entries}}",
+        "returningHelp": "This describes recording activity, not the quality of your life or practice. A gap does not erase earlier entries.",
+        "hideReturning": "Hide this summary"
+      },
+      "legacy": {
+        "notice": "Created with an earlier version of the form. Some ratings or the direction may have been filled in automatically.",
+        "excluded": "Excluded from new comparisons until clarified. The original entry is preserved.",
+        "reflection": "Earlier reflection",
+        "clarify": "Clarify this entry"
+      },
+      "reflection": {
+        "intro": "Optional questions about this episode. You can skip any question. There is no total score.",
+        "score0": "Not in this episode",
+        "score1": "To some extent",
+        "score2": "To a large extent",
+        "unrated": "Not rated / not applicable",
+        "notValidated": "These questions were created for reflection in this app. They are not a validated psychological assessment."
+      },
+      "practice": {
+        "stop": "Stop this practice",
+        "alternative": "Try another approach",
+        "record": "Record an observation",
+        "noReliefRequired": "A feeling does not have to disappear for a practice to be useful. Notice whether it helped you choose or participate.",
+        "notFit": "You can stop or try another approach. The practice should support your participation in life."
+      },
+      "help": {
+        "boundaries": "ACT Practice supports learning and reflection. It does not diagnose conditions or replace professional care. If a practice increases overwhelm, you can stop and seek support.",
+        "immediateDanger": "If you are in immediate danger, prioritize safety and seek urgent local help."
+      },
+      "library": {
+        "intro": "Explanations, examples, and practices you can explore when they are useful. You do not need to learn every term before taking a meaningful step.",
+        "search": "Search concepts and practices",
+        "noResults": "No matching topics. Try another term.",
+        "notFound": "This card is not available. Search the library or return to the map.",
+        "backToMap": "Back to System Map",
+        "openCard": "Open: {title}",
+        "closeCard": "Close: {title}",
+        "short": "In brief",
+        "practice": "Try it",
+        "example": "Example",
+        "deep": "A closer look",
+        "pitfall": "A common pitfall",
+        "reflection": "A question to explore",
+        "related": "Related topics",
+        "sources": "Background and further reading",
+        "sourceNote": "These explanations and brief practices introduce the ACT model. The wording is adapted for this app. A source identifies the underlying idea; it does not establish the effectiveness of this app or a particular adaptation. The reflection questions were created for the diary and are not a diagnostic scale."
+      },
+      "categories": {
+        "core": "Foundations",
+        "processes": "Six ACT Processes",
+        "patterns": "When Choice Narrows",
+        "practices": "Practices",
+        "theory": "Theoretical Foundations",
+        "guides": "Understanding Your Records"
+      },
+      "contentTypes": {
+        "model": "ACT Process",
+        "concept": "Concept",
+        "practice": "Practice",
+        "theory": "Theoretical Foundation",
+        "app-guide": "About the App"
+      },
+      "loop": {
+        "intro": "Use any of these orientations when helpful. They are not a required sequence. You can choose an action without completing an exercise, and review what happened later.",
+        "notice": {
+          "title": "Notice",
+          "question": "What is happening here?",
+          "help": "Notice relevant facts, private experiences, and urges. Keep it brief."
+        },
+        "open": {
+          "title": "Make room",
+          "question": "Can I allow some room for this experience?",
+          "help": "Try a manageable amount of openness. You can stop, adapt the exercise, or seek support."
+        },
+        "orient": {
+          "title": "Orient",
+          "question": "What matters in this situation?",
+          "help": "Choose a quality of action rather than an ideal feeling or a perfect outcome."
+        },
+        "choose": {
+          "title": "Consider options",
+          "question": "What could I do, and where might it lead?",
+          "help": "Consider context, available resources, and likely consequences. Mixed or uncertain directions are possible."
+        },
+        "act": {
+          "title": "Act",
+          "question": "What is one workable step?",
+          "help": "Try a concrete step. Rest, saying no, changing the plan, or asking for help may be that step."
+        },
+        "review": {
+          "title": "Review later",
+          "question": "What happened, and what would I keep or change?",
+          "help": "Separate observed consequences from expectations. Use what you learn to choose the next experiment."
+        }
+      },
+      "rpg": {
+        "masterStat": {
+          "label": "Master stat",
+          "help": "Psychological flexibility is the organizing idea for this practice, not a score to maximize."
+        },
+        "statusEffects": {
+          "label": "Status effects",
+          "help": "Patterns you noticed in these situations, not fixed traits or diagnoses."
+        },
+        "bossTest": {
+          "label": "Boss test",
+          "prompt": "In a moment that mattered, what did I notice, what did I choose, and what might I try next?",
+          "summary": "Entries in this period: {total}. Completed actions you marked Toward: {toward}.",
+          "empty": "No entries in this period yet. You can return when there is a moment you want to explore.",
+          "caption": "A reflection on recorded moments, not a pass/fail test or a measure of your worth. Rest, boundaries, and changing course can be Toward Moves too."
+        }
+      }
+    },
+    "checks": {
+      "awareness": {
+        "title": "Awareness",
+        "question": "I noticed what was happening within and around me to an extent that was useful in this situation.",
+        "help": "Noticing may happen during the event or afterward; if afterward, say so in your reflection. Continuous self-monitoring is not required."
+      },
+      "openness": {
+        "title": "Openness",
+        "question": "I could make room for my experiences without making their removal a condition for my next action.",
+        "help": "Feeling relief does not reduce openness. If no difficult experience was present or the question does not fit, you can leave it unrated."
+      },
+      "choice": {
+        "title": "Choice",
+        "question": "I took available options and circumstances into account when choosing how to act.",
+        "help": "A long pause is not required. A quick, appropriate action can be flexible; extended deliberation does not guarantee choice."
+      },
+      "values": {
+        "title": "Values",
+        "question": "I was guided by a personally meaningful quality of action.",
+        "help": "You do not have to name a value explicitly. What the action meant to you matters; another person's approval alone does not establish this."
+      },
+      "action": {
+        "title": "Action",
+        "question": "My action expressed what mattered in this situation.",
+        "help": "Consider actual possibilities. Rest, saying no, seeking help, and changing a plan can express what matters. If no action has happened yet, leave this question unrated."
+      }
+    }
   }
 }

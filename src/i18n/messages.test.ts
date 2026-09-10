@@ -17,6 +17,15 @@ function flatten(
   );
 }
 
+function placeholders(message: string): string[] {
+  return [
+    ...new Set([
+      ...Array.from(message.matchAll(/\{\s*(\w+)\s*[,}]/g), (m) => m[1]),
+      ...Array.from(message.matchAll(/<(\w+)>/g), (m) => `<${m[1]}>`),
+    ]),
+  ].sort();
+}
+
 describe("message catalogs", () => {
   it("ships a nonempty Russian translation for every English key", () => {
     const english = flatten(en);
@@ -24,6 +33,29 @@ describe("message catalogs", () => {
     expect(Object.keys(russian).sort()).toEqual(Object.keys(english).sort());
     for (const [key, value] of Object.entries(russian)) {
       expect(value.trim(), key).not.toBe("");
+    }
+  });
+
+  it("keeps actV2 key paths and placeholder sets identical in both locales", () => {
+    const english = flatten(en.actV2);
+    const russian = flatten(ru.actV2);
+    expect(Object.keys(russian).sort()).toEqual(Object.keys(english).sort());
+    for (const [key, message] of Object.entries(english)) {
+      expect(placeholders(russian[key]), key).toEqual(placeholders(message));
+    }
+  });
+
+  it("ships no empty actV2 leaves in either locale", () => {
+    for (const [locale, messages] of Object.entries({ en, ru })) {
+      for (const [key, value] of Object.entries(flatten(messages.actV2))) {
+        expect(value.trim(), `${locale}.actV2.${key}`).not.toBe("");
+      }
+    }
+  });
+
+  it("keeps Cyrillic out of the English actV2 catalog", () => {
+    for (const [key, message] of Object.entries(flatten(en.actV2))) {
+      expect(message, `en.actV2.${key}`).not.toMatch(/\p{Script=Cyrillic}/u);
     }
   });
 
