@@ -34,7 +34,10 @@ describe("Library rendered content", () => {
         const html = render(`tab=obsolete&card=${card.id}`, locale);
         expect(html).toContain(`id="vault-panel-${card.id}"`);
         expect(html.match(/aria-expanded="true"/g)).toHaveLength(1);
-        expect(html.match(/<h3 /g)).toHaveLength(8); // Seven layers plus background reading.
+        // Seven layers plus background reading; app-checks adds a reflection-prompt heading.
+        expect(html.match(/<h3 /g)).toHaveLength(
+          card.id === "app-checks" ? 9 : 8,
+        );
         for (const id of card.relatedIds) expect(html).toContain(`card=${id}`);
         expect(html).toContain('target="_blank"');
         expect(html).not.toMatch(
@@ -99,6 +102,23 @@ describe("Library rendered content", () => {
     expect(text).toContain(en.reference.vault.orientToValues.mapNote);
     expect(html).toContain('href="/values"');
     expect(render("card=values")).not.toContain('href="/values"');
+  });
+
+  it("anchors each reflection axis inside the app-checks card so map prompts scroll to it", () => {
+    const html = render("card=app-checks");
+    for (const axis of [
+      "awareness",
+      "openness",
+      "choice",
+      "values",
+      "action",
+    ]) {
+      expect(html).toContain(`id="${axis}"`);
+    }
+    // The anchors live only on app-checks, not on an unrelated card.
+    for (const axis of ["awareness", "openness"]) {
+      expect(render("card=acceptance")).not.toContain(`id="${axis}"`);
+    }
   });
 
   it("offers optional capture only for practice content without preclassifying it", () => {

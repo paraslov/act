@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { AXES } from "@/lib/act/constants";
 import {
   LIBRARY_CARDS,
   type LibraryCard,
@@ -38,6 +39,7 @@ export function VaultView({
 }) {
   const t = useTranslations("actV2.ui");
   const cards = useTranslations("actV2.cards");
+  const axes = useTranslations("act.axes");
   const router = useRouter();
   const searchParams = useSearchParams();
   const query = searchParams.get("q") ?? "";
@@ -103,6 +105,8 @@ export function VaultView({
     // Only this card carries the domain/value/goal/action structure; the layers
     // stay the shared seven, and the blocks sit inside them.
     const isValuesCard = card.id === "orient-to-values";
+    // The five reflection prompts anchor here; System Map links target #<axis-id>.
+    const isChecksCard = card.id === "app-checks";
     const panelId = `vault-panel-${card.id}`;
     return (
       <section
@@ -188,6 +192,29 @@ export function VaultView({
               </div>
             ))}
             {isValuesCard ? <OrientToValuesFooter /> : null}
+            {isChecksCard ? (
+              <div className="flex flex-wrap gap-x-4 gap-y-1.5 border-t pt-[13px]">
+                <h3 className={`${microLabel} basis-[118px] pt-[3px]`}>
+                  {t("map.reflection")}
+                </h3>
+                <ul className="min-w-0 grow basis-[280px] flex flex-col gap-2.5">
+                  {AXES.map((axis) => (
+                    <li
+                      key={axis.id}
+                      id={axis.id}
+                      className="scroll-mt-6 flex flex-wrap items-baseline gap-x-3.5 gap-y-0.5 border-b border-border/50 pb-2"
+                    >
+                      <span className="w-[130px] shrink-0 font-mono text-[10.5px] tracking-[0.12em] text-toward uppercase">
+                        {axes(`${axis.id}.label`)}
+                      </span>
+                      <span className="min-w-0 flex-1 text-[13.5px] leading-[1.55] text-foreground/85">
+                        {axes(`${axis.id}.prompt`)}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <div className="flex flex-wrap gap-x-4 gap-y-1.5 border-t pt-[13px]">
               <h3 className={`${microLabel} basis-[118px] pt-[3px]`}>
                 {t("library.sources")}

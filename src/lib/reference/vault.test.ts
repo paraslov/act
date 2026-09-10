@@ -63,13 +63,14 @@ describe("Library deep links", () => {
     ).toBe("rule-governed-behaviour");
   });
 
-  it("keeps current map links working through the canonical alias boundary", () => {
-    // Meaning changes to the map's old destinations belong to Phase 4.
+  it("routes every migrated map node to its own corrected card", () => {
     const ids = [
-      ...MAP_PILLARS.flatMap((p) =>
-        [...p.model, ...p.stuck, ...p.skills].map((n) => n.card),
-      ),
-      ...MAP_BASEMENT.map((n) => n.card),
+      ...MAP_PILLARS.flatMap((p) => [
+        ...p.process,
+        ...p.patterns,
+        ...p.practices,
+      ]),
+      ...MAP_BASEMENT,
       ...Object.values(MAP_CHOICE),
     ];
     for (const id of ids) {
@@ -81,6 +82,19 @@ describe("Library deep links", () => {
         ),
       ).toMatchObject({ status: "card", cardId: resolveLibraryCard(id)?.id });
     }
+    // Phase 4.1 corrections: distinct concepts no longer share one destination.
+    expect(MAP_CHOICE).toEqual({
+      point: "choice-point",
+      away: "away-move",
+      toward: "toward-move",
+    });
+    const aware = MAP_PILLARS.find((p) => p.key === "Aware");
+    const engaged = MAP_PILLARS.find((p) => p.key === "Engaged");
+    expect(aware?.patterns).toContain("inflexible-attention");
+    expect(aware?.process).toContain("present-moment");
+    expect(engaged?.patterns).toContain("values-disconnection");
+    expect(engaged?.patterns).toContain("inflexible-action");
+    expect(MAP_BASEMENT).toContain("relational-frame-theory");
   });
 
   it("distinguishes landing, explicit collapse, and unknown explicit IDs", () => {
@@ -187,18 +201,20 @@ describe("Library search", () => {
 
 describe("Back to System Map", () => {
   it("gives originating nodes unique identities even when destinations are shared", () => {
-    const ids = MAP_PILLARS.flatMap((pillar) =>
-      (["model", "stuck", "skills"] as const).flatMap((group) =>
-        pillar[group].map((node) =>
-          mapNodeId(`${pillar.key}-${group}`, node.label),
-        ),
+    const ids = MAP_PILLARS.flatMap((pillar) => [
+      ...(["process", "patterns", "practices"] as const).flatMap((band) =>
+        pillar[band].map((card) => mapNodeId(`${pillar.key}-${band}`, card)),
       ),
-    );
+      ...pillar.reflection.map((axis) =>
+        mapNodeId(`${pillar.key}-reflection`, axis),
+      ),
+    ]);
     ids.push(
-      ...MAP_BASEMENT.map((n) => mapNodeId("foundations", n.label)),
+      ...MAP_BASEMENT.map((card) => mapNodeId("foundations", card)),
       ...Object.keys(MAP_CHOICE).map((key) => mapNodeId("choice", key)),
     );
-    expect(ids).toHaveLength(25);
+    // 19 pillar cards + 5 reflection prompts + 4 foundations + 3 choice nodes.
+    expect(ids).toHaveLength(31);
     expect(new Set(ids).size).toBe(ids.length);
     for (const from of ids) {
       const url = new URL(vaultHref("notice", from), "https://act.example");

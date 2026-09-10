@@ -339,22 +339,13 @@
     "systemMap": {
       "title": "System map",
       "eyebrow": "Every node opens its Library card",
-      "lead": "One tree for the whole system. Flexibility sits at the top; everything under it is either what is happening (Model), what you can do about it (Skills), or how you would know it worked (Metrics). Theory lives in the basement — known, not carried around daily.",
-      "northStar": "North star · master stat",
+      "northStar": "North star",
       "definition": "Contact the present fully — and keep or change behaviour in the service of chosen values.",
-      "model": "Model · what is it",
-      "stuck": "Stuck as",
-      "skills": "Skills · what do I do",
-      "metrics": "Metrics · is it working",
       "choiceTitle": "Choice Point — the interface",
-      "choiceNote": "Not a seventh process",
       "hook": "Hook",
       "hookTypes": "thought · feeling · urge · memory",
-      "away": "Away move",
-      "toward": "Toward move",
       "choiceDescription": "The hook doesn’t have to leave first. Each direction is read against workability — workable toward what, at what price. Both get logged in <episodes>Episodes</episodes>.",
       "operations": "The five operations · <loop>the loop</loop>",
-      "basement": "Theoretical basement",
       "basementDescription": "Worth knowing once, not carrying around daily. It explains where fusion, shoulds and self-stories get their force.",
       "evidence": "Background: flexibility as a construct and the six processes are described across the ACT literature, and the processes overlap empirically rather than acting as separate mechanisms. Choice Point and the 0–2 checks are teaching devices and personal heuristics written for this app. Full notes in the <vault>Library</vault>."
     }
@@ -579,40 +570,6 @@
         "title": "Write it down afterwards",
         "body": "The episode log is one route to feedback; talking it through and plain observation are others. If you use it, two rough lines in the evening is enough."
       }
-    },
-    "vault": {
-      "Core map": {
-        "0": {
-          "t": "Psychological Flexibility"
-        },
-        "2": {
-          "t": "Choice Point"
-        }
-      },
-      "Concepts": {
-        "2": {
-          "t": "Workability"
-        }
-      }
-    },
-    "referenceNodes": {
-      "acceptance": "Acceptance",
-      "defusion": "Defusion",
-      "present": "Present moment",
-      "self": "Self-as-context",
-      "values": "Values",
-      "commit": "Committed action",
-      "avoidance": "Experiential avoidance",
-      "fusion": "Cognitive fusion",
-      "autopilot": "Autopilot · rehearsal · replay",
-      "selfContent": "Self-as-content",
-      "drift": "Values disconnection",
-      "stuck": "Inaction · impulsive action",
-      "accept": "Accept / make room",
-      "anchor": "Anchor / return",
-      "contextualism": "Functional contextualism",
-      "rft": "RFT",
-      "rules": "Rule-governed behaviour"
     }
   },
   "actV2": {

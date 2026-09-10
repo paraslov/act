@@ -1,86 +1,77 @@
-import type en from "@/i18n/messages/en.json";
-import { type AxisKey, FLEX_PILLARS } from "@/lib/act/constants";
+import type { AxisKey } from "@/lib/act/constants";
 import type { VaultCardId } from "@/lib/reference/vault";
 
-export type MapNode = {
-  label:
-    | `referenceNodes.${keyof typeof en.act.referenceNodes}`
-    | `skills.${"notice" | "defuse" | "orient"}.label`
-    | "vault.Concepts.2.t";
-  card: VaultCardId;
-};
+export type MapPillarKey = "Open" | "Aware" | "Engaged";
 
+/**
+ * Every card-linking node carries a stable library ID, not an English label.
+ * `satisfies readonly VaultCardId[]` is the forcing function: a node pointing at
+ * a card the registry no longer defines fails typecheck. Node labels and the band
+ * headings are resolved from `actV2.cards.<id>.title` / `actV2.ui.map` in the view.
+ */
 type PillarNodes = {
-  model: readonly MapNode[];
-  stuck: readonly MapNode[];
-  skills: readonly MapNode[];
-  metrics: readonly AxisKey[];
+  process: readonly VaultCardId[];
+  patterns: readonly VaultCardId[];
+  practices: readonly VaultCardId[];
+  reflection: readonly AxisKey[];
 };
 
 const nodes = {
   Open: {
-    model: [
-      { label: "referenceNodes.acceptance", card: "accept-make-room" },
-      { label: "referenceNodes.defusion", card: "defuse" },
-    ],
-    stuck: [
-      { label: "referenceNodes.avoidance", card: "experiential-avoidance" },
-      { label: "referenceNodes.fusion", card: "cognitive-fusion" },
-    ],
-    skills: [
-      { label: "referenceNodes.accept", card: "accept-make-room" },
-      { label: "skills.defuse.label", card: "defuse" },
-    ],
-    metrics: ["openness"],
+    process: ["acceptance", "cognitive-defusion"],
+    patterns: ["experiential-avoidance", "cognitive-fusion"],
+    practices: ["accept-make-room", "defuse"],
+    reflection: ["openness"],
   },
   Aware: {
-    model: [
-      { label: "referenceNodes.present", card: "notice" },
-      { label: "referenceNodes.self", card: "self-as-context" },
-    ],
-    stuck: [
-      { label: "referenceNodes.autopilot", card: "notice" },
-      { label: "referenceNodes.selfContent", card: "self-as-context" },
-    ],
-    skills: [
-      { label: "skills.notice.label", card: "notice" },
-      { label: "referenceNodes.anchor", card: "anchor-return" },
-    ],
-    metrics: ["awareness", "choice"],
+    process: ["present-moment", "self-as-context"],
+    patterns: ["inflexible-attention", "self-as-content"],
+    // perspective-taking is the new practice added alongside the 25 migrated links.
+    practices: ["notice", "anchor-return", "perspective-taking"],
+    reflection: ["awareness", "choice"],
   },
   Engaged: {
-    model: [
-      { label: "referenceNodes.values", card: "orient-to-values" },
-      { label: "referenceNodes.commit", card: "committed-action" },
-    ],
-    stuck: [
-      { label: "referenceNodes.drift", card: "orient-to-values" },
-      { label: "referenceNodes.stuck", card: "workability" },
-    ],
-    skills: [
-      { label: "skills.orient.label", card: "orient-to-values" },
-      { label: "referenceNodes.commit", card: "committed-action" },
-    ],
-    metrics: ["values", "action"],
+    process: ["values", "committed-action"],
+    patterns: ["values-disconnection", "inflexible-action"],
+    practices: ["orient-to-values", "small-step"],
+    reflection: ["values", "action"],
   },
-} as const satisfies Record<(typeof FLEX_PILLARS)[number]["key"], PillarNodes>;
+} as const satisfies Record<MapPillarKey, PillarNodes>;
 
-export const MAP_PILLARS = FLEX_PILLARS.map((pillar) => ({
-  ...pillar,
-  ...nodes[pillar.key],
-  // The handoff deliberately uses a shorter Engaged question on the map.
-  question: `pillars.${pillar.key}.${pillar.key === "Engaged" ? "mapAsk" : "ask"}`,
-}));
+export const MAP_PILLARS = (["Open", "Aware", "Engaged"] as const).map(
+  (key) => ({
+    key,
+    ...nodes[key],
+  }),
+);
+
+/** The bands that link to library cards; reflection prompts anchor into app-checks. */
+export const MAP_CARD_BANDS = ["process", "patterns", "practices"] as const;
+export type MapCardBand = (typeof MAP_CARD_BANDS)[number];
 
 export const MAP_BASEMENT = [
-  { label: "referenceNodes.contextualism", card: "functional-contextualism" },
-  { label: "referenceNodes.rft", card: "rft-rule-governed-behaviour" },
-  { label: "referenceNodes.rules", card: "rft-rule-governed-behaviour" },
-  { label: "vault.Concepts.2.t", card: "workability" },
-] as const satisfies readonly MapNode[];
+  "functional-contextualism",
+  "relational-frame-theory",
+  "rule-governed-behaviour",
+  "workability",
+] as const satisfies readonly VaultCardId[];
 
 export const MAP_CHOICE = {
   point: "choice-point",
-  away: "experiential-avoidance",
-  toward: "committed-action",
+  away: "away-move",
+  toward: "toward-move",
 } as const satisfies Record<string, VaultCardId>;
+
+/**
+ * The five operations plus a later review step. Each links to its own anchor on
+ * The loop; titles and questions come from `actV2.ui.loop`.
+ */
+export const MAP_LOOP = [
+  "notice",
+  "open",
+  "orient",
+  "choose",
+  "act",
+  "review",
+] as const;
+export type MapLoopStep = (typeof MAP_LOOP)[number];

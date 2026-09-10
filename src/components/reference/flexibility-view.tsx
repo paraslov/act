@@ -1,7 +1,11 @@
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
-import { AXES, FLEX_GROWTH, FLEX_MYTHS } from "@/lib/act/constants";
-import { MAP_PILLARS } from "@/lib/reference/system-map";
+import {
+  AXES,
+  FLEX_GROWTH,
+  FLEX_MYTHS,
+  FLEX_PILLARS,
+} from "@/lib/act/constants";
 import { cn } from "@/lib/utils";
 
 const pillarColors = {
@@ -46,7 +50,7 @@ export async function FlexibilityView() {
         {t("pillarsLabel")}
       </p>
       <div className="mb-6 grid grid-cols-1 gap-3 min-[1040px]:grid-cols-3">
-        {MAP_PILLARS.map((pillar) => (
+        {FLEX_PILLARS.map((pillar) => (
           <section
             key={pillar.key}
             className="rounded-card border bg-card px-5 pt-5 pb-[22px] text-card-foreground"
@@ -63,7 +67,7 @@ export async function FlexibilityView() {
               {act(`pillars.${pillar.key}.name`)}
             </h2>
             <p className="mt-[3px] mb-3 text-xs text-muted-foreground">
-              {pillar.model.map((node) => act(node.label)).join(" · ")}
+              {act(`pillars.${pillar.key}.processes`)}
             </p>
             <p className="mb-3 text-[13.5px] leading-[1.6] text-foreground/85">
               {act(`pillars.${pillar.key}.body`)}
