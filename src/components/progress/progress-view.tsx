@@ -1,6 +1,7 @@
 import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { BossTestGrid } from "@/components/progress/boss-test-grid";
+import { PeriodFilter } from "@/components/progress/period-filter";
 import { AXES, BANDS } from "@/lib/act/constants";
 import { formatDayLabel } from "@/lib/act/date";
 import {
@@ -12,7 +13,8 @@ import {
   statusEffectTallies,
   towardAwaySplit,
 } from "@/lib/act/derive";
-import type { Episode } from "@/lib/act/types";
+import type { PeriodValue } from "@/lib/act/period";
+import type { Episode, EpisodePeriod } from "@/lib/act/types";
 import { SKILL_CARD_IDS, STATE_CARD_IDS } from "@/lib/reference/library";
 import { cn } from "@/lib/utils";
 
@@ -50,7 +52,15 @@ function point(index: number, value: number) {
   ];
 }
 
-export async function ProgressView({ episodes }: { episodes: Episode[] }) {
+export async function ProgressView({
+  episodes,
+  period: periodValue,
+  window,
+}: {
+  episodes: Episode[];
+  period: PeriodValue;
+  window?: EpisodePeriod;
+}) {
   const t = await getTranslations("actV2.ui");
   const checks = await getTranslations("actV2.checks");
   const cards = await getTranslations("actV2.cards");
@@ -62,13 +72,19 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
   const bands = bandBreakdown(episodes);
   const maxBand = Math.max(1, ...bands.map((band) => band.total));
   const days = episodes.map((episode) => episode.day).sort();
-  const period = { start: days[0], end: days[days.length - 1] };
-  const range = days.length
-    ? t("observations.dateRange", {
-        start: formatDayLabel(period.start, locale),
-        end: formatDayLabel(period.end, locale),
-      })
-    : "—";
+  // The window (last 30/90 days) drives every block; "all time" falls back to the
+  // span of what was actually recorded so the Boss test and range stay aligned.
+  const period: EpisodePeriod = window ?? {
+    start: days[0],
+    end: days[days.length - 1],
+  };
+  const range =
+    period.start && period.end
+      ? t("observations.dateRange", {
+          start: formatDayLabel(period.start, locale),
+          end: formatDayLabel(period.end, locale),
+        })
+      : "—";
   const states = statusEffectTallies(episodes);
   const skills = skillTallies(episodes);
   const hookTypes = hookTypeTallies(episodes);
@@ -88,6 +104,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
       <p className="mt-2 mb-5 max-w-[66ch] text-sm text-foreground/70">
         {t("observations.intro")}
       </p>
+      <PeriodFilter value={periodValue} />
       <p className="mb-4 font-mono text-xs text-muted-foreground">
         {t("observations.period")}: {range} ·{" "}
         {t("observations.records", { count: split.total })}

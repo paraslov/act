@@ -56,12 +56,10 @@ type EpisodeDialogContextValue = {
 const EpisodeDialogContext = createContext<EpisodeDialogContextValue | null>(
   null,
 );
-// TODO A15 / Phase 6: use the user's configured zone for this suggestion.
-const currentBand = () => Math.min(7, Math.floor(new Date().getUTCHours() / 3));
 function initialForm(
   day: string,
   valueId: string | null,
-  band = currentBand(),
+  band: number,
 ): FormState {
   return {
     day,
@@ -79,11 +77,13 @@ function initialForm(
 
 export function NewEpisodeDialogProvider({
   today,
+  suggestedBand,
   values,
   morningValues,
   children,
 }: {
   today: string;
+  suggestedBand: number;
   values: PersonalValue[];
   morningValues: Record<string, string>;
   children: ReactNode;
@@ -102,18 +102,18 @@ export function NewEpisodeDialogProvider({
     [morningValues, values],
   );
   const [form, setForm] = useState(() =>
-    initialForm(today, suggestionFor(today)),
+    initialForm(today, suggestionFor(today), suggestedBand),
   );
   const [saveError, setSaveError] = useState(false);
   const [isPending, startTransition] = useTransition();
   const openEpisodeDialog = useCallback(
     (day = today) => {
-      setForm(initialForm(day, suggestionFor(day)));
+      setForm(initialForm(day, suggestionFor(day), suggestedBand));
       setLegacy(null);
       setSaveError(false);
       setOpen(true);
     },
-    [today, suggestionFor],
+    [today, suggestionFor, suggestedBand],
   );
   const clarifyEpisode = useCallback((episode: Episode) => {
     setLegacy(episode);

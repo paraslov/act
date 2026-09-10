@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { z } from "zod";
+import { normalizeTimeZone } from "@/lib/act/date";
 import { filterEpisodes } from "@/lib/act/derive";
 import {
   clarifyEpisodeSchema,
@@ -162,16 +163,26 @@ export async function createEpisode(raw: CreateEpisodeInput): Promise<Episode> {
     // plus the snapshot title, so both stay findable either way.
     const value = input.value?.trim() ? input.value : (snapshot?.title ?? "");
 
+    // T18: freeze the zone in force now; the stored day/band are the local truth
+    // the client computed in it, and changing the zone later never moves them.
+    const tz = await client.query<{ timezone: string | null }>(
+      "SELECT settings->>'timezone' AS timezone FROM user_settings WHERE user_id = $1",
+      [userId],
+    );
+    const eventTimezone = normalizeTimeZone(tz.rows[0]?.timezone);
+
     const result = await client.query<EpisodeRow>(
       `INSERT INTO episodes (
          user_id, day, band, dir, weight, hook, hook_type, situation,
          state, skill, value, move, workable, checks, value_id, value_snapshot,
          behavior_status, consequence_status, immediate_outcome, later_consequences,
-         intended_function, next_experiment, interpretation, states, skills
+         intended_function, next_experiment, interpretation, states, skills,
+         event_timezone
        ) VALUES (
          $1, $2::date, $3, $4, $5, $6, $7, $8,
          $9, $10, $11, $12, $13, $14::jsonb, $15, $16::jsonb,
-         $17, $18, $19, $20, $21, $22, $23, $24::text[], $25::text[]
+         $17, $18, $19, $20, $21, $22, $23, $24::text[], $25::text[],
+         $26
        )
        RETURNING ${episodeColumns}`,
       [
@@ -202,6 +213,7 @@ export async function createEpisode(raw: CreateEpisodeInput): Promise<Episode> {
         input.interpretation,
         input.states,
         input.skills,
+        eventTimezone,
       ],
     );
 

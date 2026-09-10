@@ -5,13 +5,58 @@
  * Weekday and month names are never stored — they are derived from the date via
  * `Intl` using the active display locale.
  *
- * Timezone: v1 uses a single fixed zone (`DEFAULT_TIMEZONE`) to decide which
- * calendar day "today" is. The per-user timezone will be stored in
- * `user_settings` before the first real save; until then this default applies.
+ * Timezone: the calendar day and time band an entry belongs to are resolved in
+ * the user's own zone (stored in `user_settings.settings.timezone`). `UTC` is the
+ * fallback when no zone is set. Whatever zone was in force is frozen onto the row
+ * at write time (`event_timezone`), so changing it later never moves history.
  */
 export const DEFAULT_TIMEZONE = "UTC";
 
 const MS_PER_DAY = 86_400_000;
+
+/** True when `value` is an IANA zone this runtime accepts; guards user input. */
+export function isTimeZone(value: string | null | undefined): value is string {
+  if (!value) return false;
+  try {
+    new Intl.DateTimeFormat("en-US", { timeZone: value });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/** A valid zone unchanged, otherwise the UTC fallback. */
+export function normalizeTimeZone(value: string | null | undefined): string {
+  return isTimeZone(value) ? value : DEFAULT_TIMEZONE;
+}
+
+/** The `YYYY-MM-DD` calendar day that `date` falls on in `timeZone`. */
+export function zonedDayId(date: Date, timeZone = DEFAULT_TIMEZONE): string {
+  // en-CA renders as YYYY-MM-DD.
+  return new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+/** The three-hour band index (0–7) that `date` falls in, in `timeZone`. */
+export function zonedBand(date: Date, timeZone = DEFAULT_TIMEZONE): number {
+  const hour = Number(
+    new Intl.DateTimeFormat("en-GB", {
+      timeZone,
+      hour: "2-digit",
+      hourCycle: "h23",
+    }).format(date),
+  );
+  return Math.min(7, Math.floor(hour / 3));
+}
+
+/** The current three-hour band index in `timeZone`. */
+export function bandForNow(timeZone = DEFAULT_TIMEZONE): number {
+  return zonedBand(new Date(), timeZone);
+}
 
 /** Parses a `YYYY-MM-DD` id into a UTC `Date` at midnight. */
 export function idToDate(id: string): Date {
@@ -41,13 +86,7 @@ export function daysBetween(a: string, b: string): number {
 
 /** The current calendar day id in the given timezone. */
 export function todayId(timeZone: string = DEFAULT_TIMEZONE): string {
-  // en-CA renders as YYYY-MM-DD.
-  return new Intl.DateTimeFormat("en-CA", {
-    timeZone,
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
-  }).format(new Date());
+  return zonedDayId(new Date(), timeZone);
 }
 
 function part(id: string, options: Intl.DateTimeFormatOptions): string {

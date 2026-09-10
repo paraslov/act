@@ -16,8 +16,10 @@ import { getDayEntry, upsertDayEntry } from "@/lib/db/day-entries";
 import {
   clarifyEpisode,
   createEpisode,
+  getEpisode,
   getEpisodesForDay,
   listEpisodeActivity,
+  updateEpisode,
 } from "@/lib/db/episodes";
 import {
   createPersonalValue,
@@ -276,7 +278,8 @@ describe("personal values through real user-scoped repositories", () => {
       skill: null,
       checks: {},
       schemaVersion: 2,
-      eventTimezone: null,
+      // 6.2: a new entry freezes the zone in force (UTC when none is set).
+      eventTimezone: "UTC",
       value: "",
       move: "",
       workable: "",
@@ -319,7 +322,8 @@ describe("personal values through real user-scoped repositories", () => {
     });
     await admin.query(
       `UPDATE episodes SET schema_version = 1, dir = 'toward', state = 'none', skill = 'commit',
-      states = ARRAY['none'], skills = ARRAY['commit'], checks = '{"awareness":0,"action":2}', move = '—' WHERE id = $1`,
+      states = ARRAY['none'], skills = ARRAY['commit'], checks = '{"awareness":0,"action":2}', move = '—',
+      event_timezone = NULL WHERE id = $1`,
       [row.id],
     );
     const original = (
@@ -358,5 +362,60 @@ describe("personal values through real user-scoped repositories", () => {
     expect(await getEpisodesForDay(day)).toHaveLength(1);
     await expect(clarifyEpisode(input)).rejects.toThrow("already clarified");
     expect((await getEpisodesForDay(day))[0].legacySnapshot).toEqual(original);
+  });
+
+  it("revises an entry in place: keeps created_at, the zone and an unchanged snapshot (T16/T17/T18)", async () => {
+    const value = await createPersonalValue(valueInput);
+    const row = await createEpisode({ ...episodeInput, valueId: value.id });
+    expect(row.eventTimezone).toBe("UTC");
+
+    signIn(users[1]);
+    await expect(
+      updateEpisode({ id: row.id, day, band: row.band, hook: row.hook }),
+    ).rejects.toThrow("unavailable");
+    signIn(users[0]);
+
+    const revised = await updateEpisode({
+      id: row.id,
+      day,
+      band: row.band,
+      hook: row.hook,
+      dir: "toward",
+      laterConsequences: "Slept better",
+      consequenceStatus: "observed",
+      valueId: value.id, // unchanged link → snapshot must stay frozen
+    });
+    expect(revised).toMatchObject({
+      id: row.id,
+      dir: "toward",
+      laterConsequences: "Slept better",
+      consequenceStatus: "observed",
+      createdAt: row.createdAt,
+      eventTimezone: "UTC",
+      valueSnapshot: row.valueSnapshot,
+    });
+    expect(revised.updatedAt >= row.updatedAt).toBe(true);
+    // No new row was created.
+    expect(await getEpisodesForDay(day)).toHaveLength(1);
+
+    // Clearing the link is an explicit relink and drops the snapshot.
+    const unlinked = await updateEpisode({
+      id: row.id,
+      day,
+      band: row.band,
+      hook: row.hook,
+      valueId: null,
+    });
+    expect(unlinked.valueSnapshot).toBeNull();
+    expect(unlinked.valueId).toBeNull();
+
+    // Legacy rows are never edited in place — they go through clarification.
+    await admin.query("UPDATE episodes SET schema_version = 1 WHERE id = $1", [
+      row.id,
+    ]);
+    await expect(
+      updateEpisode({ id: row.id, day, band: row.band, hook: row.hook }),
+    ).rejects.toThrow("legacy");
+    expect(await getEpisode(row.id)).not.toBeNull();
   });
 });

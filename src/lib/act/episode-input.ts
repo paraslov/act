@@ -44,7 +44,9 @@ const episodeFields = {
     })
     .optional()
     .transform((day) => day ?? todayId()),
-  // TODO A15 / Phase 6: suggest the band in the user's configured time zone.
+  // The UI supplies the day/band computed in the user's zone; these UTC fallbacks
+  // only cover a caller that omits them. The zone in force is frozen onto the row
+  // as `event_timezone` in createEpisode.
   band: z
     .number()
     .int()

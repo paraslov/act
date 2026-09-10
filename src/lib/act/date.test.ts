@@ -5,8 +5,12 @@ import {
   formatDayMono,
   formatDayTitle,
   idToDate,
+  isTimeZone,
+  normalizeTimeZone,
   shiftId,
   todayId,
+  zonedBand,
+  zonedDayId,
 } from "./date";
 
 describe("date helpers", () => {
@@ -44,5 +48,28 @@ describe("date helpers", () => {
 
   it("returns today as a YYYY-MM-DD id", () => {
     expect(todayId()).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+  });
+
+  it("resolves the local day and band in the event zone, not UTC (T18)", () => {
+    // Asia/Almaty is UTC+5. 18:30Z is 23:30 local (same day, last band);
+    // an hour later, 19:30Z is 00:30 local the next day (first band).
+    const late = new Date("2026-09-01T18:30:00Z");
+    const past = new Date("2026-09-01T19:30:00Z");
+    expect(zonedDayId(late, "Asia/Almaty")).toBe("2026-09-01");
+    expect(zonedBand(late, "Asia/Almaty")).toBe(7);
+    expect(zonedDayId(past, "Asia/Almaty")).toBe("2026-09-02");
+    expect(zonedBand(past, "Asia/Almaty")).toBe(0);
+    // The same instant is still the earlier day in UTC — the zone is what moves it.
+    expect(zonedDayId(past, "UTC")).toBe("2026-09-01");
+    expect(zonedBand(past, "UTC")).toBe(6);
+  });
+
+  it("accepts real IANA zones and falls back to UTC for anything else", () => {
+    expect(isTimeZone("Asia/Almaty")).toBe(true);
+    expect(isTimeZone("Not/AZone")).toBe(false);
+    expect(isTimeZone("")).toBe(false);
+    expect(normalizeTimeZone("Europe/Berlin")).toBe("Europe/Berlin");
+    expect(normalizeTimeZone("bogus")).toBe("UTC");
+    expect(normalizeTimeZone(null)).toBe("UTC");
   });
 });

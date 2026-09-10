@@ -1038,7 +1038,13 @@
         "returningTitle": "Returning to practice",
         "daysRecorded": "{count, plural, one {# day with an entry} other {# days with entries}}",
         "returningHelp": "This describes recording activity, not the quality of your life or practice. A gap does not erase earlier entries.",
-        "hideReturning": "Hide this summary"
+        "hideReturning": "Hide this summary",
+        "periods": {
+          "label": "Period",
+          "all": "All time",
+          "30": "Last 30 days",
+          "90": "Last 90 days"
+        }
       },
       "legacy": {
         "notice": "Created with an earlier version of the form. Some ratings or the direction may have been filled in automatically.",
@@ -1178,5 +1184,9 @@
         "help": "Consider actual possibilities. Rest, saying no, seeking help, and changing a plan can express what matters. If no action has happened yet, leave this question unrated."
       }
     }
+  },
+  "timezone": {
+    "label": "Time zone",
+    "saveError": "The time zone couldn't be saved. Please try again."
   }
 }

@@ -8,6 +8,7 @@ import { logout } from "@/actions/auth";
 import type { CurrentUser } from "@/auth/session";
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TimezoneSwitcher } from "@/components/timezone-switcher";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -96,10 +97,12 @@ export function AppSidebar({
   user,
   episodeCount,
   daysRecorded,
+  timeZone,
 }: {
   user: CurrentUser;
   episodeCount: number;
   daysRecorded: number;
+  timeZone: string;
 }) {
   const t = useTranslations();
 
@@ -166,6 +169,7 @@ export function AppSidebar({
         <span className="mr-auto hidden min-w-0 truncate text-xs text-muted-foreground min-[900px]:block">
           {user.email}
         </span>
+        <TimezoneSwitcher timeZone={timeZone} />
         <LocaleSwitcher />
         <ThemeToggle ariaLabel={t("nav.toggleTheme")} />
         <form action={logout}>
