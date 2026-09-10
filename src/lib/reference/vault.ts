@@ -1,36 +1,104 @@
-import { LIB, type VaultCategory } from "@/lib/act/constants";
+import {
+  type aliases,
+  LIBRARY_CARDS,
+  LIBRARY_CATEGORIES,
+  type LibraryCardId,
+  type LibraryCategory,
+  resolveLibraryCard,
+} from "./library";
 
-export type VaultCardId = (typeof LIB)[VaultCategory][number]["id"];
-export const VAULT_CATEGORIES = Object.keys(LIB) as VaultCategory[];
+// Accept the historical slug at link boundaries while emitting canonical IDs.
+export type VaultCardId = LibraryCardId | keyof typeof aliases;
+export const VAULT_CATEGORIES = LIBRARY_CATEGORIES;
 
-export function vaultHref(cardId: VaultCardId): string {
-  const category = VAULT_CATEGORIES.find((tab) =>
-    LIB[tab].some((card) => card.id === cardId),
-  );
-  return `/reference/vault?${new URLSearchParams({
-    tab: category ?? "Core map",
-    card: cardId,
-  })}`;
+const legacyCategories = {
+  "Core map": "core",
+  Concepts: "patterns",
+  Skills: "practices",
+  Basement: "theory",
+} as const satisfies Record<string, LibraryCategory>;
+
+export function vaultHref(cardId: VaultCardId, from?: string | null): string {
+  const card = resolveLibraryCard(cardId);
+  const params = new URLSearchParams({
+    ...(card ? { tab: card.category } : {}),
+    card: card?.id ?? cardId,
+  });
+  if (from && isMapNodeId(from)) params.set("from", from);
+  return `/reference/vault?${params}`;
 }
 
-/** Card identity wins over a conflicting tab; old English-title links still work. */
-export function resolveVaultSelection(tab: string | null, card: string | null) {
-  for (const category of VAULT_CATEGORIES) {
-    const match = LIB[category].find(
-      (item) => item.id === card || item.t === card,
-    );
-    if (match) return { category, cardId: match.id };
-  }
+export type VaultSelection = {
+  category: LibraryCategory;
+} & (
+  | { status: "card"; cardId: LibraryCardId }
+  | { status: "landing" | "collapsed" | "not-found"; cardId: null }
+);
 
+/** Legacy title → ID alias → owning category. Unknown explicit IDs never fall back. */
+export function resolveVaultSelection(
+  tab: string | null,
+  card: string | null,
+): VaultSelection {
+  const match = card ? resolveLibraryCard(card) : undefined;
+  if (match) {
+    return { status: "card", category: match.category, cardId: match.id };
+  }
   const category =
-    VAULT_CATEGORIES.find((value) => value === tab) ?? "Core map";
+    LIBRARY_CATEGORIES.find((value) => value === tab) ??
+    (tab && Object.hasOwn(legacyCategories, tab)
+      ? legacyCategories[tab as keyof typeof legacyCategories]
+      : "core");
   return {
     category,
-    // An explicit empty card preserves a collapsed accordion on reload.
-    cardId: card === "" ? null : LIB[category][0].id,
+    cardId: null,
+    status: card === null ? "landing" : card === "" ? "collapsed" : "not-found",
   };
 }
 
-/** The four layers every Vault card is written in, in display order. */
-export const VAULT_LAYERS = ["short", "practice", "example", "deep"] as const;
+export const VAULT_LAYERS = [
+  "short",
+  "practice",
+  "example",
+  "deep",
+  "pitfall",
+  "reflection",
+  "related",
+] as const;
 export type VaultLayer = (typeof VAULT_LAYERS)[number];
+
+export type LibrarySearchEntry = { id: LibraryCardId; terms: string[] };
+
+function normalizeSearch(value: string): string {
+  return value.normalize("NFKC").toLowerCase().replace(/ё/g, "е").trim();
+}
+
+/** Only public reference titles/aliases enter this index, never personal records. */
+export function searchLibrary(
+  query: string,
+  index: readonly LibrarySearchEntry[],
+) {
+  const words = normalizeSearch(query).split(/\s+/).filter(Boolean);
+  const ids = new Set(
+    index
+      .filter(({ terms }) => {
+        const text = normalizeSearch(terms.join(" "));
+        return words.every((word) => text.includes(word));
+      })
+      .map(({ id }) => id),
+  );
+  return LIBRARY_CARDS.filter(({ id }) => ids.has(id));
+}
+
+export function mapNodeId(group: string, label: string): string {
+  return `map-node-${group}-${label}`.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+}
+
+function isMapNodeId(value: string): boolean {
+  return /^map-node-[a-z0-9-]+$/.test(value);
+}
+
+/** Only a local map fragment is allowed, never an arbitrary return URL. */
+export function systemMapHref(from: string | null): string {
+  return `/reference/system-map${from && isMapNodeId(from) ? `#${from}` : ""}`;
+}

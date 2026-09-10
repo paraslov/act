@@ -11,6 +11,7 @@ import {
   useTransition,
 } from "react";
 import { EpisodeDetails } from "@/components/episodes/episode-details";
+import { useNewEpisodeDialog } from "@/components/episodes/new-episode-dialog";
 import { NewEpisodeTrigger } from "@/components/episodes/new-episode-trigger";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -335,6 +336,20 @@ export function EpisodesView({ episodes }: { episodes: Episode[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const queryString = searchParams.toString();
+  const { openEpisodeDialog } = useNewEpisodeDialog();
+  useEffect(() => {
+    if (new URLSearchParams(queryString).get("new") !== "1") return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("new") !== "1") return;
+    // The Library offers capture, never a preclassified or automatically saved action.
+    params.delete("new");
+    window.history.replaceState(
+      null,
+      "",
+      `${pathname}${params.size ? `?${params}` : ""}`,
+    );
+    openEpisodeDialog();
+  }, [pathname, queryString, openEpisodeDialog]);
   const [filters, setFilters] = useState(() =>
     readFilters(new URLSearchParams(queryString)),
   );

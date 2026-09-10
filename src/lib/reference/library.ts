@@ -4,7 +4,7 @@ import type { SkillId, StateId } from "@/lib/act/constants";
  * ACT v2 reference metadata, validated against the audit manifest in library.test.ts.
  * Only display metadata belongs here; editorial status and review fields stay in
  * the audit. Localized card text lives at actV2.cards.<id> in both catalogs.
- * Existing views keep using the v1 registry until their own migration phases.
+ * The Library renders this registry directly; categories never define identity.
  */
 export const LIBRARY_CATEGORIES = [
   "core",

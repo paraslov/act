@@ -84,45 +84,6 @@ export const LOOP_REF = [
   { n: "5", ...en.act.loop["5"] },
 ] as const;
 
-/** Layered reference library for the Vault. */
-export const LIB = {
-  "Core map": [
-    {
-      id: "psychological-flexibility",
-      ...en.act.vault["Core map"]["0"],
-    },
-    { id: "open-aware-engaged", ...en.act.vault["Core map"]["1"] },
-    { id: "choice-point", ...en.act.vault["Core map"]["2"] },
-  ],
-  Concepts: [
-    { id: "cognitive-fusion", ...en.act.vault.Concepts["0"] },
-    {
-      id: "experiential-avoidance",
-      ...en.act.vault.Concepts["1"],
-    },
-    { id: "workability", ...en.act.vault.Concepts["2"] },
-    { id: "self-as-context", ...en.act.vault.Concepts["3"] },
-  ],
-  Skills: [
-    { id: "notice", ...en.act.vault.Skills["0"] },
-    { id: "defuse", ...en.act.vault.Skills["1"] },
-    { id: "accept-make-room", ...en.act.vault.Skills["2"] },
-    { id: "anchor-return", ...en.act.vault.Skills["3"] },
-    { id: "orient-to-values", ...en.act.vault.Skills["4"] },
-    { id: "committed-action", ...en.act.vault.Skills["5"] },
-  ],
-  Basement: [
-    {
-      id: "functional-contextualism",
-      ...en.act.vault.Basement["0"],
-    },
-    {
-      id: "rft-rule-governed-behaviour",
-      ...en.act.vault.Basement["1"],
-    },
-  ],
-} as const;
-
 /** The Open / Aware / Engaged macro-process cards. */
 export const FLEX_PILLARS = [
   { key: "Open", color: "oklch(0.55 0.13 55)", ...en.act.pillars.Open },
@@ -148,8 +109,6 @@ export const FLEX_GROWTH = [
   { n: "2", ...en.act.growth["2"] },
   { n: "3", ...en.act.growth["3"] },
 ] as const;
-
-export type VaultCategory = keyof typeof LIB;
 
 /** Accent colors (also defined as CSS tokens in `globals.css`). */
 export const TOWARD = "oklch(0.5 0.1 158)";

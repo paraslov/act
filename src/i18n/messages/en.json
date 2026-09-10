@@ -285,17 +285,6 @@
       "closing": "The hooks don't have to go away first. Notice, drop the rope, pick the direction, take one small step."
     },
     "vault": {
-      "tabsLabel": "Reference topics",
-      "coreMap": "Core map",
-      "concepts": "Concepts",
-      "skills": "Skills",
-      "basement": "Basement",
-      "openCard": "Open {title}",
-      "closeCard": "Close {title}",
-      "inShort": "In short",
-      "inPractice": "In practice",
-      "example": "Example",
-      "deeper": "Deeper",
       "orientToValues": {
         "distinctions": {
           "domain": {
@@ -594,115 +583,15 @@
     "vault": {
       "Core map": {
         "0": {
-          "t": "Psychological Flexibility",
-          "short": "Contacting your present experience and, in the same moment, keeping or changing behaviour according to the context and your chosen values. Not emotional control, not positive thinking — acceptance is only one part of it.",
-          "practice": "Watch for one thing: are you choosing the action, or is an automatic reaction dragging you? In the moment: what's happening — and what would be useful despite it?",
-          "example": "A blunt email arrives and you want to fire one back. Flexibility is noticing the urge, letting the irritation sit there, and writing the useful reply because you value clarity.",
-          "deep": "Operationalised through the six hexaflex processes, grouped as Open / Aware / Engaged. The construct's link to wellbeing holds up; each process as a separate causal mechanism is weaker — they overlap empirically, and mechanism measurement has historically been messy."
-        },
-        "1": {
-          "t": "Open / Aware / Engaged",
-          "short": "The three macro-processes the hexaflex folds into. Open: let inner experience be there. Aware: contact the present. Engaged: act on what matters.",
-          "practice": "Three morning buttons. Open — willing to feel discomfort today? Aware — will I catch autopilot? Engaged — who do I want to act like?",
-          "example": "Before a hard 1:1: “Open — my chest will be tight and that's allowed. Aware — I'll notice when I start rehearsing. Engaged — I want to be direct and kind.”",
-          "deep": "Harris frames these as Open Up / Be Present / Do What Matters. Practically convenient, but the borders are blurry — present-moment and self-as-context regularly overlap."
+          "t": "Psychological Flexibility"
         },
         "2": {
-          "t": "Choice Point",
-          "short": "The interface for the whole system. A hook shows up (thought, feeling, urge, memory), you arrive at a fork, and behaviour goes Away or Toward.",
-          "practice": "Notice → unhook → choose. The job is not to remove hooks; it's to see them and pick a direction anyway.",
-          "example": "9pm, tired, the “I've earned this” thought arrives. Away: a third hour of scrolling. Toward: ten minutes of guitar, which is what you actually miss.",
-          "deep": "A Harris/Ciarrochi teaching device, not a seventh hexaflex process. It earns its place as UX, not as theory."
+          "t": "Choice Point"
         }
       },
       "Concepts": {
-        "0": {
-          "t": "Cognitive Fusion",
-          "short": "A thought is taken as literal truth or as a command, and starts running behaviour.",
-          "practice": "Check steering, not belief: how much is this thought driving me right now? Counter-skill: Defuse.",
-          "example": "“I'll humiliate myself” shows up and you decline the talk. The thought worked as an order, not as a thought.",
-          "deep": "From an RFT view, language gives words behavioural control without direct experience — which is where fusion gets its force."
-        },
-        "1": {
-          "t": "Experiential Avoidance",
-          "short": "Organising behaviour around not feeling, not thinking, not remembering something.",
-          "practice": "Ask about function and price: what is this avoidance doing here, and what does it cost me over months? Counter: Accept / Willingness.",
-          "example": "You don't make the important call because it's anxiety-provoking. Anxiety drops now; the problem and its cost grow.",
-          "deep": "Strong as a transdiagnostic process in general terms; specific causal claims are more complicated. Avoidance isn't pathological by form — walking away from a fight is excellent. Function, not form."
-        },
         "2": {
-          "t": "Workability",
-          "short": "ACT's criterion isn't “is this thought true?” but “is this behaviour working — toward what?” Without a stated direction the question is empty.",
-          "practice": "Instead of arguing with the thought: if I follow it every time, where do I end up, and at what cost?",
-          "example": "“I'm tired, I'll do nothing” may be perfectly true. Followed as a rule for a year, where does it take you?",
-          "deep": "Follows from functional contextualism and its pragmatic truth criterion: truth is successful working toward a chosen end."
-        },
-        "3": {
-          "t": "Self-as-Context",
-          "short": "The observer perspective from which you notice thoughts, feelings and roles without collapsing yourself into their content.",
-          "practice": "“I notice anxiety” rather than “I'm an anxious person.” It separates you from your self-stories.",
-          "example": "Catching “I'm a failure” mid-sentence and stepping half a pace back from it — the story is still there, you're just not inside it.",
-          "deep": "Often conflated with present-moment contact, and described in different ways across ACT writing. The practical point is the perspective you notice from, not the content you notice."
-        }
-      },
-      "Skills": {
-        "0": {
-          "t": "Notice",
-          "short": "Register a thought, feeling, urge, sensation or behaviour without reacting to it immediately.",
-          "practice": "Pause and name what's happening inside. It's the doorway to every other skill.",
-          "example": "Catching the rising urge to interrupt before you interrupt.",
-          "deep": "Underlies present-moment contact; trained by ordinary mindfulness practice."
-        },
-        "1": {
-          "t": "Defuse",
-          "short": "Move from “this is true” to “my mind is producing this thought right now.” The thought may or may not be accurate; either way its presence does not require obedience.",
-          "practice": "Buttons: “I'm having the thought that…”, Name the Story, “thanks, mind”. The aim isn't a weaker thought — it's a looser grip.",
-          "example": "“Ah — the unfairness story again.” Same thought, much less steering.",
-          "deep": "If you defuse in order to make the thought disappear, it has become experiential avoidance wearing a skill's clothes. Target: thought → thought, not thought → truth."
-        },
-        "2": {
-          "t": "Accept / Make room",
-          "short": "Give inner experience room so you're not spending everything on the fight and not handing it the wheel.",
-          "practice": "Making Room, Expansion, Willingness, Urge Surfing — the urge as a wave: rise, peak, fall.",
-          "example": "Staying with a craving for a while and observing it without acting on it. How long it lasts and how it changes vary.",
-          "deep": "Pain + struggle → suffering is a therapeutic metaphor: a large share of suffering is manufactured by the struggle against the original discomfort."
-        },
-        "3": {
-          "t": "Anchor / Return",
-          "short": "Get voluntary control of attention and body back when the emotion has already spiked.",
-          "practice": "Dropping Anchor (ACE): Acknowledge thoughts and feelings → Come back into the body with controlled movement → Engage with what you're doing.",
-          "example": "Mid-argument, cognitive work is unavailable. Feet on the floor, shoulders down, then back to the sentence.",
-          "deep": "Russ Harris's technique; especially useful where in-the-moment cognitive work is unrealistic."
-        },
-        "4": {
-          "t": "Orient to values",
-          "short": "Answer “what matters here / who do I want to be?” — not “what do I feel like?” and not “how do I get rid of this feeling?” A value is a direction you can move in right now, so it can never be finished, failed, or scored.",
-          "practice": "One question is enough in the moment: <em>if this mattered to me, what would the next minute look like?</em> Four words get mixed up here, and telling them apart is most of the skill.",
-          "example": "The goal can be missed and the value still held: if the call slips to Thursday, the honest sentence is still available on Thursday.",
-          "deep": "In ACT terms values work as verbal motivators: they make behaviour reinforcing in the moment rather than only when a result lands. That’s why an Away Move and a value can appear in the same episode — the direction describes the move, not your worth. Component research has not established how much any single process contributes, so nothing here ranks them."
-        },
-        "5": {
-          "t": "Committed Action",
-          "short": "Actually make the Toward Move, discomfort included — not merely understand the previous five skills.",
-          "practice": "One small step now. Flexible persistence: keep going, with the right to change route.",
-          "example": "The 200 bad words that get written anyway.",
-          "deep": "Behavioural activation and exposure as techniques have a strong evidence base. Committed action = persistence + flexibility, not grit alone."
-        }
-      },
-      "Basement": {
-        "0": {
-          "t": "Functional Contextualism",
-          "short": "The philosophy of science under ACT. Behaviour is act-in-context; what matters is its function here, not its form or its truth in the abstract.",
-          "practice": "Ask not “what does this behaviour mean?” but “what function does it serve right here?”",
-          "example": "Skipping the party: one form, two functions — an evening with your kid (toward), or six months of dodging judgement (away).",
-          "deep": "Pragmatic truth criterion: “it works” always implies “toward what?” It's a frame, so evidence levels don't apply to it."
-        },
-        "1": {
-          "t": "RFT & rule-governed behaviour",
-          "short": "The theory of language ACT formally rests on: humans relate stimuli in networks, so words and rules acquire behavioural control without direct experience.",
-          "practice": "Explains where fusion, shoulds, self-stories and catastrophic futures get their power. You don't need the whole theory to use ACT.",
-          "example": "One label — “weak” — pulls a whole network of reactions along with it, no events required.",
-          "deep": "Distinguish functionally, never by wording: pliance (following for social consequences), tracking (following because the rule describes reality), augmenting (the rule changes how much consequences matter). The RFT → clinical-mechanism link is the weak joint in the chain."
+          "t": "Workability"
         }
       }
     },
@@ -1249,7 +1138,9 @@
         "reflection": "A question to explore",
         "related": "Related topics",
         "sources": "Background and further reading",
-        "sourceNote": "These explanations and brief practices introduce the ACT model. The wording is adapted for this app. A source identifies the underlying idea; it does not establish the effectiveness of this app or a particular adaptation. The reflection questions were created for the diary and are not a diagnostic scale."
+        "sourceNote": "These explanations and brief practices introduce the ACT model. The wording is adapted for this app. A source identifies the underlying idea; it does not establish the effectiveness of this app or a particular adaptation. The reflection questions were created for the diary and are not a diagnostic scale.",
+        "noResultsLabel": "No results",
+        "notFoundLabel": "Card not found"
       },
       "categories": {
         "core": "Foundations",

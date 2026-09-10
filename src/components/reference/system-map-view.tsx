@@ -6,7 +6,8 @@ import {
   MAP_CHOICE,
   MAP_PILLARS,
 } from "@/lib/reference/system-map";
-import { vaultHref } from "@/lib/reference/vault";
+import { mapNodeId, vaultHref } from "@/lib/reference/vault";
+import { MapFocusRestore } from "./map-focus-restore";
 import styles from "./system-map.module.css";
 
 export async function SystemMapView() {
@@ -15,6 +16,7 @@ export async function SystemMapView() {
 
   return (
     <div className={styles.map}>
+      <MapFocusRestore />
       <header className={styles.header}>
         <h1>{t("title")}</h1>
         <span className={styles.eyebrow}>{t("eyebrow")}</span>
@@ -56,7 +58,11 @@ export async function SystemMapView() {
                 {pillar.model.map((node) => (
                   <Link
                     key={node.label}
-                    href={vaultHref(node.card)}
+                    id={mapNodeId(`${pillar.key}-model`, node.label)}
+                    href={vaultHref(
+                      node.card,
+                      mapNodeId(`${pillar.key}-model`, node.label),
+                    )}
                     className={styles.node}
                   >
                     {act(node.label)}
@@ -70,7 +76,11 @@ export async function SystemMapView() {
                 {pillar.stuck.map((node) => (
                   <Link
                     key={node.label}
-                    href={vaultHref(node.card)}
+                    id={mapNodeId(`${pillar.key}-stuck`, node.label)}
+                    href={vaultHref(
+                      node.card,
+                      mapNodeId(`${pillar.key}-stuck`, node.label),
+                    )}
                     className={`${styles.node} ${styles.stuck}`}
                   >
                     {act(node.label)}
@@ -84,7 +94,11 @@ export async function SystemMapView() {
                 {pillar.skills.map((node) => (
                   <Link
                     key={node.label}
-                    href={vaultHref(node.card)}
+                    id={mapNodeId(`${pillar.key}-skills`, node.label)}
+                    href={vaultHref(
+                      node.card,
+                      mapNodeId(`${pillar.key}-skills`, node.label),
+                    )}
                     className={styles.node}
                   >
                     {act(node.label)}
@@ -124,7 +138,8 @@ export async function SystemMapView() {
             →
           </span>
           <Link
-            href={vaultHref(MAP_CHOICE.point)}
+            id={mapNodeId("choice", "point")}
+            href={vaultHref(MAP_CHOICE.point, mapNodeId("choice", "point"))}
             className={styles.choicePoint}
           >
             {act("vault.Core map.2.t")}
@@ -132,10 +147,18 @@ export async function SystemMapView() {
           <span className={styles.arrow} aria-hidden="true">
             →
           </span>
-          <Link href={vaultHref(MAP_CHOICE.away)} className={styles.away}>
+          <Link
+            id={mapNodeId("choice", "away")}
+            href={vaultHref(MAP_CHOICE.away, mapNodeId("choice", "away"))}
+            className={styles.away}
+          >
             {t("away")}
           </Link>
-          <Link href={vaultHref(MAP_CHOICE.toward)} className={styles.toward}>
+          <Link
+            id={mapNodeId("choice", "toward")}
+            href={vaultHref(MAP_CHOICE.toward, mapNodeId("choice", "toward"))}
+            className={styles.toward}
+          >
             {t("toward")}
           </Link>
         </div>
@@ -172,7 +195,8 @@ export async function SystemMapView() {
           {MAP_BASEMENT.map((node) => (
             <Link
               key={node.label}
-              href={vaultHref(node.card)}
+              id={mapNodeId("foundations", node.label)}
+              href={vaultHref(node.card, mapNodeId("foundations", node.label))}
               className={`${styles.node} ${styles.basementNode}`}
             >
               {act(node.label)}
