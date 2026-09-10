@@ -5,6 +5,7 @@ import { filterEpisodes } from "@/lib/act/derive";
 import {
   clarifyEpisodeSchema,
   createEpisodeSchema,
+  updateEpisodeSchema,
 } from "@/lib/act/episode-input";
 import type {
   Checks,
@@ -53,6 +54,7 @@ type EpisodeRow = {
 };
 
 export type CreateEpisodeInput = z.input<typeof createEpisodeSchema>;
+export type UpdateEpisodeInput = z.input<typeof updateEpisodeSchema>;
 const episodeColumns = `
   id, user_id, day, band, dir, weight, hook, hook_type, situation,
   state, skill, value, move, workable, checks, value_id, value_snapshot,
@@ -207,6 +209,97 @@ export async function createEpisode(raw: CreateEpisodeInput): Promise<Episode> {
     if (!row) {
       throw new Error("Episode insert did not return a row");
     }
+    return mapEpisode(row);
+  });
+}
+
+/** Fetches one episode owned by the current user, or null if it does not exist. */
+export async function getEpisode(id: string): Promise<Episode | null> {
+  return withCurrentUserDb(async (client) => {
+    const result = await client.query<EpisodeRow>(
+      `SELECT ${episodeColumns} FROM episodes WHERE id = $1`,
+      [id],
+    );
+    const row = result.rows[0];
+    return row ? mapEpisode(row) : null;
+  });
+}
+
+const scalarState = (states: UpdateEpisodeInput["states"]) =>
+  states?.find((id) => !["unknown", "none-noticed"].includes(id)) ?? null;
+const scalarSkill = (skills: UpdateEpisodeInput["skills"]) =>
+  skills?.find((id) => !["unknown", "no-skill"].includes(id)) ?? null;
+
+/**
+ * Revises an owned episode in place (A19/T17): `created_at` is preserved, only
+ * `updated_at` is bumped, and no new record is created. The value snapshot is
+ * re-resolved only when `valueId` actually changes — an unchanged link keeps the
+ * frozen snapshot untouched (T16).
+ */
+export async function updateEpisode(raw: UpdateEpisodeInput): Promise<Episode> {
+  const input = updateEpisodeSchema.parse(raw);
+  return withCurrentUserDb(async (client) => {
+    const current = await client.query<EpisodeRow>(
+      `SELECT ${episodeColumns} FROM episodes WHERE id = $1`,
+      [input.id],
+    );
+    const existing = current.rows[0];
+    if (!existing) throw new Error("Episode is unavailable");
+    // Never rewrite legacy history in place; those rows go through clarification.
+    if (existing.schema_version !== 2)
+      throw new Error("Clarify this legacy entry before editing it");
+
+    // T16: only an explicit relink touches the snapshot; otherwise it is frozen.
+    const relink =
+      input.valueId !== undefined && input.valueId !== existing.value_id;
+    const snapshot = relink
+      ? input.valueId
+        ? await resolveOwnedActiveSnapshot(client, input.valueId)
+        : null
+      : existing.value_snapshot;
+    const valueId = relink ? (snapshot?.valueId ?? null) : existing.value_id;
+    const value = input.value?.trim() ? input.value : (snapshot?.title ?? "");
+
+    const result = await client.query<EpisodeRow>(
+      `UPDATE episodes SET
+         day = $2::date, band = $3, dir = $4, hook = $5, hook_type = $6,
+         situation = $7, state = $8, skill = $9, value = $10, move = $11,
+         workable = $12, checks = $13::jsonb, value_id = $14, value_snapshot = $15::jsonb,
+         behavior_status = $16, consequence_status = $17, immediate_outcome = $18,
+         later_consequences = $19, intended_function = $20, next_experiment = $21,
+         interpretation = $22, states = $23::text[], skills = $24::text[],
+         updated_at = now()
+       WHERE id = $1
+       RETURNING ${episodeColumns}`,
+      [
+        input.id,
+        input.day,
+        input.band,
+        input.dir,
+        input.hook,
+        input.hookType,
+        input.situation ?? "",
+        scalarState(input.states),
+        scalarSkill(input.skills),
+        value,
+        input.move ?? "",
+        input.workable ?? "",
+        JSON.stringify(input.checks ?? {}),
+        valueId,
+        snapshot ? JSON.stringify(snapshot) : null,
+        input.behaviorStatus,
+        input.consequenceStatus,
+        input.immediateOutcome,
+        input.laterConsequences,
+        input.intendedFunction,
+        input.nextExperiment,
+        input.interpretation,
+        input.states,
+        input.skills,
+      ],
+    );
+    const row = result.rows[0];
+    if (!row) throw new Error("Episode is unavailable");
     return mapEpisode(row);
   });
 }

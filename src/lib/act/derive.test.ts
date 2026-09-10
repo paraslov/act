@@ -348,6 +348,8 @@ describe("tallies", () => {
       { id: "thought", count: 1, share: 0.25 },
       { id: "memory", count: 1, share: 0.25 },
       { id: "feeling", count: 0, share: 0 },
+      { id: "sensation", count: 0, share: 0 },
+      { id: "other", count: 0, share: 0 },
     ]);
     expect(hookTypeTallies([...episodes].reverse())).toEqual(
       hookTypeTallies(episodes),
@@ -360,6 +362,8 @@ describe("tallies", () => {
       { id: "feeling", count: 0, share: 0 },
       { id: "urge", count: 0, share: 0 },
       { id: "memory", count: 0, share: 0 },
+      { id: "sensation", count: 0, share: 0 },
+      { id: "other", count: 0, share: 0 },
     ]);
   });
 });

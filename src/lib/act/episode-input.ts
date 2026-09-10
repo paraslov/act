@@ -31,69 +31,92 @@ const skills = z
         items.length === 1),
   );
 
+const episodeFields = {
+  day: z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/)
+    .refine((day) => {
+      const parsed = new Date(`${day}T00:00:00Z`);
+      return (
+        Number.isFinite(parsed.getTime()) &&
+        parsed.toISOString().slice(0, 10) === day
+      );
+    })
+    .optional()
+    .transform((day) => day ?? todayId()),
+  // TODO A15 / Phase 6: suggest the band in the user's configured time zone.
+  band: z
+    .number()
+    .int()
+    .min(0)
+    .max(7)
+    .optional()
+    .transform((band) => band ?? Math.floor(new Date().getUTCHours() / 3)),
+  dir: directionSchema.optional().default("unknown"),
+  behaviorStatus: behaviorSchema.optional().default("not-described"),
+  hook: optionalText,
+  hookType: z
+    .enum(HOOK_TYPES.map(({ id }) => id))
+    .nullable()
+    .optional()
+    .default(null),
+  situation: optionalText,
+  states: patterns.optional().default([]),
+  skills: skills.optional().default([]),
+  value: optionalText,
+  move: optionalText,
+  workable: optionalText,
+  immediateOutcome: optionalText,
+  laterConsequences: optionalText,
+  consequenceStatus: z
+    .enum(["observed", "expected", "unknown"])
+    .optional()
+    .default("unknown"),
+  intendedFunction: optionalText,
+  nextExperiment: optionalText,
+  interpretation: optionalText,
+  checks: checksSchema.optional().default({}),
+  valueId: z.uuid().nullable().optional(),
+} as const;
+
+/** Server-side gate shared by create and update: T01 (some content) and T02 (acted needs an action). */
+function refineContent(
+  value: {
+    hook?: string;
+    situation?: string;
+    move?: string;
+    behaviorStatus?: string;
+  },
+  ctx: z.RefinementCtx,
+) {
+  if (!value.hook && !value.situation && !value.move)
+    ctx.addIssue({
+      code: "custom",
+      path: ["hook"],
+      message: "Describe the situation, experience, or action",
+    });
+  if (value.behaviorStatus === "acted" && !value.move)
+    ctx.addIssue({
+      code: "custom",
+      path: ["move"],
+      message: "Describe the completed action",
+    });
+}
+
 export const createEpisodeSchema = z
-  .object({
-    day: z
-      .string()
-      .regex(/^\d{4}-\d{2}-\d{2}$/)
-      .refine((day) => {
-        const parsed = new Date(`${day}T00:00:00Z`);
-        return (
-          Number.isFinite(parsed.getTime()) &&
-          parsed.toISOString().slice(0, 10) === day
-        );
-      })
-      .optional()
-      .transform((day) => day ?? todayId()),
-    // TODO A15 / Phase 6: suggest the band in the user's configured time zone.
-    band: z
-      .number()
-      .int()
-      .min(0)
-      .max(7)
-      .optional()
-      .transform((band) => band ?? Math.floor(new Date().getUTCHours() / 3)),
-    dir: directionSchema.optional().default("unknown"),
-    behaviorStatus: behaviorSchema.optional().default("not-described"),
-    hook: optionalText,
-    hookType: z
-      .enum(HOOK_TYPES.map(({ id }) => id))
-      .nullable()
-      .optional()
-      .default(null),
-    situation: optionalText,
-    states: patterns.optional().default([]),
-    skills: skills.optional().default([]),
-    value: optionalText,
-    move: optionalText,
-    workable: optionalText,
-    immediateOutcome: optionalText,
-    laterConsequences: optionalText,
-    consequenceStatus: z
-      .enum(["observed", "expected", "unknown"])
-      .optional()
-      .default("unknown"),
-    intendedFunction: optionalText,
-    nextExperiment: optionalText,
-    interpretation: optionalText,
-    checks: checksSchema.optional().default({}),
-    valueId: z.uuid().nullable().optional(),
-  })
+  .object(episodeFields)
   .strict()
-  .superRefine((value, ctx) => {
-    if (!value.hook && !value.situation && !value.move)
-      ctx.addIssue({
-        code: "custom",
-        path: ["hook"],
-        message: "Describe the situation, experience, or action",
-      });
-    if (value.behaviorStatus === "acted" && !value.move)
-      ctx.addIssue({
-        code: "custom",
-        path: ["move"],
-        message: "Describe the completed action",
-      });
-  });
+  .superRefine(refineContent);
+
+/**
+ * Revising an existing episode (A19/T17). Same fields as create plus the id;
+ * `createdAt` is preserved and no new action is created (see updateEpisode).
+ * `valueId` only re-resolves the snapshot when the link actually changes (T16).
+ */
+export const updateEpisodeSchema = z
+  .object({ id: z.uuid(), ...episodeFields })
+  .strict()
+  .superRefine(refineContent);
 
 /** Only these explicit clarifications change; other historical fields stay intact. */
 export const clarifyEpisodeSchema = z

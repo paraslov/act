@@ -446,20 +446,6 @@
         "label": "Committed Action"
       }
     },
-    "hookTypes": {
-      "thought": {
-        "label": "Thought"
-      },
-      "feeling": {
-        "label": "Feeling"
-      },
-      "urge": {
-        "label": "Urge"
-      },
-      "memory": {
-        "label": "Memory"
-      }
-    },
     "domains": {
       "relationships": {
         "label": "Relationships",

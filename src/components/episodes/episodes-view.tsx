@@ -157,6 +157,7 @@ function FilterBar({
 }) {
   const t = useTranslations("episodes.filters");
   const act = useTranslations("act");
+  const exp = useTranslations("actV2.ui.experienceTypes");
 
   function patch(next: Partial<ViewFilters>, defer?: boolean) {
     onChange({ ...filters, ...next }, defer);
@@ -187,7 +188,7 @@ function FilterBar({
           <SelectItem value="all">{t("anyHookType")}</SelectItem>
           {HOOK_TYPES.map((type) => (
             <SelectItem key={type.id} value={type.id}>
-              {act(`hookTypes.${type.id}.label`)}
+              {exp(type.id)}
             </SelectItem>
           ))}
         </SelectContent>

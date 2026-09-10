@@ -55,7 +55,6 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
   const checks = await getTranslations("actV2.checks");
   const cards = await getTranslations("actV2.cards");
   const old = await getTranslations("progress");
-  const act = await getTranslations("act");
   const locale = await getLocale();
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
   const split = towardAwaySplit(episodes);
@@ -344,7 +343,7 @@ export async function ProgressView({ episodes }: { episodes: Episode[] }) {
             <ul className="space-y-2">
               {hookTypes.map((hook) => (
                 <li key={hook.id} className="flex justify-between text-sm">
-                  <span>{act(`hookTypes.${hook.id}.label`)}</span>
+                  <span>{t(`experienceTypes.${hook.id}`)}</span>
                   <span>
                     {hook.count} / {episodes.length}
                   </span>

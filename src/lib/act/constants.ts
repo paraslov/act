@@ -41,12 +41,17 @@ export const SKILLS = [
   { id: "commit", ...en.act.skills.commit },
 ] as const;
 
-/** The kind of thing that hooked attention. */
+/**
+ * The kind of experience noticed. A10 adds bodily sensation and other/several;
+ * labels are the six `actV2.ui.experienceTypes` leaves the design draws.
+ */
 export const HOOK_TYPES = [
-  { id: "thought", ...en.act.hookTypes.thought },
-  { id: "feeling", ...en.act.hookTypes.feeling },
-  { id: "urge", ...en.act.hookTypes.urge },
-  { id: "memory", ...en.act.hookTypes.memory },
+  { id: "thought", label: en.actV2.ui.experienceTypes.thought },
+  { id: "feeling", label: en.actV2.ui.experienceTypes.feeling },
+  { id: "urge", label: en.actV2.ui.experienceTypes.urge },
+  { id: "memory", label: en.actV2.ui.experienceTypes.memory },
+  { id: "sensation", label: en.actV2.ui.experienceTypes.sensation },
+  { id: "other", label: en.actV2.ui.experienceTypes.other },
 ] as const;
 
 /**

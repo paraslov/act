@@ -30,8 +30,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { ValuePicker } from "@/components/values/value-picker";
-import { BANDS, HOOK_TYPES, SKILLS, STATES } from "@/lib/act/constants";
+import { BANDS, HOOK_TYPES } from "@/lib/act/constants";
 import type {
   BehaviorStatus,
   Checks,
@@ -39,22 +38,10 @@ import type {
   EpisodeDir,
   PersonalValue,
 } from "@/lib/act/types";
-import { SKILL_CARD_IDS, STATE_CARD_IDS } from "@/lib/reference/library";
 import { cn } from "@/lib/utils";
 
 type FormState = Required<
-  Pick<
-    CreateEpisodeActionInput,
-    | "day"
-    | "band"
-    | "hook"
-    | "situation"
-    | "move"
-    | "value"
-    | "workable"
-    | "states"
-    | "skills"
-  >
+  Pick<CreateEpisodeActionInput, "day" | "band" | "hook" | "situation" | "move">
 > & {
   dir: EpisodeDir;
   behaviorStatus: BehaviorStatus;
@@ -83,14 +70,10 @@ function initialForm(
     hook: "",
     situation: "",
     move: "",
-    value: "",
-    workable: "",
     hookType: null,
     dir: "unknown",
     behaviorStatus: "not-described",
     checks: {},
-    states: [],
-    skills: [],
   };
 }
 
@@ -106,14 +89,11 @@ export function NewEpisodeDialogProvider({
   children: ReactNode;
 }) {
   const t = useTranslations("actV2.ui");
-  const cards = useTranslations("actV2.cards");
   const old = useTranslations("episodeModal");
-  const act = useTranslations("act");
   const router = useRouter();
   const focusRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
   const [legacy, setLegacy] = useState<Episode | null>(null);
-  const [valuePicked, setValuePicked] = useState(false);
   const suggestionFor = useCallback(
     (day: string) => {
       const id = morningValues[day];
@@ -128,20 +108,12 @@ export function NewEpisodeDialogProvider({
   const [isPending, startTransition] = useTransition();
   const openEpisodeDialog = useCallback(
     (day = today) => {
-      setForm((current) =>
-        legacy
-          ? initialForm(day, suggestionFor(day))
-          : {
-              ...current,
-              day,
-              valueId: valuePicked ? current.valueId : suggestionFor(day),
-            },
-      );
+      setForm(initialForm(day, suggestionFor(day)));
       setLegacy(null);
       setSaveError(false);
       setOpen(true);
     },
-    [today, suggestionFor, legacy, valuePicked],
+    [today, suggestionFor],
   );
   const clarifyEpisode = useCallback((episode: Episode) => {
     setLegacy(episode);
@@ -150,8 +122,6 @@ export function NewEpisodeDialogProvider({
       hook: episode.hook,
       situation: episode.situation,
       move: episode.move === "—" ? "" : episode.move,
-      value: episode.value,
-      workable: episode.workable,
       hookType: episode.hookType,
       // Legacy defaults are never preselected as a present-day interpretation.
       dir: "unknown",
@@ -171,12 +141,15 @@ export function NewEpisodeDialogProvider({
   const canSave =
     !!(form.hook.trim() || form.situation.trim() || form.move.trim()) &&
     (form.behaviorStatus !== "acted" || !!form.move.trim());
-  function save() {
+
+  // `explore` persists the brief note first (T01 gate), then opens the expanded
+  // reflection page for the saved record; plain save closes the dialog.
+  function save(explore = false) {
     if (!canSave || isPending) return;
     setSaveError(false);
     startTransition(async () => {
       try {
-        if (legacy)
+        if (legacy) {
           await clarifyEpisodeAction({
             id: legacy.id,
             dir: form.dir,
@@ -184,12 +157,25 @@ export function NewEpisodeDialogProvider({
             move: form.move,
             checks: form.checks,
           });
-        else await createEpisodeAction(form);
-        setLegacy(null);
-        setValuePicked(false);
+          setLegacy(null);
+          setForm(initialForm(today, suggestionFor(today), form.band));
+          setOpen(false);
+          router.refresh();
+          return;
+        }
+        const episode = await createEpisodeAction({
+          day: form.day,
+          band: form.band,
+          hook: form.hook,
+          hookType: form.hookType,
+          situation: form.situation,
+          move: form.move,
+          valueId: form.valueId,
+        });
         setForm(initialForm(today, suggestionFor(today), form.band));
         setOpen(false);
-        router.refresh();
+        if (explore) router.push(`/episodes/${episode.id}/explore`);
+        else router.refresh();
       } catch {
         setSaveError(true);
       }
@@ -244,15 +230,7 @@ export function NewEpisodeDialogProvider({
                     type="date"
                     value={form.day}
                     max={today}
-                    onChange={(e) =>
-                      setForm((current) => ({
-                        ...current,
-                        day: e.target.value,
-                        valueId: valuePicked
-                          ? current.valueId
-                          : suggestionFor(e.target.value),
-                      }))
-                    }
+                    onChange={(e) => setField("day", e.target.value)}
                   />
                 </label>
                 <div className="flex flex-wrap gap-1">
@@ -305,7 +283,7 @@ export function NewEpisodeDialogProvider({
                         form.hookType === id && "bg-muted",
                       )}
                     >
-                      {act(`hookTypes.${id}.label`)}
+                      {t(`experienceTypes.${id}`)}
                     </button>
                   ))}
                 </div>
@@ -319,175 +297,54 @@ export function NewEpisodeDialogProvider({
                   onChange={(e) => setField("move", e.target.value)}
                 />
               </label>
-              <ActionInterpretation
-                dir={form.dir}
-                behaviorStatus={form.behaviorStatus}
-                onDirection={(dir) => setField("dir", dir)}
-                onBehavior={(status) => setField("behaviorStatus", status)}
-              />
-              {(form.behaviorStatus === "not-described" ||
-                !form.move.trim()) && (
-                <p className="rounded-input border border-dashed p-3 text-xs text-muted-foreground">
-                  {t("episode.noAction")}
-                </p>
-              )}
-              {form.behaviorStatus === "acted" && !form.move.trim() && (
-                <p role="alert" className="text-sm">
-                  {t("episode.actedError")}
-                </p>
-              )}
-              {!legacy && (
+              {legacy && (
                 <>
-                  <fieldset className="space-y-2">
-                    <legend className="text-sm">
-                      {t("rpg.statusEffects.label")} · {t("episode.patterns")}
-                    </legend>
-                    <p className="text-xs text-muted-foreground">
-                      {t("episode.patternsHelp")}
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        ...STATES.map(({ id }) => id),
-                        "unknown",
-                        "none-noticed",
-                      ].map((id) => {
-                        const option = id as FormState["states"][number];
-                        const absence =
-                          id === "unknown" || id === "none-noticed";
-                        return (
-                          <label
-                            key={id}
-                            className={cn(
-                              "flex items-center gap-2 rounded-chip border p-2 text-xs",
-                              absence && "border-dashed",
-                            )}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={form.states.includes(option)}
-                              onChange={() =>
-                                setField(
-                                  "states",
-                                  form.states.includes(option)
-                                    ? form.states.filter((v) => v !== option)
-                                    : absence
-                                      ? [option]
-                                      : [
-                                          ...form.states.filter(
-                                            (v) =>
-                                              v !== "unknown" &&
-                                              v !== "none-noticed",
-                                          ),
-                                          option,
-                                        ],
-                                )
-                              }
-                            />
-                            {absence
-                              ? t(
-                                  id === "unknown"
-                                    ? "selection.unknown"
-                                    : "selection.noneNoticed",
-                                )
-                              : cards(
-                                  `${STATE_CARD_IDS[id as keyof typeof STATE_CARD_IDS]}.title`,
-                                )}
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
-                  <fieldset className="space-y-2">
-                    <legend className="text-sm">{t("episode.skills")}</legend>
-                    <div className="flex flex-wrap gap-2">
-                      {[
-                        ...SKILLS.map(({ id }) => id),
-                        "unknown",
-                        "no-skill",
-                      ].map((id) => {
-                        const option = id as FormState["skills"][number];
-                        const absence = id === "unknown" || id === "no-skill";
-                        return (
-                          <label
-                            key={id}
-                            className={cn(
-                              "flex items-center gap-2 rounded-chip border p-2 text-xs",
-                              absence && "border-dashed",
-                            )}
-                          >
-                            <input
-                              type="checkbox"
-                              checked={form.skills.includes(option)}
-                              onChange={() =>
-                                setField(
-                                  "skills",
-                                  form.skills.includes(option)
-                                    ? form.skills.filter((v) => v !== option)
-                                    : absence
-                                      ? [option]
-                                      : [
-                                          ...form.skills.filter(
-                                            (v) =>
-                                              v !== "unknown" &&
-                                              v !== "no-skill",
-                                          ),
-                                          option,
-                                        ],
-                                )
-                              }
-                            />
-                            {absence
-                              ? t(
-                                  id === "unknown"
-                                    ? "selection.unknown"
-                                    : "selection.noSkill",
-                                )
-                              : id === "commit"
-                                ? cards(`${SKILL_CARD_IDS.commit}.title`)
-                                : act(`skills.${id}.label`)}
-                          </label>
-                        );
-                      })}
-                    </div>
-                  </fieldset>
-                  <label htmlFor="episode-value" className="block text-sm">
-                    {t("episode.value")}
-                    <Input
-                      id="episode-value"
-                      value={form.value}
-                      onChange={(e) => setField("value", e.target.value)}
-                    />
-                  </label>
-                  <ValuePicker
-                    values={values}
-                    value={form.valueId}
-                    onChange={(id) => {
-                      setValuePicked(true);
-                      setField("valueId", id);
-                    }}
-                    label={old("valuePickerLabel")}
-                    suggested={!valuePicked && !!form.valueId}
+                  <ActionInterpretation
+                    dir={form.dir}
+                    behaviorStatus={form.behaviorStatus}
+                    onDirection={(dir) => setField("dir", dir)}
+                    onBehavior={(status) => setField("behaviorStatus", status)}
                   />
-                  <label htmlFor="episode-workable" className="block text-sm">
-                    {t("legacy.reflection")}
-                    <Input
-                      id="episode-workable"
-                      value={form.workable}
-                      onChange={(e) => setField("workable", e.target.value)}
-                    />
-                  </label>
+                  {(form.behaviorStatus === "not-described" ||
+                    !form.move.trim()) && (
+                    <p className="rounded-input border border-dashed p-3 text-xs text-muted-foreground">
+                      {t("episode.noAction")}
+                    </p>
+                  )}
+                  {form.behaviorStatus === "acted" && !form.move.trim() && (
+                    <p role="alert" className="text-sm">
+                      {t("episode.actedError")}
+                    </p>
+                  )}
+                  <ReflectionFields
+                    checks={form.checks}
+                    onChange={(checks) => setField("checks", checks)}
+                  />
                 </>
               )}
-              <ReflectionFields
-                checks={form.checks}
-                onChange={(checks) => setField("checks", checks)}
-              />
               <p className="text-xs text-muted-foreground">
                 {t("episode.emptyError")}
               </p>
-              <Button type="submit" disabled={!canSave} className="w-full">
-                {isPending ? old("saving") : t("common.save")}
-              </Button>
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="submit"
+                  disabled={!canSave}
+                  className="flex-1 basis-40"
+                >
+                  {isPending ? old("saving") : t("common.save")}
+                </Button>
+                {!legacy && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    disabled={!canSave}
+                    onClick={() => save(true)}
+                    className="flex-1 basis-40"
+                  >
+                    {t("episode.expand")}
+                  </Button>
+                )}
+              </div>
             </fieldset>
           </form>
         </DialogContent>

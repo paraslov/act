@@ -446,20 +446,6 @@
         "label": "Committed Action · Действовать"
       }
     },
-    "hookTypes": {
-      "thought": {
-        "label": "Мысль"
-      },
-      "feeling": {
-        "label": "Чувство"
-      },
-      "urge": {
-        "label": "Порыв"
-      },
-      "memory": {
-        "label": "Воспоминание"
-      }
-    },
     "domains": {
       "relationships": {
         "label": "Отношения",

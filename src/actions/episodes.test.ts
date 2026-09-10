@@ -1,13 +1,24 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import type { Episode, PersonalValueSnapshot } from "@/lib/act/types";
-import { clarifyEpisode, createEpisode } from "@/lib/db/episodes";
-import { clarifyEpisodeAction, createEpisodeAction } from "./episodes";
+import {
+  clarifyEpisode,
+  createEpisode,
+  updateEpisode,
+} from "@/lib/db/episodes";
+import {
+  clarifyEpisodeAction,
+  createEpisodeAction,
+  updateEpisodeAction,
+} from "./episodes";
 
 vi.mock("next/cache", () => ({ revalidatePath: vi.fn() }));
 vi.mock("@/lib/db/episodes", () => ({
   createEpisode: vi.fn(),
   clarifyEpisode: vi.fn(),
+  updateEpisode: vi.fn(),
 }));
+
+const anId = "b30b4967-71aa-48d1-95b9-aaab76e826ae";
 
 describe("createEpisodeAction integrity", () => {
   beforeEach(() => vi.resetAllMocks());
@@ -229,5 +240,41 @@ describe("legacy clarification action", () => {
       clarifyEpisodeAction({ ...input, behaviorStatus: "acted" }),
     ).rejects.toThrow();
     expect(clarifyEpisode).not.toHaveBeenCalled();
+  });
+});
+
+describe("updateEpisodeAction (A19/T17)", () => {
+  beforeEach(() => vi.resetAllMocks());
+  it("revises an existing entry, carrying id and later consequences through", async () => {
+    await updateEpisodeAction({
+      id: anId,
+      situation: "A hard call",
+      dir: "toward",
+      laterConsequences: "Slept better",
+      consequenceStatus: "observed",
+    });
+    expect(updateEpisode).toHaveBeenCalledWith(
+      expect.objectContaining({
+        id: anId,
+        dir: "toward",
+        laterConsequences: "Slept better",
+        consequenceStatus: "observed",
+      }),
+    );
+    expect(createEpisode).not.toHaveBeenCalled();
+  });
+  it("requires the id and at least one described field", async () => {
+    await expect(
+      updateEpisodeAction({ situation: "x" } as never),
+    ).rejects.toThrow();
+    await expect(updateEpisodeAction({ id: anId } as never)).rejects.toThrow();
+    await expect(
+      updateEpisodeAction({
+        id: anId,
+        hook: "Thought",
+        behaviorStatus: "acted",
+      }),
+    ).rejects.toThrow();
+    expect(updateEpisode).not.toHaveBeenCalled();
   });
 });

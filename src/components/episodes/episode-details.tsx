@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useNewEpisodeDialog } from "@/components/episodes/new-episode-dialog";
 import { AXES } from "@/lib/act/constants";
@@ -67,7 +68,7 @@ export function EpisodeDetails({ episode }: { episode: Episode }) {
       <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
         {episode.hookType && (
           <span className="rounded-chip border p-2">
-            {act(`hookTypes.${episode.hookType}.label`)}
+            {t(`ui.experienceTypes.${episode.hookType}`)}
           </span>
         )}
         {episode.states
@@ -122,6 +123,27 @@ export function EpisodeDetails({ episode }: { episode: Episode }) {
           {t("ui.legacy.reflection")}: {episode.workable}
         </p>
       )}
+      {(
+        [
+          ["intendedFunction", "ui.episode.intendedFunction"],
+          ["immediateOutcome", "ui.episode.immediate"],
+          ["laterConsequences", "ui.episode.later"],
+          ["interpretation", "ui.episode.direction"],
+          ["nextExperiment", "ui.episode.next"],
+        ] as const
+      ).map(([key, label]) =>
+        episode[key] ? (
+          <p key={key} className="text-sm">
+            <span className="mr-2 text-muted-foreground">{t(label)}</span>
+            {episode[key]}
+            {key === "laterConsequences" && (
+              <span className="ml-2 rounded-chip border px-2 py-0.5 font-mono text-[10px] uppercase">
+                {t(`ui.consequenceStatus.${episode.consequenceStatus}`)}
+              </span>
+            )}
+          </p>
+        ) : null,
+      )}
       <div className="flex flex-wrap gap-2">
         {AXES.map(({ id }) => {
           const value = episode.schemaVersion === 1 ? null : episode.checks[id];
@@ -175,6 +197,14 @@ export function EpisodeDetails({ episode }: { episode: Episode }) {
             );
           })}
         </details>
+      )}
+      {episode.schemaVersion === 2 && (
+        <Link
+          href={`/episodes/${episode.id}/explore`}
+          className="inline-block font-mono text-xs underline underline-offset-4 hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
+        >
+          {t("ui.common.edit")}
+        </Link>
       )}
     </div>
   );
