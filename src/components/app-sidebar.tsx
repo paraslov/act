@@ -165,7 +165,7 @@ export function AppSidebar({
         </p>
       </div>
 
-      <div className="order-2 flex min-w-0 items-center justify-end gap-1.5 min-[900px]:order-5 min-[900px]:mt-auto min-[900px]:justify-start min-[900px]:border-t min-[900px]:pt-4">
+      <div className="order-2 flex min-w-0 flex-wrap items-center justify-end gap-1.5 min-[900px]:order-5 min-[900px]:mt-auto min-[900px]:justify-start min-[900px]:border-t min-[900px]:pt-4">
         <span className="mr-auto hidden min-w-0 truncate text-xs text-muted-foreground min-[900px]:block">
           {user.email}
         </span>

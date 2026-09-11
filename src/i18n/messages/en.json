@@ -130,7 +130,7 @@
     "evening": {
       "title": "Evening",
       "hook": "Where it caught me",
-      "away": "Away move",
+      "away": "Action and consequences",
       "flex": "Flexibility showed up",
       "next": "Next time"
     },
@@ -311,7 +311,7 @@
       "hook": "Hook",
       "hookTypes": "thought · feeling · urge · memory",
       "choiceDescription": "The hook doesn’t have to leave first. Each direction is read against workability — workable toward what, at what price. Both get logged in <episodes>Episodes</episodes>.",
-      "operations": "The five operations · <loop>the loop</loop>",
+      "operations": "Six steps · <loop>the loop</loop>",
       "basementDescription": "Worth knowing once, not carrying around daily. It explains where fusion, shoulds and self-stories get their force.",
       "evidence": "Background: flexibility as a construct and the six processes are described across the ACT literature, and the processes overlap empirically rather than acting as separate mechanisms. Choice Point and the 0–2 checks are teaching devices and personal heuristics written for this app. Full notes in the <vault>Library</vault>."
     }
@@ -969,10 +969,10 @@
         "returningHelp": "This describes recording activity, not the quality of your life or practice. A gap does not erase earlier entries.",
         "hideReturning": "Hide this summary",
         "periods": {
-          "label": "Period",
-          "all": "All time",
           "30": "Last 30 days",
-          "90": "Last 90 days"
+          "90": "Last 90 days",
+          "label": "Period",
+          "all": "All time"
         }
       },
       "legacy": {

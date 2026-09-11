@@ -308,7 +308,9 @@ export function ExploreEpisodeForm({
           </fieldset>
 
           <fieldset className="space-y-2">
-            <legend className="text-sm">{t("episode.patterns")}</legend>
+            <legend className="text-sm">
+              {t("rpg.statusEffects.label")} · {t("episode.patterns")}
+            </legend>
             <p className="text-xs text-muted-foreground">
               {t("episode.patternsHelp")}
             </p>

@@ -17,6 +17,7 @@ export async function SystemMapView() {
   const axes = await getTranslations("act.axes");
   const loop = await getTranslations("actV2.ui.loop");
   const masterStat = await getTranslations("actV2.ui.rpg.masterStat");
+  const pillars = await getTranslations("act.pillars");
 
   return (
     <div className={styles.map}>
@@ -55,7 +56,7 @@ export async function SystemMapView() {
             >
               <header>
                 <p className={`${styles.micro} ${styles.pillarKey}`}>
-                  {pillar.key}
+                  {pillars(`${pillar.key}.name`)}
                 </p>
                 <h2>{map(key)}</h2>
                 <p className={styles.question}>{map(`${key}Question`)}</p>

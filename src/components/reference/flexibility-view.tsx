@@ -62,7 +62,7 @@ export async function FlexibilityView() {
                 pillarColors[pillar.key],
               )}
             >
-              {pillar.key}
+              {act(`pillars.${pillar.key}.name`)}
             </p>
             <h2 className="font-serif text-[22px] tracking-[-0.01em]">
               {act(`pillars.${pillar.key}.name`)}

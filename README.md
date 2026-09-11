@@ -106,7 +106,11 @@ as `DATABASE_URL`, plus `AUTH_THROTTLE_SECRET`; do not expose
 
 ## CI and deployment
 
-Use Node.js 24 (`.node-version`) and the pinned pnpm version in `package.json`.
+Use Node.js 24.15.0 (`.node-version`, also read by CI) and the pinned pnpm version
+in `package.json`. Verify both `node --version` and `pnpm exec node --version`
+before running checks: a package-manager shim can select a different Node version.
+If using asdf, select the installed Node 24.15.0 version in your shell before
+running pnpm; `.node-version` requires asdf's legacy version-file support.
 Run `pnpm check` for lint, type checking, and unit tests; `pnpm build` verifies
 production compilation. GitHub Actions also validates migrations and PostgreSQL
 row-level security in an isolated database.
