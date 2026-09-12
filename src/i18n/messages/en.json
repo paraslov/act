@@ -899,7 +899,15 @@
         "directionHelp": "The same action can serve different functions. Consider the situation, its consequences, and what matters to you.",
         "patternsHelp": "These are tentative descriptions, not diagnoses. You may choose several or leave this open.",
         "emptyError": "Add something about the situation, your experience, or an action before saving.",
-        "actedError": "Describe the action, or keep this entry as a note or intention."
+        "actedError": "Describe the action, or keep this entry as a note or intention.",
+        "eyebrow": "New episode",
+        "when": "When",
+        "whenPrompt": "Pick a rough time of day",
+        "situationHint": "The situation, as an observer could have seen it.",
+        "experienceHint": "Thoughts, feelings, urges, sensations — inside you, not in the room.",
+        "actionHint": "The behaviour itself, without a verdict on it.",
+        "directionQuestion": "Which way did it go?",
+        "helperFilled": "Saved as a plain record. You can explore it whenever you like."
       },
       "direction": {
         "toward": {
@@ -1084,6 +1092,96 @@
           "empty": "No entries in this period yet. You can return when there is a moment you want to explore.",
           "caption": "A reflection on recorded moments, not a pass/fail test or a measure of your worth. Rest, boundaries, and changing course can be Toward Moves too."
         }
+      },
+      "choicePoint": {
+        "caption": "Choice point",
+        "none": "Neither side is the moral one. Pick one and the beam tips, so the trade-off becomes visible.",
+        "toward": "Toward recorded. The discomfort did not have to drop first — that is the whole test.",
+        "away": "Away recorded, without a verdict. The useful question is not “was that bad?” but “what was it working toward?”",
+        "mixed": {
+          "modal": "Mixed recorded. The beam stays level: both directions were served and both cost something.",
+          "explore": "Mixed recorded. The beam stays level: both directions were served and cost something."
+        },
+        "unknown": {
+          "modal": "Left open. Nothing is recorded as a direction until you decide.",
+          "explore": "Left open. The beam stays level until you decide."
+        }
+      },
+      "explore": {
+        "episodeEyebrow": "Episode",
+        "intro": "Your brief note is already saved. Work through as much as is useful — every block can stay empty, and you can save at any point.",
+        "nav": {
+          "happened": "What happened",
+          "respond": "How did I respond",
+          "mattered": "What mattered",
+          "workability": "Workability",
+          "next": "What next"
+        },
+        "pillar": {
+          "awareness": "Awareness",
+          "openness": "Openness & choice",
+          "values": "Values",
+          "workability": "Workability",
+          "committed": "Committed action"
+        },
+        "block": {
+          "happened": "What happened?",
+          "respond": "How did I respond?",
+          "mattered": "What mattered?",
+          "workable": "Was it workable?",
+          "next": "What next?"
+        },
+        "situationHint": "The outside situation — where you were, who was there, what was going on.",
+        "noticeHint": "Thoughts, feelings, bodily sensations, urges — the inside of the moment.",
+        "kindOfExperience": "Kind of experience",
+        "open": "Open",
+        "close": "Close",
+        "nothingSelected": "Nothing selected — optional",
+        "checksNone": "Five questions, none answered — optional",
+        "checksSummary": "{answered} answered · {unrated} not rated",
+        "patternsIntro": "These are tentative descriptions, not diagnoses. You may choose several or leave this open. The grouping is a map of the ACT pillars, not a required pairing with a skill.",
+        "skillsIntro": "Grouped by the same pillars so they are easy to find. A skill is never required by a pattern, and choosing one never sets the direction of the episode.",
+        "workabilityIntro": "Workability connects the response to what followed and to what mattered. It is not a rating of how well you did.",
+        "laterHint": "An expectation is kept separate from something you observed.",
+        "responseUnderstanding": "What do I understand about this response now?",
+        "linkValue": "Or link one of your values",
+        "valueHint": "A connected value is a reference point for the next block. It is not a requirement, and nothing is ranked.",
+        "checksTitle": "Optional reflection questions",
+        "footer": "You can save with any block left empty and return when more becomes clear."
+      },
+      "patterns": {
+        "fusion": {
+          "label": "Cognitive Fusion",
+          "desc": "Not “do I believe it 100%?” but how much this thought was steering behaviour right then."
+        },
+        "avoidance": {
+          "label": "Experiential Avoidance",
+          "desc": "Avoidance isn't automatically bad. The question is what it did for you here, and at what price."
+        },
+        "autopilot": {
+          "label": "Autopilot / past-future pull",
+          "desc": "Reacting before any choice was made; attention living in rehearsal or replay."
+        },
+        "selfstory": {
+          "label": "Conceptualized Self",
+          "desc": "“I'm the kind of person who…” — being collapsed into the content of a story."
+        },
+        "drift": {
+          "label": "Values drift",
+          "desc": "The direction went out of sight, so any action looked equally fine."
+        },
+        "stuck": {
+          "label": "Inaction or impulsive action",
+          "desc": "Either frozen or fired off — the gap between hook and behaviour vanished."
+        }
+      },
+      "skillLabels": {
+        "notice": "Notice",
+        "defuse": "Defuse",
+        "accept": "Accept / Make room",
+        "anchor": "Anchor / Return",
+        "orient": "Orient to values",
+        "commit": "A Workable Next Step"
       }
     },
     "checks": {
