@@ -61,6 +61,47 @@ export function ReflectionFields({
   );
 }
 
+export function BehaviorStatusPicker({
+  behaviorStatus,
+  onBehavior,
+  withLegend = true,
+}: {
+  behaviorStatus: BehaviorStatus;
+  onBehavior: (status: BehaviorStatus) => void;
+  withLegend?: boolean;
+}) {
+  const t = useTranslations("actV2.ui");
+  return (
+    <fieldset className="space-y-2">
+      {withLegend && (
+        <legend className="mb-2 text-sm font-medium">
+          {t("episode.action")}
+        </legend>
+      )}
+      <div className="flex flex-wrap gap-2">
+        {(["acted", "planned", "not-described"] as const).map((status) => (
+          <label
+            key={status}
+            className={cn(
+              "flex items-center gap-2 rounded-button border p-2 text-xs",
+              status === "not-described" && "border-dashed",
+              behaviorStatus === status && "bg-muted",
+            )}
+          >
+            <input
+              type="radio"
+              name="behavior-status"
+              checked={behaviorStatus === status}
+              onChange={() => onBehavior(status)}
+            />
+            {t(`behaviorStatus.${status}`)}
+          </label>
+        ))}
+      </div>
+    </fieldset>
+  );
+}
+
 export function ActionInterpretation({
   dir,
   behaviorStatus,
@@ -75,31 +116,10 @@ export function ActionInterpretation({
   const t = useTranslations("actV2.ui");
   return (
     <>
-      <fieldset className="space-y-2">
-        <legend className="mb-2 text-sm font-medium">
-          {t("episode.action")}
-        </legend>
-        <div className="flex flex-wrap gap-2">
-          {(["acted", "planned", "not-described"] as const).map((status) => (
-            <label
-              key={status}
-              className={cn(
-                "flex items-center gap-2 rounded-button border p-2 text-xs",
-                status === "not-described" && "border-dashed",
-                behaviorStatus === status && "bg-muted",
-              )}
-            >
-              <input
-                type="radio"
-                name="behavior-status"
-                checked={behaviorStatus === status}
-                onChange={() => onBehavior(status)}
-              />
-              {t(`behaviorStatus.${status}`)}
-            </label>
-          ))}
-        </div>
-      </fieldset>
+      <BehaviorStatusPicker
+        behaviorStatus={behaviorStatus}
+        onBehavior={onBehavior}
+      />
       <fieldset className="space-y-2">
         <legend className="text-sm font-medium">
           {t("episode.direction")}

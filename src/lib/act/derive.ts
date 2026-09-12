@@ -192,7 +192,12 @@ export function filterEpisodes(
 
 // --- Band shape / breakdown -----------------------------------------------
 
-export type BandShapeCell = { index: number; count: number; hasAway: boolean };
+export type BandShapeCell = {
+  index: number;
+  count: number;
+  hasAway: boolean;
+  hasToward: boolean;
+};
 
 /** Per-band presence for a set of episodes (the day-strip / week-row shape). */
 export function bandShape(episodes: Episode[]): BandShapeCell[] {
@@ -202,6 +207,7 @@ export function bandShape(episodes: Episode[]): BandShapeCell[] {
       index,
       count: inBand.length,
       hasAway: inBand.some((e) => isCompletedAction(e) && e.dir === "away"),
+      hasToward: inBand.some((e) => isCompletedAction(e) && e.dir === "toward"),
     };
   });
 }

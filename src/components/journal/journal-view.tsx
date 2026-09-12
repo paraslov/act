@@ -528,7 +528,9 @@ export function JournalView({
                                 ? "bg-muted"
                                 : cell.hasAway
                                   ? "bg-away"
-                                  : "bg-muted-foreground/40",
+                                  : cell.hasToward
+                                    ? "bg-toward"
+                                    : "bg-muted-foreground/40",
                             )}
                             style={{
                               height: cell.count

@@ -263,12 +263,22 @@ describe("filterEpisodes", () => {
 });
 
 describe("band shape & breakdown", () => {
-  it("marks per-band count and away presence", () => {
+  it("marks per-band count and toward/away presence", () => {
     const eps = [ep({ band: 6, dir: "toward" }), ep({ band: 6, dir: "away" })];
     const shape = bandShape(eps);
     expect(shape).toHaveLength(8);
-    expect(shape[6]).toEqual({ index: 6, count: 2, hasAway: true });
-    expect(shape[0]).toEqual({ index: 0, count: 0, hasAway: false });
+    expect(shape[6]).toEqual({
+      index: 6,
+      count: 2,
+      hasAway: true,
+      hasToward: true,
+    });
+    expect(shape[0]).toEqual({
+      index: 0,
+      count: 0,
+      hasAway: false,
+      hasToward: false,
+    });
 
     const breakdown = bandBreakdown(eps);
     expect(breakdown[6]).toMatchObject({

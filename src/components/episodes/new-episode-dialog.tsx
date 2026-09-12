@@ -24,6 +24,7 @@ import {
 } from "@/components/episodes/choice-point";
 import {
   ActionInterpretation,
+  BehaviorStatusPicker,
   ReflectionFields,
 } from "@/components/episodes/reflection-fields";
 import { Button } from "@/components/ui/button";
@@ -215,6 +216,7 @@ export function NewEpisodeDialogProvider({
           hookType: form.hookType,
           situation: form.situation,
           move: form.move,
+          behaviorStatus: form.behaviorStatus,
           // Direction is optional on the brief note; an untouched beam stays unknown.
           dir: form.dir ?? "unknown",
           valueId: form.valueId,
@@ -371,7 +373,22 @@ export function NewEpisodeDialogProvider({
                       hint={t("episode.actionHint")}
                       value={form.move}
                       onChange={(v) => setField("move", v)}
-                    />
+                    >
+                      <div className="mt-3">
+                        <BehaviorStatusPicker
+                          withLegend={false}
+                          behaviorStatus={form.behaviorStatus}
+                          onBehavior={(status) =>
+                            setField("behaviorStatus", status)
+                          }
+                        />
+                      </div>
+                    </QuestionField>
+                    {form.behaviorStatus === "acted" && !form.move.trim() && (
+                      <p role="alert" className="text-sm">
+                        {t("episode.actedError")}
+                      </p>
+                    )}
                   </>
                 )}
 
