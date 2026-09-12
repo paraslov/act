@@ -44,6 +44,50 @@ function Absence({ children }: { children: ReactNode }) {
     </div>
   );
 }
+/**
+ * One tally row rendered as a horizontal bar: label · track+fill · count.
+ * A zero row keeps its place with a dashed empty track and an em dash — an
+ * absence, never a failure. Width is the share of entries (0–1).
+ */
+function Bar({
+  label,
+  count,
+  fraction,
+  percent,
+}: {
+  label: string;
+  count: number;
+  fraction: number;
+  percent: string;
+}) {
+  const empty = count === 0;
+  return (
+    <li className="flex items-center gap-[10px] text-sm">
+      <span
+        className={cn(
+          "flex-[0_0_140px] truncate",
+          empty && "text-muted-foreground",
+        )}
+        title={label}
+      >
+        {label}
+      </span>
+      {empty ? (
+        <span className="h-[7px] flex-1 rounded border border-dashed" />
+      ) : (
+        <span className="h-[7px] flex-1 overflow-hidden rounded bg-muted">
+          <span
+            className="block h-full rounded bg-foreground/60"
+            style={{ width: `${Math.max(fraction * 100, 3)}%` }}
+          />
+        </span>
+      )}
+      <span className="flex-none font-mono text-xs text-muted-foreground tabular-nums">
+        {empty ? "—" : `${count} · ${percent}`}
+      </span>
+    </li>
+  );
+}
 function point(index: number, value: number) {
   const angle = -Math.PI / 2 + (index * Math.PI * 2) / AXES.length;
   return [
@@ -67,6 +111,10 @@ export async function ProgressView({
   const old = await getTranslations("progress");
   const locale = await getLocale();
   const number = new Intl.NumberFormat(locale, { maximumFractionDigits: 1 });
+  const percent = new Intl.NumberFormat(locale, {
+    style: "percent",
+    maximumFractionDigits: 0,
+  });
   const split = towardAwaySplit(episodes);
   const radar = radarComparison(episodes);
   const bands = bandBreakdown(episodes);
@@ -306,21 +354,17 @@ export async function ProgressView({
               {t("observations.records", { count: episodes.length })} ·{" "}
               {t("observations.multipleSelectionHelp")}
             </p>
-            <ul className="space-y-3">
+            <ul className="space-y-[9px]">
               {states.map((state) => (
-                <li
+                <Bar
                   key={state.id}
-                  className="flex flex-wrap justify-between gap-2 text-sm"
-                >
-                  <span>
-                    {cards(
-                      `${STATE_CARD_IDS[state.id as keyof typeof STATE_CARD_IDS]}.title`,
-                    )}
-                  </span>
-                  <span className="font-mono text-xs">
-                    {state.count} / {episodes.length}
-                  </span>
-                </li>
+                  label={cards(
+                    `${STATE_CARD_IDS[state.id as keyof typeof STATE_CARD_IDS]}.title`,
+                  )}
+                  count={state.count}
+                  fraction={state.share}
+                  percent={percent.format(state.share)}
+                />
               ))}
             </ul>
           </Card>
@@ -328,23 +372,17 @@ export async function ProgressView({
             title={t("observations.skills")}
             description={t("observations.multipleSelectionHelp")}
           >
-            <ul className="space-y-3">
+            <ul className="space-y-[9px]">
               {skills.map((skill) => (
-                <li key={skill.id} className="space-y-1 text-sm">
-                  <div className="flex flex-wrap justify-between gap-2">
-                    <span>
-                      {cards(
-                        `${SKILL_CARD_IDS[skill.id as keyof typeof SKILL_CARD_IDS]}.title`,
-                      )}
-                    </span>
-                    <span className="font-mono text-xs">
-                      {skill.count || "—"}
-                    </span>
-                  </div>
-                  {skill.count === 0 && (
-                    <div className="border-t border-dashed" />
+                <Bar
+                  key={skill.id}
+                  label={cards(
+                    `${SKILL_CARD_IDS[skill.id as keyof typeof SKILL_CARD_IDS]}.title`,
                   )}
-                </li>
+                  count={skill.count}
+                  fraction={skill.share}
+                  percent={percent.format(skill.share)}
+                />
               ))}
             </ul>
             {skills.some((skill) => skill.count === 0) && (
@@ -357,14 +395,15 @@ export async function ProgressView({
             title={t("episode.experience")}
             description={old("hookTypes.description")}
           >
-            <ul className="space-y-2">
+            <ul className="space-y-[9px]">
               {hookTypes.map((hook) => (
-                <li key={hook.id} className="flex justify-between text-sm">
-                  <span>{t(`experienceTypes.${hook.id}`)}</span>
-                  <span>
-                    {hook.count} / {episodes.length}
-                  </span>
-                </li>
+                <Bar
+                  key={hook.id}
+                  label={t(`experienceTypes.${hook.id}`)}
+                  count={hook.count}
+                  fraction={hook.share}
+                  percent={percent.format(hook.share)}
+                />
               ))}
             </ul>
           </Card>
