@@ -10,6 +10,8 @@ import {
   hasMorningEntry,
   hookTypeTallies,
   normalizeText,
+  peakAwayBand,
+  periodSpanDays,
   radarComparison,
   returningToPractice,
   skillsNamed,
@@ -582,5 +584,37 @@ describe("Phase 1 missing-data integrity", () => {
     ).toHaveLength(2);
     expect(skillsNamed([episode])).toHaveLength(2);
     expect(skillsNamed([ep({ skills: ["unknown"] })])).toEqual([]);
+  });
+  it("peakAwayBand ignores bands under the entry floor and breaks ties by earliest index", () => {
+    // Band 2 has a single 100%-away entry; band 6 has 2 of 3 away (67%).
+    // The floor must keep the noisy 1-entry band from winning.
+    const episodes = [
+      ep({ band: 2, dir: "away" }),
+      ...(["away", "away", "toward"] as const).map((dir) =>
+        ep({ band: 6, dir }),
+      ),
+    ];
+    const bands = bandBreakdown(episodes);
+    expect(peakAwayBand(bands)?.index).toBe(6);
+    // With no band clearing the floor, there is no peak window.
+    expect(
+      peakAwayBand(bandBreakdown([ep({ band: 2, dir: "away" })])),
+    ).toBeNull();
+    // A tie in away share resolves to the earlier band.
+    const tied = bandBreakdown([
+      ...(["away", "away", "toward"] as const).map((dir) =>
+        ep({ band: 1, dir }),
+      ),
+      ...(["away", "away", "toward"] as const).map((dir) =>
+        ep({ band: 5, dir }),
+      ),
+    ]);
+    expect(peakAwayBand(tied)?.index).toBe(1);
+  });
+  it("periodSpanDays counts inclusive days, and is null for an open range", () => {
+    expect(periodSpanDays({ start: "2026-09-01", end: "2026-09-30" })).toBe(30);
+    expect(periodSpanDays({ start: "2026-09-01", end: "2026-09-01" })).toBe(1);
+    expect(periodSpanDays({ end: "2026-09-30" })).toBeNull();
+    expect(periodSpanDays({})).toBeNull();
   });
 });

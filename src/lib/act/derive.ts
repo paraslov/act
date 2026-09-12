@@ -222,6 +222,44 @@ export function bandBreakdown(episodes: Episode[]): BandBreakdownCell[] {
   }));
 }
 
+/** Toward + away + mixed for a band — the directional total the by-time chart draws. */
+export function bandDirectionalTotal(
+  cell: Pick<DirCounts, "toward" | "away" | "mixed">,
+): number {
+  return cell.toward + cell.away + cell.mixed;
+}
+
+/**
+ * Band with the highest away share among bands with at least `minEntries`
+ * directional entries (toward + away + mixed), or null when none qualify.
+ * Ties resolve to the earlier band index. The floor matters: without it a
+ * single high-away night band wins forever and the insight sentence is noise.
+ */
+export function peakAwayBand(
+  bands: BandBreakdownCell[],
+  minEntries = 3,
+): BandBreakdownCell | null {
+  let best: BandBreakdownCell | null = null;
+  let bestShare = -1;
+  for (const cell of bands) {
+    const total = bandDirectionalTotal(cell);
+    if (total < minEntries) continue;
+    const shareAway = cell.away / total;
+    // Strictly greater keeps the earliest band on a tie (bands are in index order).
+    if (shareAway > bestShare) {
+      bestShare = shareAway;
+      best = cell;
+    }
+  }
+  return best;
+}
+
+/** Span in days covered by the selected period, for the summary sub-note. */
+export function periodSpanDays(period: EpisodePeriod): number | null {
+  if (!period.start || !period.end) return null;
+  return daysBetween(period.end, period.start) + 1;
+}
+
 // --- Tallies ---------------------------------------------------------------
 
 function share(count: number, total: number): number {

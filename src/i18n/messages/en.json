@@ -959,8 +959,6 @@
         "directionCount": "{label}: {count}",
         "notesAndPlans": "Notes and intentions are shown separately from completed actions.",
         "notesAndIntentions": "Notes & intentions · {count}",
-        "byTime": "Entries by time of day",
-        "byTimeHelp": "These are record counts, not estimates of risk. Situations you did not record are not included.",
         "reflectionTitle": "Your reflection responses",
         "insufficient": "Not enough responses to compare yet. Keep noticing when it is useful to you.",
         "noResponses": "No responses",
@@ -977,7 +975,45 @@
         "daysRecorded": "{count, plural, one {# day with an entry} other {# days with entries}}",
         "returningHelp": "This describes recording activity, not the quality of your life or practice. A gap does not erase earlier entries.",
         "hideReturning": "Hide this summary",
+        "summary": {
+          "entries": "Entries",
+          "towardShare": "Toward share",
+          "activeDays": "Days with entries",
+          "completedActions": "{count, plural, one {# completed action} other {# completed actions}}",
+          "towardOf": "{toward} of {completed} completed actions",
+          "overSpan": "over {count, plural, one {# day} other {# days}}"
+        },
+        "byTime": {
+          "title": "Entries by time of day",
+          "volume": "Volume",
+          "mix": "Mix %",
+          "help": "When entries land, and which way the action went. These are record counts, not estimates of risk.",
+          "readoutVolume": "{total} · {percent} away",
+          "legendToward": "Toward {count} · {percent}",
+          "legendAway": "Away {count} · {percent}",
+          "legendMixed": "Mixed {count} · {percent}",
+          "peak": "Most away-leaning window: <b>{band}</b> — {count} of {total} entries went away ({percent})",
+          "peakNone": "Most away-leaning window: — not enough entries in any band yet"
+        },
+        "direction": {
+          "title": "Direction of completed actions",
+          "help": "Toward is not “good” and away is not “bad” — both describe where an action pointed."
+        },
+        "axes": {
+          "delta": "{delta} vs before",
+          "deltaNone": "not enough yet",
+          "detail": "Latest {recent} · {recentN} · preceding {previous} · {previousN}"
+        },
+        "tally": {
+          "states": "Status effects",
+          "skills": "Skills",
+          "hooks": "Experience",
+          "hooksTitle": "What you noticed",
+          "hooksHelp": "The kind of experience that showed up first in each entry.",
+          "hooksFootnote": "One kind per entry, so these add up to the entries in this period."
+        },
         "periods": {
+          "7": "Last 7 days",
           "30": "Last 30 days",
           "90": "Last 90 days",
           "label": "Period",

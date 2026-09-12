@@ -1,5 +1,5 @@
 /** The Observations period windows. `all` is the full recorded span. */
-export const PERIOD_VALUES = ["all", "30", "90"] as const;
+export const PERIOD_VALUES = ["all", "7", "30", "90"] as const;
 export type PeriodValue = (typeof PERIOD_VALUES)[number];
 
 export function isPeriodValue(value: string | null): value is PeriodValue {
@@ -8,6 +8,7 @@ export function isPeriodValue(value: string | null): value is PeriodValue {
 
 /** Days back each bounded window spans, inclusive of today. */
 export const PERIOD_WINDOW_DAYS: Record<Exclude<PeriodValue, "all">, number> = {
+  "7": 7,
   "30": 30,
   "90": 90,
 };

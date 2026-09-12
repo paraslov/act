@@ -168,5 +168,81 @@ for (const locale of ["en", "ru"] as const) {
       );
       expect(html).not.toMatch(/<circle|class="stroke-(?:muted-)?foreground"/);
     });
+
+    it("A2/A3: direction rows print count · percent, and a zero direction prints an em dash", async () => {
+      context.locale = locale;
+      const messages = locale === "en" ? en : ru;
+      const percent = new Intl.NumberFormat(locale, {
+        style: "percent",
+        maximumFractionDigits: 0,
+      });
+      const html = await render([
+        ...(["toward", "toward", "toward"] as const).map((dir, i) =>
+          episode({ id: `t${i}`, dir, behaviorStatus: "acted" }),
+        ),
+        episode({ id: "a", dir: "away", behaviorStatus: "acted" }),
+      ]);
+      // Toward 3 of 4, Away 1 of 4 — count · percent on every filled row.
+      expect(html).toContain(`3 · ${percent.format(0.75)}`);
+      expect(html).toContain(`1 · ${percent.format(0.25)}`);
+      // Mixed and "Not sure yet" had no entries: an em dash, never a zero score.
+      expect(html).toContain(messages.actV2.ui.observations.direction.title);
+      expect(html).toContain("—");
+    });
+
+    it("A1: by-time volume readouts print the band total and away share, with — for an empty band", async () => {
+      context.locale = locale;
+      const messages = locale === "en" ? en : ru;
+      const t = createTranslator({ locale, messages });
+      const percent = new Intl.NumberFormat(locale, {
+        style: "percent",
+        maximumFractionDigits: 0,
+      });
+      const html = await render([
+        ...(["toward", "toward", "toward"] as const).map((dir, i) =>
+          episode({ id: `t${i}`, band: 6, dir, behaviorStatus: "acted" }),
+        ),
+        episode({ id: "a", band: 6, dir: "away", behaviorStatus: "acted" }),
+      ]);
+      // Volume is the default mode: "{total} · {percent} away" for band 18–21.
+      expect(html).toContain(
+        t("actV2.ui.observations.byTime.readoutVolume", {
+          total: 4,
+          percent: percent.format(0.25),
+        }),
+      );
+      // The other seven bands are empty and read as an em dash.
+      expect(html).toContain("—");
+    });
+
+    it("A5: axis rows read 'not enough yet', never a coloured delta, before ten entries", async () => {
+      context.locale = locale;
+      const messages = locale === "en" ? en : ru;
+      const html = await render(
+        Array.from({ length: 4 }, (_, i) =>
+          episode({ id: `e${i}`, checks: { awareness: 2, action: 1 } }),
+        ),
+      );
+      expect(html).toContain(messages.actV2.ui.observations.axes.deltaNone);
+      // No delta means no toward/away tint on the change column.
+      expect(html).not.toContain("vs before");
+    });
+
+    it("A6: the Boss test is the last section on the page", async () => {
+      context.locale = locale;
+      const messages = locale === "en" ? en : ru;
+      const html = await render([episode({ id: "one" })]);
+      const bossAt = html.indexOf(messages.actV2.ui.rpg.bossTest.prompt);
+      const directionAt = html.indexOf(
+        messages.actV2.ui.observations.direction.title,
+      );
+      const reflectionAt = html.indexOf(
+        messages.actV2.ui.observations.reflectionTitle,
+      );
+      expect(bossAt).toBeGreaterThan(directionAt);
+      expect(bossAt).toBeGreaterThan(reflectionAt);
+      // Nothing structural follows the boss prompt but its own caption.
+      expect(html.indexOf("<section", bossAt + 1)).toBe(-1);
+    });
   });
 }
