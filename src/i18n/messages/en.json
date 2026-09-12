@@ -958,6 +958,7 @@
         "completedActions": "{count, plural, one {# completed action} other {# completed actions}}",
         "directionCount": "{label}: {count}",
         "notesAndPlans": "Notes and intentions are shown separately from completed actions.",
+        "notesAndIntentions": "Notes & intentions · {count}",
         "byTime": "Entries by time of day",
         "byTimeHelp": "These are record counts, not estimates of risk. Situations you did not record are not included.",
         "reflectionTitle": "Your reflection responses",

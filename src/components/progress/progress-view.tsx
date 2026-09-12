@@ -88,6 +88,26 @@ function Bar({
     </li>
   );
 }
+/** Bar-fill colour per direction; Mixed and Not-sure stay achromatic. */
+const DIRECTION_FILL = {
+  toward: "bg-toward",
+  away: "bg-away",
+  mixed: "bg-muted-foreground",
+  unknown: "bg-muted-foreground",
+} as const;
+/** Shape marker per direction — the same glyph set used by the Boss-test grid. */
+const DIRECTION_SWATCH = {
+  toward: <span className="block size-[9px] rounded-[2px] bg-toward" />,
+  away: <span className="block size-[9px] rounded-full bg-away" />,
+  mixed: (
+    <span className="relative block size-[9px] overflow-hidden rounded-[2px] border border-muted-foreground">
+      <span className="absolute top-[3px] left-[-3px] h-px w-[15px] -rotate-45 bg-muted-foreground" />
+    </span>
+  ),
+  unknown: (
+    <span className="block size-[9px] rounded-full border border-dashed border-muted-foreground" />
+  ),
+} as const;
 function point(index: number, value: number) {
   const angle = -Math.PI / 2 + (index * Math.PI * 2) / AXES.length;
   return [
@@ -166,37 +186,66 @@ export async function ProgressView({
         </div>
       )}
       <div className="flex flex-wrap items-start gap-5">
-        <Card
-          title={old("split.title")}
-          description={t("observations.completedActions", {
-            count: split.completed,
-          })}
-        >
-          <div className="flex flex-wrap gap-4">
-            {(["toward", "away", "mixed", "unknown"] as const).map((dir) => (
-              <div key={dir}>
-                <p
-                  className={cn(
-                    "font-serif text-[30px]",
-                    dir === "toward" && "text-toward",
-                    dir === "away" && "text-away",
-                  )}
-                >
-                  {split[dir]}
-                </p>
-                <p className="text-xs">{t(`direction.${dir}.label`)}</p>
-              </div>
-            ))}
+        <section className="min-w-0 grow basis-[400px] rounded-card border bg-card px-6 py-[22px]">
+          <div className="flex items-baseline justify-between gap-3">
+            <h2 className="text-base font-semibold">{old("split.title")}</h2>
+            <span className="flex-none font-mono text-xs text-muted-foreground">
+              {t("observations.completedActions", { count: split.completed })}
+            </span>
           </div>
-          <p className="mt-4 border-t pt-3 text-xs text-muted-foreground">
-            {t("observations.notesAndPlans")}
-          </p>
-          <p className="mt-2 text-xs">
-            {t("behaviorStatus.planned")}: {split.planned}
-            <br />
-            {t("behaviorStatus.not-described")}: {split.notDescribed}
-          </p>
-        </Card>
+          <ul className="mt-[14px] space-y-[9px]">
+            {(["toward", "away", "mixed", "unknown"] as const).map((dir) => {
+              const count = split[dir];
+              // "Not sure yet" is an undecided answer, always shown as an absence
+              // track; other directions show a filled track unless nothing landed.
+              const empty = dir === "unknown" || count === 0;
+              return (
+                <li
+                  key={dir}
+                  className="flex items-center gap-[10px] text-[13px]"
+                >
+                  <span className="flex-none">{DIRECTION_SWATCH[dir]}</span>
+                  <span
+                    className={cn(
+                      "flex-[0_0_84px]",
+                      dir === "unknown" && "text-muted-foreground",
+                    )}
+                  >
+                    {t(`direction.${dir}.label`)}
+                  </span>
+                  {empty ? (
+                    <span className="h-[7px] flex-1 rounded border border-dashed" />
+                  ) : (
+                    <span className="h-[7px] flex-1 overflow-hidden rounded bg-muted">
+                      <span
+                        className={cn(
+                          "block h-full rounded",
+                          DIRECTION_FILL[dir],
+                        )}
+                        style={{
+                          width: `${Math.max((count / split.completed) * 100, 3)}%`,
+                        }}
+                      />
+                    </span>
+                  )}
+                  <span className="flex-none font-mono text-xs tabular-nums">
+                    {count}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+          <div className="mt-[13px] flex flex-wrap items-center gap-[10px] border-t pt-[11px]">
+            <span className="flex-none rounded-input border border-dashed px-[10px] py-[5px] text-xs text-muted-foreground">
+              {t("observations.notesAndIntentions", {
+                count: split.planned + split.notDescribed,
+              })}
+            </span>
+            <span className="min-w-0 flex-1 text-xs text-muted-foreground">
+              {t("observations.notesAndPlans")}
+            </span>
+          </div>
+        </section>
         <Card
           title={t("observations.byTime")}
           description={t("observations.byTimeHelp")}
