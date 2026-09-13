@@ -335,7 +335,31 @@
     "submit": "Sign in",
     "pending": "Signing in…",
     "invalidInput": "Enter a valid email and password.",
-    "invalidCredentials": "Email or password is incorrect."
+    "invalidCredentials": "Email or password is incorrect.",
+    "noAccount": "Have an invite code?",
+    "createAccount": "Create account"
+  },
+  "register": {
+    "intro": "Create your account to start.",
+    "title": "Create account",
+    "description": "Sign-up is invite-only. You'll need the code from your invitation.",
+    "email": "Email",
+    "password": "Password",
+    "passwordHint": "At least {min} characters.",
+    "passwordShort": "Use at least {min} characters.",
+    "code": "Invite code",
+    "codeHint": "Paste it exactly as you received it.",
+    "codePlaceholder": "paste your code",
+    "paste": "Paste",
+    "submit": "Create account",
+    "pending": "Creating account…",
+    "pendingNote": "This takes a moment — your password is being secured.",
+    "invalidInput": "Enter a valid email and a password of at least {min} characters.",
+    "invalidInvite": "This invite code can't be used.",
+    "emailTaken": "An account already exists for this email.",
+    "emailTakenAction": "Sign in instead",
+    "haveAccount": "Already have an account?",
+    "signIn": "Sign in"
   },
   "act": {
     "axes": {

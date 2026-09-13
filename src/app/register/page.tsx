@@ -11,14 +11,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { LoginForm } from "./login-form";
+import { RegisterForm } from "./register-form";
 
-export default async function LoginPage() {
+export default async function RegisterPage() {
   if (await getCurrentUser()) {
     redirect("/");
   }
 
-  const t = await getTranslations("login");
+  const t = await getTranslations("register");
 
   return (
     <main className="container mx-auto flex min-h-screen items-center justify-center px-6 py-12">
@@ -39,14 +39,14 @@ export default async function LoginPage() {
             <CardDescription>{t("description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
-            <LoginForm />
+            <RegisterForm />
             <div className="border-t pt-4 text-center text-[13px] text-muted-foreground">
-              {t("noAccount")}{" "}
+              {t("haveAccount")}{" "}
               <Link
-                href="/register"
+                href="/login"
                 className="text-foreground underline underline-offset-2"
               >
-                {t("createAccount")}
+                {t("signIn")}
               </Link>
             </div>
           </CardContent>

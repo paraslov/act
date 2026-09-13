@@ -226,3 +226,56 @@ export async function clearAccountLoginFailures(
     keys.map(({ hash }) => hash),
   ]);
 }
+
+// Registration reuses the same source throttle machinery, but under a namespaced
+// value ("register:<source>") so sign-up attempts get their own bucket rather
+// than sharing login's. The scope stays 'source' to satisfy the login_throttle
+// CHECK constraint. There is no account or pair scope here: registration has no
+// account to blame, and its whole point is to gate the expensive password hash
+// against per-source abuse.
+function registerSourceKey(source: string): FailureKey {
+  return {
+    hash: hashThrottleKey("source", `register:${source}`),
+    scope: "source",
+  };
+}
+
+export async function isRegisterBlocked(source: string | null) {
+  if (!source) {
+    return false;
+  }
+
+  const result = await query<BlockRow>(
+    `SELECT blocked_until
+       FROM login_throttle
+      WHERE key_hash = $1
+        AND blocked_until > now()
+      LIMIT 1`,
+    [registerSourceKey(source).hash],
+  );
+
+  return Boolean(result.rows[0]?.blocked_until);
+}
+
+export async function recordRegisterFailure(source: string | null) {
+  if (!source) {
+    return;
+  }
+
+  await withTransaction(async (client) => {
+    await client.query(
+      "DELETE FROM login_throttle WHERE updated_at < now() - interval '7 days'",
+    );
+    await incrementFailure(client, registerSourceKey(source));
+  });
+}
+
+export async function clearRegisterFailures(source: string | null) {
+  if (!source) {
+    return;
+  }
+
+  await query("DELETE FROM login_throttle WHERE key_hash = $1", [
+    registerSourceKey(source).hash,
+  ]);
+}

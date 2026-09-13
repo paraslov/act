@@ -91,8 +91,9 @@ if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
 const password =
   process.env.ACT_NEW_USER_PASSWORD ?? (await promptForPassword("Password: "));
 
-if (password.length < 15) {
-  throw new Error("Password must contain at least 15 characters");
+// Keep in sync with PASSWORD_MIN_LENGTH in src/auth/policy.ts.
+if (password.length < 8) {
+  throw new Error("Password must contain at least 8 characters");
 }
 
 const passwordHash = await hashPassword(password);
