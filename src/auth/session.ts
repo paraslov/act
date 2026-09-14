@@ -2,7 +2,7 @@ import "server-only";
 
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { cache } from "react";
 import { query } from "@/lib/db/client";
 
@@ -11,6 +11,7 @@ const SESSION_DURATION_SECONDS = 60 * 60 * 24 * 30;
 type SessionUserRow = {
   id: string;
   email: string;
+  is_admin: boolean;
 };
 
 export type CurrentUser = SessionUserRow;
@@ -55,7 +56,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
   }
 
   const result = await query<SessionUserRow>(
-    `SELECT users.id, users.email
+    `SELECT users.id, users.email, users.is_admin
        FROM sessions
        JOIN users ON users.id = sessions.user_id
       WHERE sessions.token_hash = $1
@@ -73,6 +74,18 @@ export async function requireCurrentUser() {
 
   if (!user) {
     redirect("/login");
+  }
+
+  return user;
+}
+
+export async function requireAdminUser() {
+  const user = await requireCurrentUser();
+
+  // A non-admin is treated exactly as if the route did not exist: no page
+  // reveals that an admin area is there, and no "you are not an admin" screen.
+  if (!user.is_admin) {
+    notFound();
   }
 
   return user;

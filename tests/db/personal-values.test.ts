@@ -65,6 +65,7 @@ describe("personal values through real user-scoped repositories", () => {
     vi.mocked(requireCurrentUser).mockResolvedValue({
       id,
       email: `${id}@example.test`,
+      is_admin: false,
     });
   }
 

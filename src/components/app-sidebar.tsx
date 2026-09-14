@@ -93,6 +93,33 @@ function NavLinks({
   );
 }
 
+function AdminNavLink({ label }: { label: string }) {
+  const pathname = usePathname();
+  const active = isActivePath(pathname, "/admin");
+
+  return (
+    <nav className="flex min-w-max flex-row gap-0.5 min-[900px]:min-w-0 min-[900px]:flex-col">
+      <Link
+        href="/admin"
+        aria-current={active ? "page" : undefined}
+        className={cn(
+          "flex min-h-9 items-center gap-2.5 rounded-button px-2.5 py-2 text-sm font-medium text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+          active && "bg-accent font-semibold text-foreground",
+        )}
+      >
+        <span
+          aria-hidden="true"
+          className={cn(
+            "size-1.5 shrink-0 rounded-[2px] bg-border",
+            active && "bg-toward",
+          )}
+        />
+        <span className="flex-1">{label}</span>
+      </Link>
+    </nav>
+  );
+}
+
 export function AppSidebar({
   user,
   episodeCount,
@@ -134,6 +161,18 @@ export function AppSidebar({
           </p>
           <NavLinks items={referenceItems} episodeCount={episodeCount} />
         </section>
+
+        {user.is_admin ? (
+          <section className="min-[900px]:mt-5">
+            <p className="mb-2.5 hidden px-2 font-mono text-[10px] tracking-[0.16em] text-muted-foreground/80 uppercase min-[900px]:block">
+              {t("admin.navGroup")}
+            </p>
+            <AdminNavLink label={t("admin.navInvites")} />
+            <p className="mt-2 hidden px-2 text-[11px] leading-snug text-muted-foreground/70 min-[900px]:block">
+              {t("admin.navNote")}
+            </p>
+          </section>
+        ) : null}
       </div>
 
       <Link
