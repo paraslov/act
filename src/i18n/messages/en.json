@@ -37,7 +37,7 @@
     "dayNumber": "day {number}",
     "alert": {
       "label": "A question worth returning to",
-      "question": "When autopilot takes over — do I notice it, and what can I choose next?"
+      "question": "When autopilot takes over — do I notice it, and get back to 'Here and Now'?"
     },
     "morning": {
       "time": "~2 MIN",
@@ -940,8 +940,8 @@
         "eveningTitle": "Evening reflection",
         "morningValues": "What matters to me today?",
         "morningAttention": "Where might I need to bring attention back?",
-        "morningSupport": "How can I support myself if things are difficult?",
-        "morningStep": "One possible step",
+        "morningSupport": "What values can I follow if things are difficult?",
+        "morningStep": "One small step I can do",
         "eveningSituation": "What happened?",
         "eveningConsequences": "What did I do, and what followed?",
         "eveningValues": "Where did my actions express what mattered?",
