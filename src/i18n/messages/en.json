@@ -735,7 +735,7 @@
         "reflection": "What is missing here: clarity, opportunity, support, or willingness to contact an experience?"
       },
       "notice": {
-        "title": "Notice What Is Happening",
+        "title": "Notice",
         "short": "Briefly name what is happening so that the next choice becomes clearer.",
         "practice": "Look around. Notice one fact about the situation, one private experience, and an urge: “A question was asked. Tension is here. I want to interrupt”. Then choose what to attend to.",
         "example": "“I am reading the message for the third time. Anxiety is here. I am looking for certainty that everything is fine.” That is enough; a lengthy analysis is not required.",
@@ -744,7 +744,7 @@
         "reflection": "What did I notice, and what choice did that make possible?"
       },
       "defuse": {
-        "title": "Unhook from a Thought",
+        "title": "Defusion",
         "short": "Create a little room between a thought appearing and acting under its direction.",
         "practice": "Once, say silently: “I am noticing the thought that …”. Or name a familiar theme: “The demand for perfection is here again”. Consider the actual circumstances and choose an action. You do not need to repeat the phrase until you feel better.",
         "example": "“I am noticing the thought that asking is embarrassing.” You check whether the information is needed and ask the question.",
@@ -942,7 +942,7 @@
         "morningAttention": "Where might I need to bring attention back?",
         "morningSupport": "What values can I follow if things are difficult?",
         "morningStep": "One small step I can do",
-        "eveningSituation": "What happened?",
+        "eveningSituation": "What happened today?",
         "eveningConsequences": "What did I do, and what followed?",
         "eveningValues": "Where did my actions express what mattered?",
         "eveningNext": "What would I like to keep or change?"
