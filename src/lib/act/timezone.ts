@@ -6,9 +6,9 @@ import { withCurrentUserDb } from "@/lib/db/user-context";
 
 /**
  * Resolves the active time zone for the current request from
- * `user_settings.settings.timezone`, falling back to UTC. Never throws — the
- * calendar-day math must not break rendering — and skips the lookup when there
- * is no session.
+ * `user_settings.settings.timezone`, falling back to `Asia/Almaty` (the app
+ * default). Never throws — the calendar-day math must not break rendering — and
+ * skips the lookup when there is no session.
  */
 export async function resolveTimeZone(): Promise<string> {
   try {

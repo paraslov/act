@@ -64,12 +64,12 @@ describe("date helpers", () => {
     expect(zonedBand(past, "UTC")).toBe(6);
   });
 
-  it("accepts real IANA zones and falls back to UTC for anything else", () => {
+  it("accepts real IANA zones and falls back to the default for anything else", () => {
     expect(isTimeZone("Asia/Almaty")).toBe(true);
     expect(isTimeZone("Not/AZone")).toBe(false);
     expect(isTimeZone("")).toBe(false);
     expect(normalizeTimeZone("Europe/Berlin")).toBe("Europe/Berlin");
-    expect(normalizeTimeZone("bogus")).toBe("UTC");
-    expect(normalizeTimeZone(null)).toBe("UTC");
+    expect(normalizeTimeZone("bogus")).toBe("Asia/Almaty");
+    expect(normalizeTimeZone(null)).toBe("Asia/Almaty");
   });
 });

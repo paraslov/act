@@ -6,11 +6,12 @@
  * `Intl` using the active display locale.
  *
  * Timezone: the calendar day and time band an entry belongs to are resolved in
- * the user's own zone (stored in `user_settings.settings.timezone`). `UTC` is the
- * fallback when no zone is set. Whatever zone was in force is frozen onto the row
- * at write time (`event_timezone`), so changing it later never moves history.
+ * the user's own zone (stored in `user_settings.settings.timezone`).
+ * `Asia/Almaty` (UTC+5) is the fallback when no zone is set. Whatever zone was in
+ * force is frozen onto the row at write time (`event_timezone`), so changing it
+ * later never moves history.
  */
-export const DEFAULT_TIMEZONE = "UTC";
+export const DEFAULT_TIMEZONE = "Asia/Almaty";
 
 const MS_PER_DAY = 86_400_000;
 
