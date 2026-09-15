@@ -8,6 +8,12 @@
     "notWritten": "— not written",
     "close": "Close"
   },
+  "notFound": {
+    "code": "404",
+    "title": "This page could not be found.",
+    "body": "The page you're looking for doesn't exist, or you don't have access to it.",
+    "home": "Back to Today"
+  },
   "nav": {
     "groupDaily": "DAILY",
     "groupReference": "REFERENCE",
