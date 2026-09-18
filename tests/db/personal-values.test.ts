@@ -279,8 +279,8 @@ describe("personal values through real user-scoped repositories", () => {
       skill: null,
       checks: {},
       schemaVersion: 2,
-      // 6.2: a new entry freezes the zone in force (UTC when none is set).
-      eventTimezone: "UTC",
+      // 6.2: a new entry freezes the zone in force (the app default when none is set).
+      eventTimezone: "Asia/Almaty",
       value: "",
       move: "",
       workable: "",
@@ -368,7 +368,7 @@ describe("personal values through real user-scoped repositories", () => {
   it("revises an entry in place: keeps created_at, the zone and an unchanged snapshot (T16/T17/T18)", async () => {
     const value = await createPersonalValue(valueInput);
     const row = await createEpisode({ ...episodeInput, valueId: value.id });
-    expect(row.eventTimezone).toBe("UTC");
+    expect(row.eventTimezone).toBe("Asia/Almaty");
 
     signIn(users[1]);
     await expect(
@@ -392,7 +392,7 @@ describe("personal values through real user-scoped repositories", () => {
       laterConsequences: "Slept better",
       consequenceStatus: "observed",
       createdAt: row.createdAt,
-      eventTimezone: "UTC",
+      eventTimezone: "Asia/Almaty",
       valueSnapshot: row.valueSnapshot,
     });
     expect(revised.updatedAt >= row.updatedAt).toBe(true);
